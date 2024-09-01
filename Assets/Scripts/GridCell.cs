@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public int x;
+    public int y;
+    private GameObject[,] candyGrid;
+    
+    public bool HasCandy(GameObject[,] candies)
     {
-        
+        return candies[x, y] != null;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
