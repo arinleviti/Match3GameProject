@@ -15,6 +15,8 @@ public interface ICandy
     //Handles what happens when a player interacts with the candy. 
     void HandleInteraction();
 }
+
+// ICandy implementation
 public class Candy : MonoBehaviour, ICandy
 {
     [SerializeField] private CandyType candyType;
