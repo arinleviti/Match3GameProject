@@ -9,8 +9,8 @@ public interface ICandy
     float SizeY { get; }
     float PosX { get; set; }
     float PosY { get; set; }
-    int PosInArrayX { get; set; }  
-    int PosInArrayY { get; set; }
+    int PosInArrayI { get; set; }
+    int PosInArrayJ { get; set; }
     //GameObject Initialize(CandyType candyType);
     //Handles what happens when a player interacts with the candy. 
     void HandleInteraction();
@@ -19,14 +19,14 @@ public class Candy : MonoBehaviour, ICandy
 {
     [SerializeField] private CandyType candyType;
     
-    private int posInArrayY;
+    
     public CandyType CandyType => candyType;
     public float SizeX { get; set; }
     public float SizeY { get; set; }
     public float PosX { get ; set ; }
     public float PosY { get ; set ; }
-    public int PosInArrayX { get; set; }
-    public int PosInArrayY { get; set; }
+    public int PosInArrayI { get; set; }
+    public int PosInArrayJ { get; set; }
 
     private GameSettings gameSettings;
     //public GameObject Initialize(CandyType candyType)

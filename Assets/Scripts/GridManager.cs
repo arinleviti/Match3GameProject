@@ -10,9 +10,9 @@ using UnityEngine;
 public class GridManager : MonoBehaviour
 {
     private GameObject gridCellGO;
-    private int gridSize;
+    //private int gridSize;
     //private int candyTypes;
-    private GameObject[,] gameObjectsArray;
+    private GameObject[,] gridCellsArray;
     private GameObject[,] candiesArray;
     private GameObject gridParent;
     private GameObject candyParent;
@@ -28,32 +28,34 @@ public class GridManager : MonoBehaviour
         //candyTypes = gameSettings.candyTypes.Count;
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
-        Vector2 firstTilePos = CalculateFirstTileXY(gameSettings.tilesNumberHor, gameSettings.tileSize);
-        gridSize = gameSettings.tilesNumberHor * gameSettings.tilesNumberVert;
-        gameObjectsArray = new GameObject[gameSettings.tilesNumberHor, gameSettings.tilesNumberVert];
-        int perLine = Mathf.FloorToInt(gameSettings.tilesNumberHor /gameSettings.tileSize);
-        candiesArray = new GameObject[gameSettings.tilesNumberVert, gameSettings.tilesNumberHor];
+        Vector2 firstTilePos = CalculateFirstTileXY(gameSettings.tilesNumberX, gameSettings.tilesNumberY, gameSettings.tileSize);
+        //gridSize = gameSettings.tilesNumberHor * gameSettings.tilesNumberVert;
+        gridCellsArray = new GameObject[gameSettings.tilesNumberX, gameSettings.tilesNumberY];
+        //int perLine = Mathf.FloorToInt(gameSettings.tilesNumberHor /gameSettings.tileSize);
+        candiesArray = new GameObject[gameSettings.tilesNumberX, gameSettings.tilesNumberY];
         PopulateBackdropGrid(firstTilePos);
-        //CheckForMatches();
+        
         CheckAndFixAllMatches();
     }
+    //i corresponds to the row index (vertical position), which is equivalent to the X-coordinate
+    //j corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
     private void PopulateBackdropGrid(Vector2 firstTilePos)
     {
-        for (int i = 0; i < gameSettings.tilesNumberVert; i++)
+        for (int i = 0; i < gameSettings.tilesNumberX; i++)
         {
-            for (int j = 0; j < gameSettings.tilesNumberHor; j++)
+            for (int j = 0; j < gameSettings.tilesNumberY; j++)
             {
                 Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
                 gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
                 gridCellGO.transform.position = position;
                 gridCellGO.transform.SetParent(gridParent.transform);
-                gameObjectsArray[i, j] = gridCellGO;
+                gridCellsArray[i, j] = gridCellGO;
                 gridCellScript = gridCellGO.GetComponent<GridCell>();
-                gridCellScript.x = i;
-                gridCellScript.y = j;
-                Debug.Log("Cell in position: X: " + gridCellScript.x + " Y: " + gridCellScript.y);
+                gridCellScript.PosX = gridCellGO.transform.position.x;
+                gridCellScript.PosY = gridCellGO.transform.position.y;
+                Debug.Log("Cell in position: X: " + gridCellScript.PosX + " Y: " + gridCellScript.PosY);
                 PopulatecandiesArray(position, i, j);
-                
+
             }
         }
     }
@@ -65,15 +67,17 @@ public class GridManager : MonoBehaviour
         candiesArray[i, j] = randomCandy;
         randomCandy.transform.SetParent(candyParent.transform);
         Candy randomCandyScript = randomCandy.GetComponent<Candy>();
-        randomCandyScript.PosInArrayX = i;
-        randomCandyScript.PosInArrayY = j;
+        randomCandyScript.PosInArrayI = i;
+        randomCandyScript.PosInArrayJ = j;
+        randomCandyScript.PosX = randomCandy.transform.position.x;
+        randomCandyScript.PosY = randomCandy.transform.position.y;
         //Debug.Log("Candy in position: X: " + randomCandyScript.PosInArrayX + " Y: " + randomCandyScript.PosInArrayY);
     }
     // Keeps the grind centered around the 0,0 cohordinates.
-    private Vector2 CalculateFirstTileXY(float tilesNumber, float tileSize)
+    private Vector2 CalculateFirstTileXY(float tilesNumberX, float tilesNumberY, float tileSize)
     {
-        float tileX = -(tilesNumber / 2) + (tileSize/2);
-        float tileY = (tilesNumber / 2) - (tileSize/2);
+        float tileX = -(tilesNumberX / 2) + (tileSize/2);
+        float tileY = (tilesNumberY / 2) - (tileSize/2);
         Vector2 firstTilePosition = new Vector2(tileX, tileY);
         return firstTilePosition;
     }
@@ -87,9 +91,9 @@ public class GridManager : MonoBehaviour
             foundMatch = false;
 
             // Check rows for matches
-            for (int i = 0; i < gameSettings.tilesNumberVert; i++)
+            for (int i = 0; i < gameSettings.tilesNumberX; i++)
             {
-                for (int j = 0; j < gameSettings.tilesNumberHor - 2; j++)
+                for (int j = 0; j < gameSettings.tilesNumberY - 2; j++)
                 {
                     if (IsMatch(i, j, i, j + 1, i, j + 2))
                     {
@@ -100,9 +104,9 @@ public class GridManager : MonoBehaviour
             }
 
             // Check columns for matches
-            for (int j = 0; j < gameSettings.tilesNumberHor; j++)
+            for (int j = 0; j < gameSettings.tilesNumberY; j++)
             {
-                for (int i = 0; i < gameSettings.tilesNumberVert - 2; i++)
+                for (int i = 0; i < gameSettings.tilesNumberX - 2; i++)
                 {
                     if (IsMatch(i, j, i + 1, j, i + 2, j))
                     {
@@ -131,11 +135,11 @@ public class GridManager : MonoBehaviour
     }
     private void FixMatch(int i, int j)
     {
-        if (i < 0 || i >= gameSettings.tilesNumberVert || j < 0 || j >= gameSettings.tilesNumberHor)
-        {
-            Debug.LogWarning($"Invalid position for fixing match: X: {i}, Y: {j}");
-            return; // Exit if position is out of bounds
-        }
+        //if (i < 0 || i >= gameSettings.tilesNumberVert || j < 0 || j >= gameSettings.tilesNumberHor)
+        //{
+        //    Debug.LogWarning($"Invalid position for fixing match: X: {i}, Y: {j}");
+        //    return; // Exit if position is out of bounds
+        //}
         GameObject oldCandy = candiesArray[i, j];
         if (oldCandy == null)
         {
@@ -184,8 +188,9 @@ public class GridManager : MonoBehaviour
             return;
         }
         Vector2 position = oldCandy.transform.position;
+        Debug.Log("Candy about to be destroyed in position X: " + oldCandyScript.PosX + " position Y: " + oldCandyScript.PosY);
         Destroy(oldCandy);
-        GameObject newCandy = Instantiate(newCandyPrefab, position, Quaternion.identity);
+        GameObject newCandy = Instantiate(newCandyPrefab, new Vector3(position.x, position.y, -1f), Quaternion.identity);
         if (newCandy == null)
         {
             Debug.LogError("Failed to instantiate new candy.");
@@ -195,8 +200,8 @@ public class GridManager : MonoBehaviour
 
         candiesArray[i, j] = newCandy;
         Candy newCandyScript = newCandy.GetComponent<Candy>();
-        newCandyScript.PosInArrayX = i;
-        newCandyScript.PosInArrayY = j;
+        newCandyScript.PosX = i;
+        newCandyScript.PosY = j;
 
         Debug.Log($"Fixed match at position: X: {i} Y: {j}");
 
@@ -206,28 +211,6 @@ public class GridManager : MonoBehaviour
             Debug.LogError($"Candy missing at position X: {i}, Y: {j} after fixing match.");
         }
     }
-    //private void FixMatch(int i, int j)
-    //{
-    //    GameObject oldCandy = candiesArray[i, j];
-    //    string folderPath = "Prefabs/CandyPrefabs";
-    //    GameObject[] prefabs = Resources.LoadAll<GameObject>(folderPath);
-
-    //    // Ensure that the new candy is not of the same type as the current candy to avoid creating a new match
-    //    GameObject randomPrefab;
-    //    do
-    //    {
-    //        randomPrefab = prefabs[UnityEngine.Random.Range(0, prefabs.Length)];
-    //    } while (randomPrefab.GetComponent<Candy>().CandyType == oldCandy.GetComponent<Candy>().CandyType);
-
-    //    Vector2 position = oldCandy.transform.position;
-    //    Destroy(oldCandy);
-    //    GameObject newCandy = Instantiate(randomPrefab, position, Quaternion.identity);
-    //    newCandy.transform.SetParent(candyParent.transform);
-
-    //    candiesArray[i, j] = newCandy;
-    //    Candy newCandyScript = newCandy.GetComponent<Candy>();
-    //    newCandyScript.PosInArrayX = i;
-    //    newCandyScript.PosInArrayY = j;
-    //}
+    
 
 }

@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    public int x;
-    public int y;
+    public float PosX { get; set; }
+    public float PosY {  get; set; }
+    public int PosInArrayI { get; set; }
+    public int PosInArrayJ { get; set; }
     private GameObject[,] candyGrid;
     
-    public bool HasCandy(GameObject[,] candies)
-    {
-        return candies[x, y] != null;
-    }
+    //public bool HasCandy(GameObject[,] candies)
+    //{
+    //    return candies[PosX, PosY] != null;
+    //}
 
 }
