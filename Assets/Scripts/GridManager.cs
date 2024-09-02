@@ -41,15 +41,15 @@ public class GridManager : MonoBehaviour
     //j corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
     private void PopulateBackdropGrid(Vector2 firstTilePos)
     {
-        for (int i = 0; i < gameSettings.tilesNumberX; i++)
+        for (int i = 0; i < gameSettings.tilesNumberY; i++)
         {
-            for (int j = 0; j < gameSettings.tilesNumberY; j++)
+            for (int j = 0; j < gameSettings.tilesNumberX; j++)
             {
                 Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
                 gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
                 gridCellGO.transform.position = position;
                 gridCellGO.transform.SetParent(gridParent.transform);
-                gridCellsArray[i, j] = gridCellGO;
+                gridCellsArray[j, i] = gridCellGO;
                 gridCellScript = gridCellGO.GetComponent<GridCell>();
                 gridCellScript.PosX = gridCellGO.transform.position.x;
                 gridCellScript.PosY = gridCellGO.transform.position.y;
@@ -64,7 +64,7 @@ public class GridManager : MonoBehaviour
         int randomIndex = random.Next(gameSettings.candies.Count);
         GameObject randomCandy = Instantiate(gameSettings.candies[randomIndex]);
         randomCandy.transform.position = position;
-        candiesArray[i, j] = randomCandy;
+        candiesArray[j, i] = randomCandy;
         randomCandy.transform.SetParent(candyParent.transform);
         Candy randomCandyScript = randomCandy.GetComponent<Candy>();
         randomCandyScript.PosInArrayI = i;
