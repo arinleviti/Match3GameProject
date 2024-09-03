@@ -6,10 +6,11 @@ using UnityEngine;
 public class GameSettings : ScriptableObject
 {
     public int tileSize = 1;
+    public float candyScaleFactor = 0.9f;
     public int tilesNumberX = 4;
     public int tilesNumberY = 4;
     public List<CandyType> candyTypes = new List<CandyType>();
     public List<GameObject> candies = new List<GameObject>();
-    public float candySizeX = 0.9f;
-    public float candySizeY = 0.9f;
+    //public float candySizeX = 0.9f;
+    //public float candySizeY = 0.9f;
 }

@@ -13,13 +13,12 @@ MonoBehaviour:
   m_Name: GridSettings
   m_EditorClassIdentifier: 
   tileSize: 1
-  tilesNumberHor: 5
-  tilesNumberVert: 5
+  candyScaleFactor: 0.9
+  tilesNumberX: 7
+  tilesNumberY: 9
   candyTypes: 00000000010000000200000003000000
   candies:
   - {fileID: 8884771664294590454, guid: 2bb46d21c423f404db15f85bb8cebf09, type: 3}
   - {fileID: 5747576531944224525, guid: d960fd7174638b04ba5d7fdbbcac26b5, type: 3}
   - {fileID: 5660424723495470974, guid: 23106e5d9c8a9634f9789e0d12f71e87, type: 3}
   - {fileID: 5063063771068842175, guid: 0a330b793dee9cf45a2db8ef0d990b83, type: 3}
-  candySizeX: 0.9
-  candySizeY: 0.9
