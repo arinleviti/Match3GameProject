@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ICandy
+public interface ICandy : ICandyPoolNotifier
 {
     public CandyType CandyType { get;  }
     float SizeX { get; }
@@ -13,11 +13,11 @@ public interface ICandy
     int PosInArrayJ { get; set; }
     //GameObject Initialize(CandyType candyType);
     //Handles what happens when a player interacts with the candy. 
-    void HandleInteraction();
+    
 }
 
 // ICandy implementation
-public class Candy : MonoBehaviour, ICandy
+public class Candy : MonoBehaviour, ICandy, ICandyPoolNotifier
 {
     [TextArea]
     public string WARNING = "'j' corresponds to the row index, equivalent to the X-coordinate. 'i' corresponds to the column index, equivalent to the Y-coordinate";
@@ -34,36 +34,24 @@ public class Candy : MonoBehaviour, ICandy
     public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = value; } }
 
     private GameSettings gameSettings;
-    //public GameObject Initialize(CandyType candyType)
-    //{
-    //    //CandyType = candyType;
-    //    return gameObject;
-    //}
-    public void HandleInteraction()
-    {
 
-    }
-    
-    void Start()
-    {
-        //gameSettings = Resources.Load<GameSettings>("ScriptableObjects/GridSettings");
-        //if (gameSettings != null)
-        //{
-        //    SizeX = gameSettings.candySizeX;
-        //    SizeY = gameSettings.candySizeY;
-        //}
-        //else
-        //{
-        //    Debug.LogError("GameSettings asset not found!");
-        //}
-        //Vector3 scale = new Vector3 (SizeX, SizeY);
-        //transform.localScale = scale;
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void OnEnqueuedToPool()
     {
+        // Handle what happens when the candy is returned to the pool
         
+    }
+    public void OnCreatedOrDequeuedFromPool(bool created)
+    {
+        // Handle what happens when the candy is created or dequeued from the pool
+        if (created)
+        {
+
+        }
+        else
+        {
+
+        }
     }
 }
 public enum CandyType { Blue, Green, Yellow, Red};

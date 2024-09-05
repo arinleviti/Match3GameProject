@@ -20,11 +20,15 @@ public class GridManager : MonoBehaviour
     public GameSettings gameSettings;
     private System.Random random = new System.Random();
 
-    private List<List<GameObject>> ListsOfColors = new List<List<GameObject>>();
+    //private List<List<GameObject>> ListsOfColors = new List<List<GameObject>>();
+    private GameObject candyPoolGO;
+    private CandyPool candyPoolScript;
 
     // Start is called before the first frame update
     void Start()
     {
+        candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
+        candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
         //candyTypes = gameSettings.candyTypes.Count;
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
@@ -36,6 +40,8 @@ public class GridManager : MonoBehaviour
         PopulateBackdropGrid(firstTilePos);
         MatchHandler.Instance.Initialize(gameSettings, candiesArray, candyParent);
         MatchHandler.Instance.CheckAndFixAllMatches();
+
+        LogCandyQueueReferences();
     }
     //j corresponds to the row index (vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
@@ -62,8 +68,10 @@ public class GridManager : MonoBehaviour
     }
     private void PopulateCandiesArray(Vector2 position, GameObject gridCellGO, int i, int j)
     {
-        int randomIndex = random.Next(gameSettings.candies.Count);
-        GameObject randomCandy = Instantiate(gameSettings.candies[randomIndex]);
+      
+        CandyType candyType = DetermineCandyType();
+        GameObject randomCandy = candyPoolScript.GetCandy(candyType);
+        
         randomCandy.transform.position = position;
         randomCandy.transform.localScale = gridCellGO.transform.localScale * gameSettings.candyScaleFactor;
         candiesArray[j, i] = randomCandy;
@@ -84,132 +92,27 @@ public class GridManager : MonoBehaviour
         return firstTilePosition;
     }
 
-    //private void CheckAndFixAllMatches()
-    //{
-    //    bool foundMatch;
+    private CandyType DetermineCandyType()
+    {
+        int randomIndex = random.Next(gameSettings.candies.Count);
+        return gameSettings.candies[randomIndex].GetComponent<Candy>().CandyType;
+    }
+    private void LogCandyQueueReferences()
+    {
+        foreach (var candyQueueEntry in candyPoolScript.candyQueues)
+        {
+            CandyType candyType = candyQueueEntry.Key;
+            Queue<GameObject> candyQueue = candyQueueEntry.Value;
 
-    //    do
-    //    {
-    //        foundMatch = false;
+            Debug.Log($"Candy Type: {candyType}, Queue Size: {candyQueue.Count}");
 
-    //        // Check columns for matches
-    //        for (int i = 0; i < gameSettings.tilesNumberX; i++)
-    //        {
-    //            for (int j = 0; j < gameSettings.tilesNumberY - 2; j++)
-    //            {
-    //                if (IsMatch(i, j, i, j + 1, i, j + 2))
-    //                {
-    //                    FixMatch(i, j + 1);  // Replace the middle one
-    //                    foundMatch = true;
-    //                }
-    //            }
-    //        }
-
-    //        // Check rows for matches
-    //        for (int j = 0; j < gameSettings.tilesNumberY; j++)
-    //        {
-    //            for (int i = 0; i < gameSettings.tilesNumberX - 2; i++)
-    //            {
-    //                if (IsMatch(i, j, i + 1, j, i + 2, j))
-    //                {
-    //                    FixMatch(i + 1, j);  // Replace the middle one
-    //                    foundMatch = true;
-    //                }
-    //            }
-    //        }
-
-    //    } while (foundMatch);
-    //}
-
-    //private bool IsMatch(int x1, int y1, int x2, int y2, int x3, int y3)
-    //{
-    //    if (candiesArray[x1, y1] != null &&
-    //        candiesArray[x2, y2] != null &&
-    //        candiesArray[x3, y3] != null)
-    //    {
-    //        Candy c1 = candiesArray[x1, y1].GetComponent<Candy>();
-    //        Candy c2 = candiesArray[x2, y2].GetComponent<Candy>();
-    //        Candy c3 = candiesArray[x3, y3].GetComponent<Candy>();
-
-    //        return c1.CandyType == c2.CandyType && c1.CandyType == c3.CandyType;
-    //    }
-    //    return false;
-    //}
-    //private void FixMatch(int i, int j)
-    //{
-        
-    //    GameObject oldCandy = candiesArray[i, j];
-    //    if (oldCandy == null)
-    //    {
-    //        Debug.LogWarning($"No candy to replace at position X: {i}, Y: {j}");
-    //        return; // Exit if there's no candy to replace
-    //    }
-
-    //    string folderPath = "Prefabs/CandyPrefabs";
-    //    GameObject[] prefabs = Resources.LoadAll<GameObject>(folderPath);
-
-    //    if (prefabs.Length == 0)
-    //    {
-    //        Debug.LogError("No prefabs found in the specified path: " + folderPath);
-    //        return;
-    //    }
-
-    //    Debug.Log("Loaded " + prefabs.Length + " prefabs from " + folderPath);
-
-    //    Candy oldCandyScript = oldCandy.GetComponent<Candy>();
-    //    List<GameObject> availablePrefabs = new List<GameObject>();
-
-    //    // Print all candy types for debugging
-    //    Debug.Log("Old candy type: " + oldCandyScript.CandyType);
-
-    //    foreach (GameObject prefab in prefabs)
-    //    {
-    //        Candy candyPrefab = prefab.GetComponent<Candy>();
-    //        Debug.Log("Prefab candy type: " + candyPrefab.CandyType); // Debugging output
-    //        if (candyPrefab.CandyType != oldCandyScript.CandyType)
-    //        {
-    //            availablePrefabs.Add(prefab);
-    //        }
-    //    }
-
-    //    if (availablePrefabs.Count == 0)
-    //    {
-    //        Debug.LogWarning("No available candy types for replacement. Current candy type: " + oldCandyScript.CandyType);
-    //        return; // Exit if no different candy types are available
-    //    }
-
-    //    // Select a random candy from available prefabs
-    //    GameObject newCandyPrefab = availablePrefabs[UnityEngine.Random.Range(0, availablePrefabs.Count)];
-    //    if (newCandyPrefab == null)
-    //    {
-    //        Debug.LogError("Selected new candy prefab is null.");
-    //        return;
-    //    }
-    //    Vector2 position = oldCandy.transform.position;
-    //    newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
-    //    Debug.Log("Candy about to be destroyed in position X: " + oldCandyScript.PosX + " position Y: " + oldCandyScript.PosY);
-    //    Destroy(oldCandy);
-    //    GameObject newCandy = Instantiate(newCandyPrefab, new Vector3(position.x, position.y, -1f), Quaternion.identity);
-    //    if (newCandy == null)
-    //    {
-    //        Debug.LogError("Failed to instantiate new candy.");
-    //        return;
-    //    }
-    //    newCandy.transform.SetParent(candyParent.transform);
-
-    //    candiesArray[i, j] = newCandy;
-    //    Candy newCandyScript = newCandy.GetComponent<Candy>();
-    //    newCandyScript.PosX = i;
-    //    newCandyScript.PosY = j;
-
-    //    Debug.Log($"Fixed match at position: X: {i} Y: {j}");
-
-    //    // Check for missing candies after replacement
-    //    if (candiesArray[i, j] == null)
-    //    {
-    //        Debug.LogError($"Candy missing at position X: {i}, Y: {j} after fixing match.");
-    //    }
-    //}
-    
-
+            int index = 0;
+            foreach (GameObject candyGO in candyQueue)
+            {
+                // Log the reference for each candy in the queue
+                Debug.Log($"Queue Index {index}: Candy GameObject Reference: {candyGO.GetInstanceID()}");
+                index++;
+            }
+        }
+    }
 }
