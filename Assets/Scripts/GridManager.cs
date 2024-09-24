@@ -12,8 +12,8 @@ public class GridManager : MonoBehaviour
     private GameObject gridCellGO;
     //private int gridSize;
     //private int candyTypes;
-    private GameObject[,] gridCellsArray;
-    private GameObject[,] candiesArray;
+    public GameObject[,] gridCellsArray;
+    public GameObject[,] candiesArray;
     private GameObject gridParent;
     private GameObject candyParent;
     private GridCell gridCellScript;
@@ -60,7 +60,10 @@ public class GridManager : MonoBehaviour
                 gridCellScript = gridCellGO.GetComponent<GridCell>();
                 gridCellScript.PosX = gridCellGO.transform.position.x;
                 gridCellScript.PosY = gridCellGO.transform.position.y;
+                gridCellScript.PosInArrayJ = j;
+                gridCellScript.PosInArrayI = i;
                 Debug.Log("Cell in position: X: " + gridCellScript.PosX + " Y: " + gridCellScript.PosY);
+                Debug.Log($"GridCell Created at ({j}, {i}): PosInArrayJ = {gridCellScript.PosInArrayJ}, PosInArrayI = {gridCellScript.PosInArrayI}");
                 PopulateCandiesArray(position, gridCellGO, i, j);
 
             }
