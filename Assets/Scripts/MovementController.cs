@@ -128,14 +128,14 @@ public class MovementController : MonoBehaviour
             }
 
             // Ensure the new position is within grid bounds
-            if (newI >= 0 && newI < gridManager.gameSettings.tilesNumberY && newJ >= 0 && newJ < gridManager.gameSettings.tilesNumberX)
+            if (newI >= 0 && newI < gridManager.gameSettings.tilesNumberI && newJ >= 0 && newJ < gridManager.gameSettings.tilesNumberJ)
             {
                 // Get the second candy to be swapped with the selected candy
-                Candy secondCandy = gridManager.candiesArray[newJ, newI].GetComponent<Candy>();
+                Candy secondCandy = gridManager.candiesArray[newI, newJ].GetComponent<Candy>();
 
                 // Swap the candies in the array
-                gridManager.candiesArray[currentJ, currentI] = secondCandy.gameObject;
-                gridManager.candiesArray[newJ, newI] = selectedCandy.gameObject;
+                gridManager.candiesArray[currentI, currentJ] = secondCandy.gameObject;
+                gridManager.candiesArray[newI, newJ] = selectedCandy.gameObject;
 
                 // Update their properties
                 secondCandy.PosInArrayI = currentI;
@@ -145,8 +145,8 @@ public class MovementController : MonoBehaviour
                 selectedCandy.PosInArrayJ = newJ;
 
                 // Swap their world positions
-                Vector3 selectedCandyTargetPos = gridManager.gridCellsArray[newJ, newI].transform.position;
-                Vector3 secondCandyTargetPos = gridManager.gridCellsArray[currentJ, currentI].transform.position;
+                Vector3 selectedCandyTargetPos = gridManager.gridCellsArray[newI, newJ].transform.position;
+                Vector3 secondCandyTargetPos = gridManager.gridCellsArray[currentI, currentJ].transform.position;
 
                 selectedCandy.transform.position = selectedCandyTargetPos;
                 secondCandy.transform.position = secondCandyTargetPos;

@@ -32,11 +32,11 @@ public class GridManager : MonoBehaviour
         //candyTypes = gameSettings.candyTypes.Count;
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
-        Vector2 firstTilePos = CalculateFirstTileXY(gameSettings.tilesNumberX, gameSettings.tilesNumberY, gameSettings.tileSize);
+        Vector2 firstTilePos = CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
         //gridSize = gameSettings.tilesNumberHor * gameSettings.tilesNumberVert;
-        gridCellsArray = new GameObject[gameSettings.tilesNumberX, gameSettings.tilesNumberY];
+        gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         //int perLine = Mathf.FloorToInt(gameSettings.tilesNumberHor /gameSettings.tileSize);
-        candiesArray = new GameObject[gameSettings.tilesNumberX, gameSettings.tilesNumberY];
+        candiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         PopulateBackdropGrid(firstTilePos);
         MatchHandler.Instance.Initialize(gameSettings, candiesArray, candyParent);
         MatchHandler.Instance.CheckAndFixAllMatches();
@@ -47,23 +47,23 @@ public class GridManager : MonoBehaviour
     //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
     private void PopulateBackdropGrid(Vector2 firstTilePos)
     {
-        for (int i = 0; i < gameSettings.tilesNumberY; i++)
+        for (int i = 0; i < gameSettings.tilesNumberI; i++)
         {
-            for (int j = 0; j < gameSettings.tilesNumberX; j++)
+            for (int j = 0; j < gameSettings.tilesNumberJ; j++)
             {
                 Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
                 gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
                 gridCellGO.transform.position = position;
                 gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 1);
                 gridCellGO.transform.SetParent(gridParent.transform);
-                gridCellsArray[j, i] = gridCellGO;
+                gridCellsArray[i, j] = gridCellGO;
                 gridCellScript = gridCellGO.GetComponent<GridCell>();
                 gridCellScript.PosX = gridCellGO.transform.position.x;
                 gridCellScript.PosY = gridCellGO.transform.position.y;
                 gridCellScript.PosInArrayJ = j;
                 gridCellScript.PosInArrayI = i;
                 Debug.Log("Cell in position: X: " + gridCellScript.PosX + " Y: " + gridCellScript.PosY);
-                Debug.Log($"GridCell Created at ({j}, {i}): PosInArrayJ = {gridCellScript.PosInArrayJ}, PosInArrayI = {gridCellScript.PosInArrayI}");
+                Debug.Log($"GridCell Created at ({i}, {j}): PosInArrayJ = {gridCellScript.PosInArrayJ}, PosInArrayI = {gridCellScript.PosInArrayI}");
                 PopulateCandiesArray(position, gridCellGO, i, j);
 
             }
@@ -77,7 +77,7 @@ public class GridManager : MonoBehaviour
         
         randomCandy.transform.position = position;
         randomCandy.transform.localScale = gridCellGO.transform.localScale * gameSettings.candyScaleFactor;
-        candiesArray[j, i] = randomCandy;
+        candiesArray[i, j] = randomCandy;
         randomCandy.transform.SetParent(candyParent.transform);
         Candy randomCandyScript = randomCandy.GetComponent<Candy>();
         randomCandyScript.PosInArrayI = i;

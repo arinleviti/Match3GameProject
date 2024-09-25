@@ -39,9 +39,9 @@ public class MatchHandler : MonoBehaviour
             foundMatch = false;
 
             // Check columns for matches
-            for (int i = 0; i < _gameSettings.tilesNumberX; i++)
+            for (int i = 0; i < _gameSettings.tilesNumberI; i++)
             {
-                for (int j = 0; j < _gameSettings.tilesNumberY - 2; j++)
+                for (int j = 0; j < _gameSettings.tilesNumberJ - 2; j++)
                 {
                     if (IsMatch(i, j, i, j + 1, i, j + 2))
                     {
@@ -52,9 +52,9 @@ public class MatchHandler : MonoBehaviour
             }
 
             // Check rows for matches
-            for (int j = 0; j < _gameSettings.tilesNumberY; j++)
+            for (int j = 0; j < _gameSettings.tilesNumberJ; j++)
             {
-                for (int i = 0; i < _gameSettings.tilesNumberX - 2; i++)
+                for (int i = 0; i < _gameSettings.tilesNumberI - 2; i++)
                 {
                     if (IsMatch(i, j, i + 1, j, i + 2, j))
                     {
@@ -145,10 +145,11 @@ public class MatchHandler : MonoBehaviour
 
         _candiesArray[i, j] = newCandy;
         Candy newCandyScript = newCandy.GetComponent<Candy>();
-        newCandyScript.PosX = i;
-        newCandyScript.PosY = j;
-
-        Debug.Log($"Fixed match at position: X: {i} Y: {j}");
+        newCandyScript.PosInArrayI = i;
+        newCandyScript.PosInArrayJ = j;
+        newCandyScript.PosX = newCandy.transform .position.x;
+        newCandyScript.PosY = newCandy.transform.position.y;
+        Debug.Log($"Fixed match at position: I: {i} J: {j}");
 
         // Check for missing candies after replacement
         if (_candiesArray[i, j] == null)
