@@ -60,8 +60,9 @@ public class MovementController : MonoBehaviour
             Candy candy = hit.collider.GetComponent<Candy>();
             if (candy != null)
             {
-                SelectCandy(candy);
+                SelectCandy(candy);             
             }
+
         }
     }
 
@@ -144,17 +145,39 @@ public class MovementController : MonoBehaviour
                 selectedCandy.PosInArrayI = newI;
                 selectedCandy.PosInArrayJ = newJ;
 
-                // Swap their world positions
-                Vector3 selectedCandyTargetPos = gridManager.gridCellsArray[newI, newJ].transform.position;
-                Vector3 secondCandyTargetPos = gridManager.gridCellsArray[currentI, currentJ].transform.position;
+                bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, true);
+                bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, false);
 
-                selectedCandy.transform.position = selectedCandyTargetPos;
-                secondCandy.transform.position = secondCandyTargetPos;
+                Debug.Log("Horizontal Check Result: " + horizontalCheck);
+                Debug.Log("Vertical Check Result: " + verticalCheck);
 
-                Vector3 selectedCandyRaisedPos = new Vector3(selectedCandy.transform.position.x, selectedCandy.transform.position.y, -1f);
-                Vector3 secondCandyRaisedPos = new Vector3(secondCandy.transform.position.x, secondCandy.transform.position.y, -1f);
-                selectedCandy.transform.position = selectedCandyRaisedPos;
-                secondCandy.transform.position = secondCandyRaisedPos;
+                if (horizontalCheck || verticalCheck)
+                {
+                    // Swap their world positions
+                    Vector3 selectedCandyTargetPos = gridManager.gridCellsArray[newI, newJ].transform.position;
+                    Vector3 secondCandyTargetPos = gridManager.gridCellsArray[currentI, currentJ].transform.position;
+
+                    selectedCandy.transform.position = selectedCandyTargetPos;
+                    secondCandy.transform.position = secondCandyTargetPos;
+
+                    Vector3 selectedCandyRaisedPos = new Vector3(selectedCandy.transform.position.x, selectedCandy.transform.position.y, -1f);
+                    Vector3 secondCandyRaisedPos = new Vector3(secondCandy.transform.position.x, secondCandy.transform.position.y, -1f);
+                    selectedCandy.transform.position = selectedCandyRaisedPos;
+                    secondCandy.transform.position = secondCandyRaisedPos;
+
+                    Debug.Log("Candy positions swapped and raised.");
+                }
+                else
+                {
+                    Debug.Log("No match, swapping back the array and candy positions.");
+                    gridManager.candiesArray[currentI, currentJ] = selectedCandy.gameObject;
+                    gridManager.candiesArray[newI, newJ] = secondCandy.gameObject;
+                    selectedCandy.PosInArrayI = currentI;
+                    selectedCandy.PosInArrayJ = currentJ;
+                    secondCandy.PosInArrayI = newI;
+                    secondCandy.PosInArrayJ = newJ;
+                }
+                
             }
 
             // Deselect the candy after moving
