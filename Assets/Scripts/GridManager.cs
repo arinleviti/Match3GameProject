@@ -69,12 +69,12 @@ public class GridManager : MonoBehaviour
             }
         }
     }
-    private void PopulateCandiesArray(Vector2 position, GameObject gridCellGO, int i, int j)
+    private void PopulateCandiesArray(Vector3 position, GameObject gridCellGO, int i, int j)
     {
       
         CandyType candyType = DetermineCandyType();
         GameObject randomCandy = candyPoolScript.GetCandy(candyType);
-        
+        position = new Vector3(position.x, position.y, -1);
         randomCandy.transform.position = position;
         randomCandy.transform.localScale = gridCellGO.transform.localScale * gameSettings.candyScaleFactor;
         candiesArray[i, j] = randomCandy;

@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This class contains the logic to decide whether a candy can be swapped or not, checking for matches in all 4 directions.
 public class PreMovementChecks : MonoBehaviour
 {
     //public GridManager _gridManager;
@@ -27,12 +29,12 @@ public class PreMovementChecks : MonoBehaviour
     //    //_gridManager = gridManager;
     //}
     //This checks if there are matches left or right (if isHorizontal==true) and up and down (if !isHorizontal)
-    public bool CheckRowAndColumn(GameObject candy, GameObject[,] candyArray, bool isHorizontal)
+    public bool CheckRowAndColumn(GameObject candy, GameObject[,] candyArray, bool isHorizontal, out List<GameObject> matches)
     {
         Candy currentCandy = candy.GetComponent<Candy>();
         int currentI = currentCandy.PosInArrayI;
         int currentJ = currentCandy.PosInArrayJ;
-
+        matches = new List<GameObject>() { candy };
         int matchingCandiesCount = 1; 
 
         int[] offsets = new[] { -1, 1 };
@@ -40,6 +42,7 @@ public class PreMovementChecks : MonoBehaviour
         foreach (int offset in offsets)
         {
             int step = offset;
+            
 
             while (true)
             {
@@ -56,6 +59,7 @@ public class PreMovementChecks : MonoBehaviour
                 if (neighborCandy != null && neighborCandy.CandyType == currentCandy.CandyType)
                 {
                     matchingCandiesCount++;
+                    matches.Add(neighborCandyGO);
                     step += offset; // Continue to the next candy in the same direction
                 }
                 else
@@ -65,17 +69,7 @@ public class PreMovementChecks : MonoBehaviour
             }
         }
 
-        return matchingCandiesCount >= 3; // Return true if there are at least 3 matching candies
+        return matchingCandiesCount >= _gameSettings.candiesToMatch; // Return true if there are at least 3 matching candies
     }
-    void Start()
-    {
-        //candyGO = candy.GetComponent<Candy>();
-        //candyScript = candy.GetComponent<Candy>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

@@ -25,7 +25,7 @@ public class Candy : MonoBehaviour, ICandy, ICandyPoolNotifier
     [SerializeField] private CandyType candyType;
     [SerializeField] private int posInArrayI;
     [SerializeField] private int posInArrayJ;
-    public CandyType CandyType => candyType;
+    public CandyType CandyType { get { return candyType; } set { candyType = value; } }
     public float SizeX { get; set; }
     public float SizeY { get; set; }
     public float PosX { get ; set ; }
@@ -52,6 +52,13 @@ public class Candy : MonoBehaviour, ICandy, ICandyPoolNotifier
         {
 
         }
+    }
+    public void ResetProperties()
+    {
+        PosX = default;
+        PosY = default;
+        PosInArrayI = default;
+        PosInArrayJ = default;
     }
 }
 public enum CandyType { Blue, Green, Yellow, Red};

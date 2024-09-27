@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// This class contains the logic that allows candies to be moved, interacting with the Input System.
 public class MovementController : MonoBehaviour
 {
     public InputAction moveAction;
@@ -12,6 +13,8 @@ public class MovementController : MonoBehaviour
     private PlayerInputActions playerInputActions; // Reference to the input actions
     private GridManager gridManager;
     public GameSettings gameSettings;
+    public List<GameObject> matchesVer;
+    public List<GameObject> matchesHor;
 
     private void Awake()
     {
@@ -145,11 +148,14 @@ public class MovementController : MonoBehaviour
                 selectedCandy.PosInArrayI = newI;
                 selectedCandy.PosInArrayJ = newJ;
 
-                bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, true);
-                bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, false);
+                matchesHor.Clear();
+                matchesVer.Clear();
+                
+                bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, true, out matchesHor);
+                bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, false, out matchesVer);
+                //List<GameObject> combinedMatches = new List<GameObject>(matchesHor);
+                //combinedMatches.AddRange(matchesVer);
 
-                Debug.Log("Horizontal Check Result: " + horizontalCheck);
-                Debug.Log("Vertical Check Result: " + verticalCheck);
 
                 if (horizontalCheck || verticalCheck)
                 {
@@ -165,7 +171,8 @@ public class MovementController : MonoBehaviour
                     selectedCandy.transform.position = selectedCandyRaisedPos;
                     secondCandy.transform.position = secondCandyRaisedPos;
 
-                    Debug.Log("Candy positions swapped and raised.");
+                    DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
+                    DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
                 }
                 else
                 {

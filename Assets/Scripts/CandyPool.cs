@@ -102,7 +102,7 @@ public class CandyPool : MonoBehaviour
             {
                 notifier.OnEnqueuedToPool();
             }
-
+            candyComponent.ResetProperties();
             candyGO.SetActive(false);
             candyGO.transform.parent = this.transform;
 
