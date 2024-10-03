@@ -20,7 +20,20 @@ public class DestroyMatches : MonoBehaviour
             return instance;
         }
     }
-
+    private void Awake()
+    {
+        // Check if an instance already exists
+        if (instance == null)
+        {
+            instance = this;
+            Initialize();
+        }
+        else if (instance != this)
+        {
+            // If a different instance already exists, destroy this one
+            Destroy(gameObject);
+        }
+    }
     private void Initialize()
     {
         candyPool = FindAnyObjectByType<CandyPool>();
@@ -38,11 +51,12 @@ public class DestroyMatches : MonoBehaviour
                 if (go != null) // Ensure the GameObject is not null
                 {
                     Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
-                    candyPool.ReturnCandy(go);
-                    // Update the array to reflect that the candy has been returned to the pool
                     int i = go.GetComponent<Candy>().PosInArrayI;
                     int j = go.GetComponent<Candy>().PosInArrayJ;
                     gridManager.candiesArray[i, j] = null;
+                    candyPool.ReturnCandy(go);
+                    // Update the array to reflect that the candy has been returned to the pool
+                    
                 }
             }
         }

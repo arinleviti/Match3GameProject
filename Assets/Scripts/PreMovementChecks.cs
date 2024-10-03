@@ -8,6 +8,7 @@ public class PreMovementChecks : MonoBehaviour
 {
     //public GridManager _gridManager;
     private GameSettings _gameSettings;
+    private GameObject[,] candiesArray;
     private static PreMovementChecks instance;
     public static PreMovementChecks Instance
     { 
@@ -22,21 +23,32 @@ public class PreMovementChecks : MonoBehaviour
             return instance;
         }
     }
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            // Initialize game settings here
+            _gameSettings = Resources.Load<GameSettings>("ScriptableObjects/GridSettings");
+            // Ensure this instance persists across scenes if needed
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject); // Destroy duplicate instance
+        }
+    }
+    
 
-    //public void Initialize(GameSettings gameSettings)
-    //{
-    //    _gameSettings = gameSettings;
-    //    //_gridManager = gridManager;
-    //}
-    //This checks if there are matches left or right (if isHorizontal==true) and up and down (if !isHorizontal)
     public bool CheckRowAndColumn(GameObject candy, GameObject[,] candyArray, bool isHorizontal, out List<GameObject> matches)
     {
         Candy currentCandy = candy.GetComponent<Candy>();
         int currentI = currentCandy.PosInArrayI;
         int currentJ = currentCandy.PosInArrayJ;
+        
         matches = new List<GameObject>() { candy };
+        
         int matchingCandiesCount = 1; 
-
         int[] offsets = new[] { -1, 1 };
 
         foreach (int offset in offsets)
@@ -71,5 +83,8 @@ public class PreMovementChecks : MonoBehaviour
 
         return matchingCandiesCount >= _gameSettings.candiesToMatch; // Return true if there are at least 3 matching candies
     }
-    
+    public void CreateListOfMatches(int i, int j)
+    {
+
+    }
 }

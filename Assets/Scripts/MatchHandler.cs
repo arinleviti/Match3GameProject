@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,12 @@ using UnityEngine;
 public class MatchHandler : MonoBehaviour
 {
     private static MatchHandler instance;
-
+    public List<GameObject> Matches { get; private set; } = new List<GameObject>();
     private GameSettings _gameSettings;
     private GameObject[,] _candiesArray;
     private GameObject _candyParent;
+    private CandyPool _candyPool;
+
 
     public static MatchHandler Instance
     {
@@ -23,55 +26,98 @@ public class MatchHandler : MonoBehaviour
         }
     }
 
-    public void Initialize(GameSettings gameSettings, GameObject[,] candiesArray, GameObject candyParent)
+    public void Initialize(GameSettings gameSettings, GameObject[,] candiesArray, GameObject candyParent, GameObject candyPool)
     {
         _gameSettings = gameSettings;
         _candiesArray = candiesArray;
         _candyParent = candyParent;
+        _candyPool = candyPool.GetComponent<CandyPool>();
     }
-
-    public void CheckAndFixAllMatches()
+    //Called by GridManager to remove matches when the game loads (using FixMatch (useFixMatch =true)), and after each user-prompted match (using CheckRowAndColumn (useFixMatch = false)
+    //to check if the swap creates more matches.
+    public void CheckAndFixAllMatches(bool useFixMatch)
     {
         bool foundMatch;
-
         do
-        {
+        {           
+            Matches.Clear();
+            List<GameObject> tempMatches = new List<GameObject>(); // Ensure tempMatches is a new instance
             foundMatch = false;
-
-            // Check columns for matches
+            // Check rows for matches
             for (int i = 0; i < _gameSettings.tilesNumberI; i++)
             {
                 for (int j = 0; j < _gameSettings.tilesNumberJ - 2; j++)
                 {
                     if (IsMatch(i, j, i, j + 1, i, j + 2))
                     {
-                        FixMatch(i, j + 1);  // Replace the middle one
+                        if (useFixMatch)
+                        {
+                            FixMatch(i, j + 1);  // Replace the middle one
+                        }
+                        else
+                        {
+                            Debug.Log($"matches found at:  {i}, {j} and  {i}, {j+1} and {i}, {j +2} ");
+                            bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i, j + 1], _candiesArray, true, out tempMatches);
+                            if (isMatch)
+                            {
+                                AddToMatchList(tempMatches);
+                            }
+                        }
                         foundMatch = true;
                     }
                 }
+                
             }
-
-            // Check rows for matches
+            // Check columns for matches
             for (int j = 0; j < _gameSettings.tilesNumberJ; j++)
             {
                 for (int i = 0; i < _gameSettings.tilesNumberI - 2; i++)
                 {
                     if (IsMatch(i, j, i + 1, j, i + 2, j))
                     {
-                        FixMatch(i + 1, j);  // Replace the middle one
+                        if (useFixMatch)
+                        {
+                            FixMatch(i + 1, j);  // Replace the middle one
+                        }
+                        else
+                        {
+                            //List<GameObject> tempMatches;
+                            Debug.Log($"matches found at:  {i}, {j} and  {i + 1}, {j} and {i + 2}, {j} ");
+                            bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i + 1, j], _candiesArray, false, out tempMatches);
+                            if (isMatch)
+                            {
+                                AddToMatchList(tempMatches);
+                            }
+                            
+                        }
+
                         foundMatch = true;
                     }
                 }
+                
             }
-
+            if ( Matches.Count > 0)
+            {              
+                   DestroyMatches.Instance.ReturnMatchesInList(Matches);              
+            }
         } while (foundMatch);
     }
 
+    private void AddToMatchList(List<GameObject> tempMatches)
+    {
+        foreach (var match in tempMatches)
+        {
+            if (!Matches.Contains(match))
+            {
+                Matches.Add(match);
+            }
+        }
+    }
+
+
     private bool IsMatch(int x1, int y1, int x2, int y2, int x3, int y3)
     {
-        if (_candiesArray[x1, y1] != null &&
-            _candiesArray[x2, y2] != null &&
-            _candiesArray[x3, y3] != null)
+        if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
         {
             Candy c1 = _candiesArray[x1, y1].GetComponent<Candy>();
             Candy c2 = _candiesArray[x2, y2].GetComponent<Candy>();
@@ -81,7 +127,7 @@ public class MatchHandler : MonoBehaviour
         }
         return false;
     }
-    private void FixMatch(int i, int j)
+    public void FixMatch(int i, int j)
     {
 
         GameObject oldCandy = _candiesArray[i, j];
@@ -147,7 +193,7 @@ public class MatchHandler : MonoBehaviour
         Candy newCandyScript = newCandy.GetComponent<Candy>();
         newCandyScript.PosInArrayI = i;
         newCandyScript.PosInArrayJ = j;
-        newCandyScript.PosX = newCandy.transform .position.x;
+        newCandyScript.PosX = newCandy.transform.position.x;
         newCandyScript.PosY = newCandy.transform.position.y;
         Debug.Log($"Fixed match at position: I: {i} J: {j}");
 
@@ -157,5 +203,6 @@ public class MatchHandler : MonoBehaviour
             Debug.LogError($"Candy missing at position X: {i}, Y: {j} after fixing match.");
         }
         //}
+
     }
 }

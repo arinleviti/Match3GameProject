@@ -15,6 +15,8 @@ public class MovementController : MonoBehaviour
     public GameSettings gameSettings;
     public List<GameObject> matchesVer;
     public List<GameObject> matchesHor;
+    public MatchHandler matchHandler;
+    private CandyPool candyPool;
 
     private void Awake()
     {
@@ -23,11 +25,16 @@ public class MovementController : MonoBehaviour
 
         // Reference the Move action
         moveAction = playerInputActions.Player.Move;  // Player is the action map and Move is the action
-        
+
         gridManager = FindObjectOfType<GridManager>();
+        
         moveAction.Enable();
     }
-
+    //private void Start()
+    //{
+    //    matchHandler = FindObjectOfType<MatchHandler>();
+    //    candyPool = FindObjectOfType<CandyPool>();
+    //}
     //performed, started, and canceled are specific events that belong to InputAction in Unity's Input System.
     private void OnEnable()
     {
@@ -83,6 +90,11 @@ public class MovementController : MonoBehaviour
         {
             SwapCandies(moveInput);  // Move the candy based on the input direction
             Debug.Log("Move Input Magnitude: " + moveInput.magnitude);
+            matchHandler = FindObjectOfType<MatchHandler>();
+            candyPool = FindObjectOfType<CandyPool>();
+            PostMatchDrop.Instance.Initialize(matchHandler, candyPool);
+            Debug.Log("OnMovePerformed triggered");
+            PostMatchDrop.Instance.PostMovementMatchCheck();
         }
         else if (selectedCandy != null)
         {
@@ -173,6 +185,8 @@ public class MovementController : MonoBehaviour
 
                     DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
                     DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
+
+                    
                 }
                 else
                 {

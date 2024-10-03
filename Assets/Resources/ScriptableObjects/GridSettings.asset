@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   candyScaleFactor: 0.9
-  tilesNumberI: 5
+  tilesNumberI: 7
   tilesNumberJ: 7
   candyTypes: 00000000010000000200000003000000
   candies:
@@ -23,3 +23,4 @@ MonoBehaviour:
   - {fileID: 5660424723495470974, guid: 23106e5d9c8a9634f9789e0d12f71e87, type: 3}
   - {fileID: 5063063771068842175, guid: 0a330b793dee9cf45a2db8ef0d990b83, type: 3}
   deltaMovementThreshold: 2
+  candiesToMatch: 3

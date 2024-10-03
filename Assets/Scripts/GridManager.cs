@@ -38,8 +38,8 @@ public class GridManager : MonoBehaviour
         //int perLine = Mathf.FloorToInt(gameSettings.tilesNumberHor /gameSettings.tileSize);
         candiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         PopulateBackdropGrid(firstTilePos);
-        MatchHandler.Instance.Initialize(gameSettings, candiesArray, candyParent);
-        MatchHandler.Instance.CheckAndFixAllMatches();
+        MatchHandler.Instance.Initialize(gameSettings, candiesArray, candyParent, candyPoolGO);
+        MatchHandler.Instance.CheckAndFixAllMatches(true);
 
         LogCandyQueueReferences();
     }
