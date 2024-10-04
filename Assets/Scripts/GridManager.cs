@@ -28,17 +28,15 @@ public class GridManager : MonoBehaviour
     void Start()
     {
         candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
-        candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
-        //candyTypes = gameSettings.candyTypes.Count;
+        candyPoolScript = candyPoolGO.GetComponent<CandyPool>();       
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
-        Vector2 firstTilePos = CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-        //gridSize = gameSettings.tilesNumberHor * gameSettings.tilesNumberVert;
-        gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        //int perLine = Mathf.FloorToInt(gameSettings.tilesNumberHor /gameSettings.tileSize);
+        Vector2 firstTilePos = CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);      
+        gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];   
         candiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         PopulateBackdropGrid(firstTilePos);
         MatchHandler.Instance.Initialize(gameSettings, candiesArray, candyParent, candyPoolGO);
+        // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         MatchHandler.Instance.CheckAndFixAllMatches(true);
 
         LogCandyQueueReferences();

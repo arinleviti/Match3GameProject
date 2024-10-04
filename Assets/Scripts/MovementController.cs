@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,6 +19,8 @@ public class MovementController : MonoBehaviour
     public MatchHandler matchHandler;
     private CandyPool candyPool;
 
+    public event Action OnMovePerformedComplete;
+
     private void Awake()
     {
         // Initialize PlayerInputActions
@@ -30,12 +33,7 @@ public class MovementController : MonoBehaviour
         
         moveAction.Enable();
     }
-    //private void Start()
-    //{
-    //    matchHandler = FindObjectOfType<MatchHandler>();
-    //    candyPool = FindObjectOfType<CandyPool>();
-    //}
-    //performed, started, and canceled are specific events that belong to InputAction in Unity's Input System.
+    
     private void OnEnable()
     {
         //It gets called as soon as the input changes and keeps firing while the input is continuously changing
@@ -92,9 +90,10 @@ public class MovementController : MonoBehaviour
             Debug.Log("Move Input Magnitude: " + moveInput.magnitude);
             matchHandler = FindObjectOfType<MatchHandler>();
             candyPool = FindObjectOfType<CandyPool>();
-            PostMatchDrop.Instance.Initialize(matchHandler, candyPool);
+            PostMatchDrop.Instance.Initialize(matchHandler, candyPool, gameSettings, gridManager, this.gameObject);
             Debug.Log("OnMovePerformed triggered");
-            PostMatchDrop.Instance.PostMovementMatchCheck();
+            //PostMatchDrop.Instance.PostMovementMatchCheck();
+            OnMovePerformedComplete?.Invoke();
         }
         else if (selectedCandy != null)
         {

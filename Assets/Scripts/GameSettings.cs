@@ -13,6 +13,7 @@ public class GameSettings : ScriptableObject
     public List<GameObject> candies = new List<GameObject>();
     public float deltaMovementThreshold;
     public int candiesToMatch;
+    public float dropSpeed;
     //public float candySizeX = 0.9f;
     //public float candySizeY = 0.9f;
 }

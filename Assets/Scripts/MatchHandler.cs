@@ -9,6 +9,7 @@ public class MatchHandler : MonoBehaviour
     public List<GameObject> Matches { get; private set; } = new List<GameObject>();
     private GameSettings _gameSettings;
     private GameObject[,] _candiesArray;
+    private GameObject[,] _gridCellsArray;
     private GameObject _candyParent;
     private CandyPool _candyPool;
 
@@ -54,7 +55,7 @@ public class MatchHandler : MonoBehaviour
                         {
                             FixMatch(i, j + 1);  // Replace the middle one
                         }
-                        else
+                        else if (!useFixMatch)
                         {
                             Debug.Log($"matches found at:  {i}, {j} and  {i}, {j+1} and {i}, {j +2} ");
                             bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i, j + 1], _candiesArray, true, out tempMatches);
@@ -79,7 +80,7 @@ public class MatchHandler : MonoBehaviour
                         {
                             FixMatch(i + 1, j);  // Replace the middle one
                         }
-                        else
+                        else if (!useFixMatch)
                         {
                             //List<GameObject> tempMatches;
                             Debug.Log($"matches found at:  {i}, {j} and  {i + 1}, {j} and {i + 2}, {j} ");
@@ -98,7 +99,7 @@ public class MatchHandler : MonoBehaviour
             }
             if ( Matches.Count > 0)
             {              
-                   DestroyMatches.Instance.ReturnMatchesInList(Matches);              
+                DestroyMatches.Instance.ReturnMatchesInList(Matches);              
             }
         } while (foundMatch);
     }
@@ -205,4 +206,6 @@ public class MatchHandler : MonoBehaviour
         //}
 
     }
+
+    
 }

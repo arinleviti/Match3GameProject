@@ -83,8 +83,5 @@ public class PreMovementChecks : MonoBehaviour
 
         return matchingCandiesCount >= _gameSettings.candiesToMatch; // Return true if there are at least 3 matching candies
     }
-    public void CreateListOfMatches(int i, int j)
-    {
-
-    }
+    
 }
