@@ -9,6 +9,7 @@ public class GameSettings : ScriptableObject
     public float candyScaleFactor = 0.9f;
     public int tilesNumberI = 4;
     public int tilesNumberJ = 4;
+    public int candyTypesCount;
     public List<CandyType> candyTypes = new List<CandyType>();
     public List<GameObject> candies = new List<GameObject>();
     public float deltaMovementThreshold;

@@ -39,7 +39,6 @@ public class GridManager : MonoBehaviour
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         MatchHandler.Instance.CheckAndFixAllMatches(true);
 
-        LogCandyQueueReferences();
     }
     //j corresponds to the row index (vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
@@ -98,22 +97,5 @@ public class GridManager : MonoBehaviour
         int randomIndex = random.Next(gameSettings.candies.Count);
         return gameSettings.candies[randomIndex].GetComponent<Candy>().CandyType;
     }
-    private void LogCandyQueueReferences()
-    {
-        foreach (var candyQueueEntry in candyPoolScript.candyQueues)
-        {
-            CandyType candyType = candyQueueEntry.Key;
-            Queue<GameObject> candyQueue = candyQueueEntry.Value;
-
-            Debug.Log($"Candy Type: {candyType}, Queue Size: {candyQueue.Count}");
-
-            int index = 0;
-            foreach (GameObject candyGO in candyQueue)
-            {
-                // Log the reference for each candy in the queue
-                Debug.Log($"Queue Index {index}: Candy GameObject Reference: {candyGO.GetInstanceID()}");
-                index++;
-            }
-        }
-    }
+    
 }
