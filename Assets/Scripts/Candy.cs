@@ -11,56 +11,36 @@ public interface ICandy
     float PosY { get; set; }
     int PosInArrayI { get; set; }
     int PosInArrayJ { get; set; }
-    //GameObject Initialize(CandyType candyType);
-    //Handles what happens when a player interacts with the candy. 
-    void HandleInteraction();
+    
+    
 }
 
 // ICandy implementation
 public class Candy : MonoBehaviour, ICandy
 {
+    [TextArea]
+    public string WARNING = "'j' corresponds to the row index, equivalent to the X-coordinate. 'i' corresponds to the column index, equivalent to the Y-coordinate";
+
     [SerializeField] private CandyType candyType;
-    
-    
-    public CandyType CandyType => candyType;
+    [SerializeField] private int posInArrayI;
+    [SerializeField] private int posInArrayJ;
+    public CandyType CandyType { get { return candyType; } set { candyType = value; } }
     public float SizeX { get; set; }
     public float SizeY { get; set; }
     public float PosX { get ; set ; }
     public float PosY { get ; set ; }
-    public int PosInArrayI { get; set; }
-    public int PosInArrayJ { get; set; }
+    public int PosInArrayI { get { return posInArrayI; } set { posInArrayI = value; } }
+    public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = value; } }
 
     private GameSettings gameSettings;
-    //public GameObject Initialize(CandyType candyType)
-    //{
-    //    //CandyType = candyType;
-    //    return gameObject;
-    //}
-    public void HandleInteraction()
-    {
 
-    }
-    
-    void Start()
-    {
-        gameSettings = Resources.Load<GameSettings>("ScriptableObjects/GridSettings");
-        if (gameSettings != null)
-        {
-            SizeX = gameSettings.candySizeX;
-            SizeY = gameSettings.candySizeY;
-        }
-        else
-        {
-            Debug.LogError("GameSettings asset not found!");
-        }
-        Vector3 scale = new Vector3 (SizeX, SizeY);
-        transform.localScale = scale;
-    }
 
-    // Update is called once per frame
-    void Update()
+    public void ResetProperties()
     {
-        
+        PosX = default;
+        PosY = default;
+        PosInArrayI = default;
+        PosInArrayJ = default;
     }
 }
-public enum CandyType { Blue, Green, Yellow, Red};
+public enum CandyType { Blue = 0, Green = 1, Yellow =2, Red =3};
