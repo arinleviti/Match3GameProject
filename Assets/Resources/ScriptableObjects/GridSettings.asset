@@ -16,6 +16,7 @@ MonoBehaviour:
   candyScaleFactor: 0.9
   tilesNumberI: 6
   tilesNumberJ: 10
+  candyTypesCount: 4
   candyTypes: 00000000010000000200000003000000
   candies:
   - {fileID: 8884771664294590454, guid: 2bb46d21c423f404db15f85bb8cebf09, type: 3}
@@ -24,3 +25,4 @@ MonoBehaviour:
   - {fileID: 5063063771068842175, guid: 0a330b793dee9cf45a2db8ef0d990b83, type: 3}
   deltaMovementThreshold: 2
   candiesToMatch: 3
+  dropSpeed: 0
