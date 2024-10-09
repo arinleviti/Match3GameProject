@@ -8,6 +8,7 @@ public class CandySwapper : MonoBehaviour
     private GridManager _gridManager;
     public List<GameObject> matchesVer = new List<GameObject>();
     public List<GameObject> matchesHor = new List<GameObject>();
+    private GameSettings _gameSettings;
 
     private static CandySwapper instance;
     public static CandySwapper Instance
@@ -34,11 +35,11 @@ public class CandySwapper : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Initialize( Candy selectedCandy, GridManager gridManager)
+    public void Initialize( Candy selectedCandy, GridManager gridManager, GameSettings gameSettings)
     {
         _selectedCandy = selectedCandy;
         _gridManager = gridManager;
-
+        _gameSettings = gameSettings;
     }
     public void SwapCandies(Vector2 direction)
     {
@@ -117,9 +118,28 @@ public class CandySwapper : MonoBehaviour
                     _selectedCandy.transform.position = selectedCandyRaisedPos;
                     secondCandy.transform.position = secondCandyRaisedPos;
 
-                    DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
-                    DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
+                    //List<GameObject> combinedLists = new List<GameObject>();
 
+                    //if (matchesHor.Count >= 3)
+                    //{
+                    //    combinedLists.AddRange(matchesHor);
+                    //}
+                    //if (matchesVer.Count >= 3)
+                    //{
+                    //    combinedLists.AddRange(matchesVer);
+                    //}
+                    ////yield return AnimationsController.Instance.RotateMatchingCandies(combinedLists, _gameSettings.rotationDuration, _gameSettings.numberOfRotations);
+                    //combinedLists.Clear();
+                    if (matchesHor.Count >= 3)
+                    {
+                        DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
+                    }                   
+                    matchesHor.Clear();
+                    if (matchesVer.Count >= 3)
+                    {
+                        DestroyMatches.Instance.ReturnMatchesInList(matchesVer);  
+                    }                                    
+                    matchesVer.Clear();
                 }
                 else
                 {
@@ -136,5 +156,5 @@ public class CandySwapper : MonoBehaviour
             _selectedCandy = null;
         }
     }
-
+   
 }

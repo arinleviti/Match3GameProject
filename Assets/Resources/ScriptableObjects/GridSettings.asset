@@ -25,4 +25,6 @@ MonoBehaviour:
   - {fileID: 5063063771068842175, guid: 0a330b793dee9cf45a2db8ef0d990b83, type: 3}
   deltaMovementThreshold: 2
   candiesToMatch: 3
-  dropSpeed: 0
+  dropSpeed: 1.5
+  rotationDuration: 2
+  numberOfRotations: 1

@@ -29,18 +29,18 @@ public class Candy : MonoBehaviour, ICandy
     public float SizeY { get; set; }
     public float PosX { get ; set ; }
     public float PosY { get ; set ; }
-    public int PosInArrayI { get { return posInArrayI; } set { posInArrayI = value; } }
-    public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = value; } }
+    public int PosInArrayI { get { return posInArrayI; } set { posInArrayI = (int)value; } }
+    public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = (int)value; } }
 
     private GameSettings gameSettings;
 
 
     public void ResetProperties()
     {
-        PosX = default;
-        PosY = default;
-        PosInArrayI = default;
-        PosInArrayJ = default;
+        PosX = 0;
+        PosY = 0;
+        PosInArrayI = 0;
+        PosInArrayJ = 0;
     }
 }
 public enum CandyType { Blue = 0, Green = 1, Yellow =2, Red =3};

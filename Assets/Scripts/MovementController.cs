@@ -21,6 +21,8 @@ public class MovementController : MonoBehaviour
 
     public event Action OnMovePerformedComplete;
 
+    private bool isMoving = false;
+
     private void Awake()
     {
         // Initialize PlayerInputActions
@@ -30,10 +32,10 @@ public class MovementController : MonoBehaviour
         moveAction = playerInputActions.Player.Move;  // Player is the action map and Move is the action
 
         gridManager = FindObjectOfType<GridManager>();
-        
+
         moveAction.Enable();
     }
-    
+
     private void OnEnable()
     {
         //It gets called as soon as the input changes and keeps firing while the input is continuously changing
@@ -54,6 +56,7 @@ public class MovementController : MonoBehaviour
         else if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             selectedCandy = null; // Reset selectedCandy when mouse button is released
+            isMoving= false;
         }
     }
 
@@ -68,10 +71,11 @@ public class MovementController : MonoBehaviour
             Candy candy = hit.collider.GetComponent<Candy>();
             if (candy != null)
             {
-                SelectCandy(candy);             
+                SelectCandy(candy);
             }
 
         }
+
     }
 
     //The InputAction.CallbackContext object provides the context for the event, including the current value of the action.
@@ -86,126 +90,33 @@ public class MovementController : MonoBehaviour
 
         if (selectedCandy != null && moveInput.magnitude > gameSettings.deltaMovementThreshold)
         {
-            CandySwapper.Instance.Initialize(selectedCandy, gridManager);
-            CandySwapper.Instance.SwapCandies(moveInput);
-            /*SwapCandies(moveInput);*/  // Move the candy based on the input direction
-            Debug.Log("Move Input Magnitude: " + moveInput.magnitude);
-            matchHandler = FindObjectOfType<MatchHandler>();
-            candyPool = FindObjectOfType<CandyPool>();
-            PostMatchDrop.Instance.Initialize(matchHandler, candyPool, gameSettings, gridManager, this.gameObject);
-            Debug.Log("OnMovePerformed triggered");
-            //PostMatchDrop.Instance.PostMovementMatchCheck();
-            OnMovePerformedComplete?.Invoke();
+            if (!isMoving)
+            {
+                CandySwapper.Instance.Initialize(selectedCandy, gridManager, gameSettings);
+                //SwapCandiesWrapper(moveInput);
+                CandySwapper.Instance.SwapCandies(moveInput);
+                /*SwapCandies(moveInput);*/  // Move the candy based on the input direction
+                Debug.Log("Move Input Magnitude: " + moveInput.magnitude);
+                matchHandler = FindObjectOfType<MatchHandler>();
+                candyPool = FindObjectOfType<CandyPool>();
+                PostMatchDrop.Instance.Initialize(matchHandler, candyPool, gameSettings, gridManager, this.gameObject);
+                Debug.Log("OnMovePerformed triggered");
+                //PostMatchDrop.Instance.PostMovementMatchCheck();
+                OnMovePerformedComplete?.Invoke();
+                isMoving = true;
+            }
+
         }
         else if (selectedCandy != null)
         {
             Debug.Log("Move Input Magnitude Insufficient: " + moveInput.magnitude);
         }
+
     }
+
     public void SelectCandy(Candy candy)
     {
         selectedCandy = candy;
     }
 
-    //private void SwapCandies(Vector2 direction)
-    //{
-    //    if (selectedCandy != null)
-    //    {
-
-    //        // Get the current grid coordinates (I, J) of the selected candy
-    //        int currentI = selectedCandy.PosInArrayI;
-    //        int currentJ = selectedCandy.PosInArrayJ;
-
-    //        // Determine new coordinates based on direction
-    //        int newI = currentI;
-    //        int newJ = currentJ;
-    //        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-    //        {
-    //            // Move horizontally (left or right)
-    //            if (direction.x > 0)
-    //            {
-    //                newJ++; // Move right               
-    //            }
-    //            else if (direction.x < 0)
-    //            {
-    //                newJ--; // Move left
-    //            }
-    //        }
-    //        else
-    //        {
-    //            // Move vertically (up or down)
-    //            if (direction.y > 0)
-    //            {
-    //                newI--; // Move up
-    //            }
-    //            else if (direction.y < 0)
-    //            {
-    //                newI++; // Move down
-    //            }
-    //        }
-
-    //        // Ensure the new position is within grid bounds
-    //        if (newI >= 0 && newI < gridManager.gameSettings.tilesNumberI && newJ >= 0 && newJ < gridManager.gameSettings.tilesNumberJ)
-    //        {
-    //            // Get the second candy to be swapped with the selected candy
-    //            Candy secondCandy = gridManager.candiesArray[newI, newJ].GetComponent<Candy>();
-
-    //            // Swap the candies in the array
-    //            gridManager.candiesArray[currentI, currentJ] = secondCandy.gameObject;
-    //            gridManager.candiesArray[newI, newJ] = selectedCandy.gameObject;
-
-    //            // Update their properties
-    //            secondCandy.PosInArrayI = currentI;
-    //            secondCandy.PosInArrayJ = currentJ;
-
-    //            selectedCandy.PosInArrayI = newI;
-    //            selectedCandy.PosInArrayJ = newJ;
-
-    //            matchesHor.Clear();
-    //            matchesVer.Clear();
-                
-    //            bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, true, out matchesHor);
-    //            bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(selectedCandy.gameObject, gridManager.candiesArray, false, out matchesVer);
-    //            //List<GameObject> combinedMatches = new List<GameObject>(matchesHor);
-    //            //combinedMatches.AddRange(matchesVer);
-
-
-    //            if (horizontalCheck || verticalCheck)
-    //            {
-    //                // Swap their world positions
-    //                Vector3 selectedCandyTargetPos = gridManager.gridCellsArray[newI, newJ].transform.position;
-    //                Vector3 secondCandyTargetPos = gridManager.gridCellsArray[currentI, currentJ].transform.position;
-
-    //                selectedCandy.transform.position = selectedCandyTargetPos;
-    //                secondCandy.transform.position = secondCandyTargetPos;
-
-    //                Vector3 selectedCandyRaisedPos = new Vector3(selectedCandy.transform.position.x, selectedCandy.transform.position.y, -1f);
-    //                Vector3 secondCandyRaisedPos = new Vector3(secondCandy.transform.position.x, secondCandy.transform.position.y, -1f);
-    //                selectedCandy.transform.position = selectedCandyRaisedPos;
-    //                secondCandy.transform.position = secondCandyRaisedPos;
-
-    //                DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
-    //                DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
-
-                    
-    //            }
-    //            else
-    //            {
-    //                Debug.Log("No match, swapping back the array and candy positions.");
-    //                gridManager.candiesArray[currentI, currentJ] = selectedCandy.gameObject;
-    //                gridManager.candiesArray[newI, newJ] = secondCandy.gameObject;
-    //                selectedCandy.PosInArrayI = currentI;
-    //                selectedCandy.PosInArrayJ = currentJ;
-    //                secondCandy.PosInArrayI = newI;
-    //                secondCandy.PosInArrayJ = newJ;
-    //            }
-                
-    //        }
-
-    //        // Deselect the candy after moving
-    //        selectedCandy = null;
-    //    }
-    //}
-
-    
 }

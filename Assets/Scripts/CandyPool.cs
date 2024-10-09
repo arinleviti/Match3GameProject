@@ -72,6 +72,7 @@ public class CandyPool : MonoBehaviour
 
             candyComponent.ResetProperties();
             candyGO.SetActive(false);
+            candyGO.transform.position = new Vector3(-gameSettings.tilesNumberJ *1.5f, gameSettings.tilesNumberI * 1.5f, 0);
             candyGO.transform.parent = this.transform;
 
             queue.Enqueue(candyGO);

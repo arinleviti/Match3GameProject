@@ -15,6 +15,8 @@ public class GameSettings : ScriptableObject
     public float deltaMovementThreshold;
     public int candiesToMatch;
     public float dropSpeed;
+    public float rotationDuration;
+    public int numberOfRotations;
     //public float candySizeX = 0.9f;
     //public float candySizeY = 0.9f;
 }
