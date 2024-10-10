@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class CandyPool : MonoBehaviour
 {
-
+    private readonly object getCandyLock = new object();
+    private readonly object returnCandyLock = new object();
     //public Dictionary<CandyType, Queue<GameObject>> candyQueues = new Dictionary<CandyType, Queue<GameObject>>();
     private Queue<GameObject>[] arrayOfcandyQueues;
     [SerializeField] private GameSettings gameSettings;
@@ -32,54 +33,67 @@ public class CandyPool : MonoBehaviour
 
     public GameObject GetCandy(CandyType candyType)
     {
-        if (arrayOfcandyQueues[(int)candyType] != null && arrayOfcandyQueues[(int)candyType].Count >0)
+        lock (getCandyLock)
         {
-            GameObject dequeuedCandy = arrayOfcandyQueues[(int)candyType].Dequeue();
-            return dequeuedCandy;
-        }
-        else
-        {
-            GameObject prefab = gameSettings.candies.Find(c => c.GetComponent<Candy>().CandyType == candyType);
-            if (prefab != null)
+            if (arrayOfcandyQueues[(int)candyType] != null && arrayOfcandyQueues[(int)candyType].Count > 0)
             {
-                var newCandy = Instantiate(prefab);
-
-                return newCandy;
+                GameObject dequeuedCandy = arrayOfcandyQueues[(int)candyType].Dequeue();
+                Debug.Log($"Candy {dequeuedCandy.name} dequeued from queue n{(int)candyType} / {candyType}");
+                dequeuedCandy.SetActive(true);
+                return dequeuedCandy;
             }
             else
             {
-                Debug.LogError($"No prefab found for CandyType: {candyType}");
-                return null;
+                GameObject prefab = gameSettings.candies.Find(c => c.GetComponent<Candy>().CandyType == candyType);
+                if (prefab != null)
+                {
+                    var newCandy = Instantiate(prefab);
+
+                    return newCandy;
+                }
+                else
+                {
+                    Debug.LogError($"No prefab found for CandyType: {candyType}");
+                    return null;
+                }
             }
         }
 
     }
 
+
+
     public void ReturnCandy(GameObject candyGO)
     {
-        Candy candyComponent = candyGO.GetComponent<Candy>();
-        if (candyComponent == null)
+        lock (returnCandyLock)
         {
-            Debug.LogError("This GameObject does not have a Candy component.");
-            return;
-        }
+            Candy candyComponent = candyGO.GetComponent<Candy>();
+            if (candyComponent == null)
+            {
+                Debug.LogError("This GameObject does not have a Candy component.");
+                return;
+            }
 
-        CandyType candyType = candyComponent.CandyType;
+            CandyType candyType = candyComponent.CandyType;
 
-        if ((int)candyType >=0 && (int)candyType < gameSettings.candyTypesCount)
-        {
-            var queue = arrayOfcandyQueues[(int)candyType];
+            if ((int)candyType >= 0 && (int)candyType < gameSettings.candyTypesCount)
+            {
+                var queue = arrayOfcandyQueues[(int)candyType];
 
-            candyComponent.ResetProperties();
-            candyGO.SetActive(false);
-            candyGO.transform.position = new Vector3(-gameSettings.tilesNumberJ *1.5f, gameSettings.tilesNumberI * 1.5f, 0);
-            candyGO.transform.parent = this.transform;
+                candyComponent.ResetProperties();
+                candyGO.SetActive(false);
+                candyGO.transform.position = new Vector3(-gameSettings.tilesNumberJ * 1.5f, gameSettings.tilesNumberI * 1.5f, 0);
+                candyGO.transform.parent = this.transform;
 
-            queue.Enqueue(candyGO);
-        }
-        else
-        {
-            Debug.LogError("Candy type is not recognized or not managed by this pool.");
+                queue.Enqueue(candyGO);
+            }
+            else
+            {
+                Debug.LogError("Candy type is not recognized or not managed by this pool.");
+            }
+            
+
+
         }
     }
 

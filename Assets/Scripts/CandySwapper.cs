@@ -9,7 +9,7 @@ public class CandySwapper : MonoBehaviour
     public List<GameObject> matchesVer = new List<GameObject>();
     public List<GameObject> matchesHor = new List<GameObject>();
     private GameSettings _gameSettings;
-
+    private CandyPool _candyPool;
     private static CandySwapper instance;
     public static CandySwapper Instance
     {
@@ -35,11 +35,12 @@ public class CandySwapper : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Initialize( Candy selectedCandy, GridManager gridManager, GameSettings gameSettings)
+    public void Initialize( Candy selectedCandy, GridManager gridManager, GameSettings gameSettings, CandyPool candyPool)
     {
         _selectedCandy = selectedCandy;
         _gridManager = gridManager;
         _gameSettings = gameSettings;
+        _candyPool = candyPool;
     }
     public void SwapCandies(Vector2 direction)
     {
@@ -117,29 +118,22 @@ public class CandySwapper : MonoBehaviour
                     Vector3 secondCandyRaisedPos = new Vector3(secondCandy.transform.position.x, secondCandy.transform.position.y, -1f);
                     _selectedCandy.transform.position = selectedCandyRaisedPos;
                     secondCandy.transform.position = secondCandyRaisedPos;
-
-                    //List<GameObject> combinedLists = new List<GameObject>();
-
+                    
+                    List<GameObject> rotationList = new List<GameObject>();
+                    rotationList = CreateRotationList();
+                    
+                    RotationCoroutineWrapper(rotationList);
+                    DestroyFirstMatches();
                     //if (matchesHor.Count >= 3)
                     //{
-                    //    combinedLists.AddRange(matchesHor);
+                    //    DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
                     //}
+                    //matchesHor.Clear();
                     //if (matchesVer.Count >= 3)
                     //{
-                    //    combinedLists.AddRange(matchesVer);
+                    //    DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
                     //}
-                    ////yield return AnimationsController.Instance.RotateMatchingCandies(combinedLists, _gameSettings.rotationDuration, _gameSettings.numberOfRotations);
-                    //combinedLists.Clear();
-                    if (matchesHor.Count >= 3)
-                    {
-                        DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
-                    }                   
-                    matchesHor.Clear();
-                    if (matchesVer.Count >= 3)
-                    {
-                        DestroyMatches.Instance.ReturnMatchesInList(matchesVer);  
-                    }                                    
-                    matchesVer.Clear();
+                    //matchesVer.Clear();
                 }
                 else
                 {
@@ -156,5 +150,56 @@ public class CandySwapper : MonoBehaviour
             _selectedCandy = null;
         }
     }
-   
+    private List<GameObject> CreateRotationList()
+    {
+        List<GameObject> combinedLists = new List<GameObject>();
+        List<GameObject> clonedLists = new List<GameObject>();
+
+        if (matchesHor.Count >= _gameSettings.candiesToMatch)
+        {
+            combinedLists.AddRange(matchesHor);
+        }
+        if (matchesVer.Count >= _gameSettings.candiesToMatch)
+        {
+            combinedLists.AddRange(matchesVer);
+        }
+        foreach (GameObject candy in combinedLists)
+        {
+            Candy parentCandyScript = candy.GetComponent<Candy>();
+            CandyType parentCandyType = parentCandyScript.CandyType;
+            GameObject clonedCandy = _candyPool.GetCandy(parentCandyType);
+            //Candy cloneCandyScript = cloneCandy.GetComponent<Candy>();
+            clonedCandy.transform.position = new Vector3(candy.transform.position.x, candy.transform.position.y, candy.transform.position.z -2); ;
+            clonedLists.Add(clonedCandy);
+            Debug.Log ($"Cloned candy {clonedCandy.name} created at {System.DateTime.Now}");
+        }
+ 
+        return clonedLists;
+        
+    }
+    private void RotationCoroutineWrapper(List <GameObject> clonedList)
+    {
+        foreach (GameObject candy in clonedList)
+        {
+            StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
+            //_candyPool.ReturnCandy(candy);
+        }
+        
+    }
+    private void DestroyFirstMatches()
+    {
+        if (matchesHor.Count >= 3)
+        {
+            DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
+        }
+        matchesHor.Clear();
+        if (matchesVer.Count >= 3)
+        {
+            DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
+        }
+        matchesVer.Clear();
+    }
+        
+    
+
 }

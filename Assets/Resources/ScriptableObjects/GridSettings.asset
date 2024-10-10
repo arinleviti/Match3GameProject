@@ -26,5 +26,5 @@ MonoBehaviour:
   deltaMovementThreshold: 2
   candiesToMatch: 3
   dropSpeed: 1.5
-  rotationDuration: 2
-  numberOfRotations: 1
+  rotationDuration: 0.3
+  numberOfRotations: 4

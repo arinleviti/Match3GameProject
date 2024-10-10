@@ -23,6 +23,8 @@ public class MovementController : MonoBehaviour
 
     private bool isMoving = false;
 
+    private bool isActive1= false;
+
     private void Awake()
     {
         // Initialize PlayerInputActions
@@ -35,7 +37,10 @@ public class MovementController : MonoBehaviour
 
         moveAction.Enable();
     }
-
+    private void Start()
+    {
+        candyPool = FindObjectOfType<CandyPool>();
+    }
     private void OnEnable()
     {
         //It gets called as soon as the input changes and keeps firing while the input is continuously changing
@@ -77,7 +82,7 @@ public class MovementController : MonoBehaviour
         }
 
     }
-
+   
     //The InputAction.CallbackContext object provides the context for the event, including the current value of the action.
     //When an input action is performed, started, or canceled, Unity generates a CallbackContext struct that contains details about that event.
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -92,14 +97,19 @@ public class MovementController : MonoBehaviour
         {
             if (!isMoving)
             {
-                CandySwapper.Instance.Initialize(selectedCandy, gridManager, gameSettings);
+                candyPool = FindObjectOfType<CandyPool>();
+                CandySwapper.Instance.Initialize(selectedCandy, gridManager, gameSettings, candyPool);            
                 //SwapCandiesWrapper(moveInput);
                 CandySwapper.Instance.SwapCandies(moveInput);
                 /*SwapCandies(moveInput);*/  // Move the candy based on the input direction
                 Debug.Log("Move Input Magnitude: " + moveInput.magnitude);
                 matchHandler = FindObjectOfType<MatchHandler>();
-                candyPool = FindObjectOfType<CandyPool>();
-                PostMatchDrop.Instance.Initialize(matchHandler, candyPool, gameSettings, gridManager, this.gameObject);
+                
+                if (isActive1==false)
+                {
+                    PostMatchDrop.Instance.Initialize(matchHandler, candyPool, gameSettings, gridManager, this.gameObject);
+                    isActive1 = true;
+                }              
                 Debug.Log("OnMovePerformed triggered");
                 //PostMatchDrop.Instance.PostMovementMatchCheck();
                 OnMovePerformedComplete?.Invoke();
