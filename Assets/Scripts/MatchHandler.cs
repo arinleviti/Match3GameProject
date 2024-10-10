@@ -99,7 +99,8 @@ public class MatchHandler : MonoBehaviour
             }
             if ( Matches.Count > 0)
             {              
-                DestroyMatches.Instance.ReturnMatchesInList(Matches);              
+                DestroyMatches.Instance.ReturnMatchesInList(Matches); 
+                Matches.Clear();
             }
         } while (foundMatch);
     }

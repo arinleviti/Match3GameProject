@@ -22,6 +22,7 @@ public class PostMatchDrop : MonoBehaviour
             {
                 GameObject go = new GameObject("PostMatchDrop");
                 instance = go.AddComponent<PostMatchDrop>();
+                DontDestroyOnLoad(go); // Ensure this new GameObject persists
                 Debug.Log("PostMatchDrop instance created.");
             }
             return instance;
@@ -54,6 +55,7 @@ public class PostMatchDrop : MonoBehaviour
     {
         PostMovementMatchCheck();
         ScanGridforEmptyTiles();
+
     }
     public void PostMovementMatchCheck()
     {
@@ -104,8 +106,9 @@ public class PostMatchDrop : MonoBehaviour
         candyScript.PosX = gridCellScript.PosX;
         candyScript.PosY = gridCellScript.PosY;
         Vector3 newPosition = new Vector3 (gridCellScript.PosX, gridCellScript.PosY, -1);
-        candy.transform.position = newPosition;
+        //candy.transform.position = newPosition;
         _gridManagerGO.candiesArray[oldPositionI, oldPositionJ] = null;
+        StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, newPosition, _gameSettings.dropSpeed));
         Debug.Log($" Candy Dropped: {candyScript.CandyType}, from {oldPositionI}, {oldPositionJ} to {candyScript.PosInArrayI},  {candyScript.PosInArrayJ} usind drop index {dropIndex}");
     }
 }
