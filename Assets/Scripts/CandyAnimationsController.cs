@@ -21,9 +21,9 @@ public class CandyAnimationsController : MonoBehaviour
     }
 
     
-    public IEnumerator MoveCandy(GameObject candy, Vector3 targetPosition, float duration)
+    public IEnumerator MoveCandy(GameObject candy, Vector3 startPosition, Vector3 targetPosition, float duration)
     {
-        Vector3 startPosition = candy.transform.position;
+        //Vector3 startPosition = candy.transform.position;
         float elapsedTime = 0;
 
         while (elapsedTime < duration)
@@ -60,36 +60,32 @@ public class CandyAnimationsController : MonoBehaviour
             }
         pool.ReturnCandy(candy);
     }
-    //public IEnumerator RotateMatchingCandies(List<GameObject> matchList, float duration, int rotations)
-    //{
-    //    float timePerRotation = duration / rotations;
-    //    foreach (GameObject candy in matchList)
-    //    {
-    //        int spins = 0;
-    //        for (int i = 0; i < rotations; i++)
-    //        {
-    //            float elapsedTime = 0f;
-    //            float startRotation = candy.transform.rotation.eulerAngles.z;
-    //            float endRotation = startRotation + 360;
-                
+    public List<GameObject> CreateRotationList( List<GameObject> matchesHor, List<GameObject> matchesVer, GameSettings gameSettings, CandyPool candyPool)
+    {
+        List<GameObject> combinedLists = new List<GameObject>();
+        List<GameObject> clonedLists = new List<GameObject>();
 
-    //            while (elapsedTime < timePerRotation)
-    //            {
-    //                float zRotation = Mathf.Lerp(startRotation, endRotation, (elapsedTime/duration));
-    //                candy.transform.rotation = Quaternion.Euler(0,0,zRotation);
-    //                elapsedTime += Time.deltaTime;
-    //                //If the method were void and you didn't yield, all the calculations would be executed in a single frame.
-    //                spins++;
-                    
-    //                yield return null;
-    //            }
-    //            candy.transform.rotation = Quaternion.Euler(0, 0, endRotation);
+        if (matchesHor.Count >= gameSettings.candiesToMatch)
+        {
+            combinedLists.AddRange(matchesHor);
+        }
+        if (matchesVer.Count >= gameSettings.candiesToMatch)
+        {
+            combinedLists.AddRange(matchesVer);
+        }
+        foreach (GameObject candy in combinedLists)
+        {
+            Candy parentCandyScript = candy.GetComponent<Candy>();
+            CandyType parentCandyType = parentCandyScript.CandyType;
+            GameObject clonedCandy = candyPool.GetCandy(parentCandyType);
+            //Candy cloneCandyScript = cloneCandy.GetComponent<Candy>();
+            clonedCandy.transform.position = new Vector3(candy.transform.position.x, candy.transform.position.y, candy.transform.position.z - 2); ;
+            clonedLists.Add(clonedCandy);
+            Debug.Log($"Cloned candy {clonedCandy.name} created at {System.DateTime.Now}");
+        }
 
-    //        }
-    //        Debug.Log($"{candy.name} spinned {spins} times");
-    //    }
+        return clonedLists;
 
+    }
 
-    //}
-    
 }

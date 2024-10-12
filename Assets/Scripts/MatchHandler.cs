@@ -12,7 +12,7 @@ public class MatchHandler : MonoBehaviour
     private GameObject[,] _gridCellsArray;
     private GameObject _candyParent;
     private CandyPool _candyPool;
-
+    public bool keepLooking; 
 
     public static MatchHandler Instance
     {
@@ -36,9 +36,10 @@ public class MatchHandler : MonoBehaviour
     }
     //Called by GridManager to remove matches when the game loads (using FixMatch (useFixMatch =true)), and after each user-prompted match (using CheckRowAndColumn (useFixMatch = false)
     //to check if the swap creates more matches.
-    public void CheckAndFixAllMatches(bool useFixMatch)
+    public IEnumerator CheckAndFixAllMatches(bool useFixMatch)
     {
         bool foundMatch;
+        keepLooking = true;
         do
         {           
             Matches.Clear();
@@ -62,6 +63,7 @@ public class MatchHandler : MonoBehaviour
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
+                                
                             }
                         }
                         foundMatch = true;
@@ -97,12 +99,28 @@ public class MatchHandler : MonoBehaviour
                 }
                 
             }
-            if ( Matches.Count > 0)
+            if ( Matches.Count >= _gameSettings.candiesToMatch)
             {              
+                List<GameObject> emptyList = new List<GameObject>();
+                List<GameObject> clonedList = CandyAnimationsController.Instance.CreateRotationList(Matches, emptyList, _gameSettings, _candyPool);
+                foreach (GameObject candy in clonedList)
+                {
+                    StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
+                }
                 DestroyMatches.Instance.ReturnMatchesInList(Matches); 
                 Matches.Clear();
+                keepLooking = true;
             }
+            //else 
+            //{
+            //    keepLooking = false;
+            //}
         } while (foundMatch);
+        if (Matches.Count < _gameSettings.candiesToMatch)
+        {
+            keepLooking = false;
+        }
+        yield return null;
     }
 
     private void AddToMatchList(List<GameObject> tempMatches)
@@ -117,7 +135,7 @@ public class MatchHandler : MonoBehaviour
     }
 
 
-    private bool IsMatch(int x1, int y1, int x2, int y2, int x3, int y3)
+    public bool IsMatch(int x1, int y1, int x2, int y2, int x3, int y3)
     {
         if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
         {

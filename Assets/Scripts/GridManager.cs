@@ -37,9 +37,9 @@ public class GridManager : MonoBehaviour
         PopulateBackdropGrid(firstTilePos);
         MatchHandler.Instance.Initialize(gameSettings, candiesArray, candyParent, candyPoolGO);
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
-        MatchHandler.Instance.CheckAndFixAllMatches(true);
+        StartCoroutine(MatchHandler.Instance.CheckAndFixAllMatches(true));
         Debug.Log($"candiesArray dimensions: {candiesArray.GetLength(0)} x {candiesArray.GetLength(1)}");
-        DebugLogCandyArray();
+        //DebugLogCandyArray();
     }
     //j corresponds to the row index (vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
@@ -100,44 +100,44 @@ public class GridManager : MonoBehaviour
         return gameSettings.candies[randomIndex].GetComponent<Candy>().CandyType;
     }
 
-    public void DebugLogCandyArray()
-    {
-        // Iterate through the dimensions of the candiesArray
-        for (int i = 0; i < gameSettings.tilesNumberI; i++)
-        {
-            for (int j = 0; j < gameSettings.tilesNumberJ; j++)
-            {
-                // Check if the current slot in candiesArray is not null
-                if (candiesArray != null && i < candiesArray.GetLength(0) && j < candiesArray.GetLength(1))
-                {
-                    if (candiesArray[i, j] != null)
-                    {
-                        // Assuming each candy GameObject has a Candy component
-                        Candy candy = candiesArray[i, j].GetComponent<Candy>();
+    //public void DebugLogCandyArray()
+    //{
+    //    // Iterate through the dimensions of the candiesArray
+    //    for (int i = 0; i < gameSettings.tilesNumberI; i++)
+    //    {
+    //        for (int j = 0; j < gameSettings.tilesNumberJ; j++)
+    //        {
+    //            // Check if the current slot in candiesArray is not null
+    //            if (candiesArray != null && i < candiesArray.GetLength(0) && j < candiesArray.GetLength(1))
+    //            {
+    //                if (candiesArray[i, j] != null)
+    //                {
+    //                    // Assuming each candy GameObject has a Candy component
+    //                    Candy candy = candiesArray[i, j].GetComponent<Candy>();
 
-                        if (candy != null)
-                        {
-                            // Log the position and type of candy
-                            Debug.Log($"Candy at ({i}, {j}): Type = {candy.CandyType}, GameObject = {candiesArray[i, j].name}");
-                        }
-                        else
-                        {
-                            // Log if there's a GameObject but no Candy component
-                            Debug.Log($"Candy at ({i}, {j}): GameObject present but no Candy component. GameObject = {candiesArray[i, j].name}");
-                        }
-                    }
-                    else
-                    {
-                        // Log if the slot is empty
-                        Debug.Log($"Candy at ({i}, {j}): No candy present.");
-                    }
-                }
-                else
-                {
-                    // Log if the slot does not exist
-                    Debug.Log($"Candy at ({i}, {j}): Slot does not exist.");
-                }
-            }
-        }
-    }
+    //                    if (candy != null)
+    //                    {
+    //                        // Log the position and type of candy
+    //                        Debug.Log($"Candy at ({i}, {j}): Type = {candy.CandyType}, GameObject = {candiesArray[i, j].name}");
+    //                    }
+    //                    else
+    //                    {
+    //                        // Log if there's a GameObject but no Candy component
+    //                        Debug.Log($"Candy at ({i}, {j}): GameObject present but no Candy component. GameObject = {candiesArray[i, j].name}");
+    //                    }
+    //                }
+    //                else
+    //                {
+    //                    // Log if the slot is empty
+    //                    Debug.Log($"Candy at ({i}, {j}): No candy present.");
+    //                }
+    //            }
+    //            else
+    //            {
+    //                // Log if the slot does not exist
+    //                Debug.Log($"Candy at ({i}, {j}): Slot does not exist.");
+    //            }
+    //        }
+    //    }
+    //}
 }

@@ -120,20 +120,11 @@ public class CandySwapper : MonoBehaviour
                     secondCandy.transform.position = secondCandyRaisedPos;
                     
                     List<GameObject> rotationList = new List<GameObject>();
-                    rotationList = CreateRotationList();
+                    rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
                     
                     RotationCoroutineWrapper(rotationList);
                     DestroyFirstMatches();
-                    //if (matchesHor.Count >= 3)
-                    //{
-                    //    DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
-                    //}
-                    //matchesHor.Clear();
-                    //if (matchesVer.Count >= 3)
-                    //{
-                    //    DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
-                    //}
-                    //matchesVer.Clear();
+                    
                 }
                 else
                 {
@@ -150,33 +141,7 @@ public class CandySwapper : MonoBehaviour
             _selectedCandy = null;
         }
     }
-    private List<GameObject> CreateRotationList()
-    {
-        List<GameObject> combinedLists = new List<GameObject>();
-        List<GameObject> clonedLists = new List<GameObject>();
-
-        if (matchesHor.Count >= _gameSettings.candiesToMatch)
-        {
-            combinedLists.AddRange(matchesHor);
-        }
-        if (matchesVer.Count >= _gameSettings.candiesToMatch)
-        {
-            combinedLists.AddRange(matchesVer);
-        }
-        foreach (GameObject candy in combinedLists)
-        {
-            Candy parentCandyScript = candy.GetComponent<Candy>();
-            CandyType parentCandyType = parentCandyScript.CandyType;
-            GameObject clonedCandy = _candyPool.GetCandy(parentCandyType);
-            //Candy cloneCandyScript = cloneCandy.GetComponent<Candy>();
-            clonedCandy.transform.position = new Vector3(candy.transform.position.x, candy.transform.position.y, candy.transform.position.z -2); ;
-            clonedLists.Add(clonedCandy);
-            Debug.Log ($"Cloned candy {clonedCandy.name} created at {System.DateTime.Now}");
-        }
- 
-        return clonedLists;
-        
-    }
+    
     private void RotationCoroutineWrapper(List <GameObject> clonedList)
     {
         foreach (GameObject candy in clonedList)
