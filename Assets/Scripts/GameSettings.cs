@@ -17,6 +17,24 @@ public class GameSettings : ScriptableObject
     public float dropSpeed;
     public float rotationDuration;
     public int numberOfRotations;
-    //public float candySizeX = 0.9f;
-    //public float candySizeY = 0.9f;
+
+    //Number of points ofr Match3,4,5,+.
+    public int pointsFor3;
+    public int pointsFor4;
+    public int pointsFor5;
+    public int pointsFor6OrHigher;
+
+    //Number of candies spawn per level:
+    public int candiesForLevel1; 
+    public int candiesForLevel2;
+    public int candiesForLevel3;
+    public int candiesForLevel4;
+
+    //Number of point to reach higher level:
+    public int pointsToLevel2;
+    public int pointsToLevel3;
+    public int pointsToLevel4;
+    public int pointsToLevel5;
+    public int pointsToLevel6;
+    
 }

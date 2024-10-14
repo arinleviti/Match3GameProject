@@ -5,6 +5,8 @@ using UnityEngine;
 public class CandyAnimationsController : MonoBehaviour
 {
     private CandyPool pool;
+    private List<GameObject> combinedLists;
+    private List<GameObject> clonedLists;
     private static CandyAnimationsController instance;
     public static CandyAnimationsController Instance
     {
@@ -20,7 +22,12 @@ public class CandyAnimationsController : MonoBehaviour
         }
     }
 
-    
+    private void Awake()
+    {
+        combinedLists = new List<GameObject>();
+        clonedLists = new List<GameObject>();
+    }
+
     public IEnumerator MoveCandy(GameObject candy, Vector3 startPosition, Vector3 targetPosition, float duration)
     {
         //Vector3 startPosition = candy.transform.position;
@@ -62,8 +69,10 @@ public class CandyAnimationsController : MonoBehaviour
     }
     public List<GameObject> CreateRotationList( List<GameObject> matchesHor, List<GameObject> matchesVer, GameSettings gameSettings, CandyPool candyPool)
     {
-        List<GameObject> combinedLists = new List<GameObject>();
-        List<GameObject> clonedLists = new List<GameObject>();
+        //List<GameObject> combinedLists = new List<GameObject>();
+        //List<GameObject> clonedLists = new List<GameObject>();
+        combinedLists.Clear();
+        clonedLists.Clear();
 
         if (matchesHor.Count >= gameSettings.candiesToMatch)
         {

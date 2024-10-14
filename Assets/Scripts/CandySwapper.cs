@@ -121,7 +121,9 @@ public class CandySwapper : MonoBehaviour
                     
                     List<GameObject> rotationList = new List<GameObject>();
                     rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
-                    
+
+                    ScoreManager.Instance.Initialize(_gameSettings);
+                    StartCoroutine(ScoreManager.Instance.AddPoints(rotationList));
                     RotationCoroutineWrapper(rotationList);
                     DestroyFirstMatches();
                     
