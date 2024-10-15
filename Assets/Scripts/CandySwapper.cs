@@ -10,6 +10,7 @@ public class CandySwapper : MonoBehaviour
     public List<GameObject> matchesHor = new List<GameObject>();
     private GameSettings _gameSettings;
     private CandyPool _candyPool;
+    private bool scoreManagerInitialized = false;
     private static CandySwapper instance;
     public static CandySwapper Instance
     {
@@ -121,10 +122,15 @@ public class CandySwapper : MonoBehaviour
                     
                     List<GameObject> rotationList = new List<GameObject>();
                     rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
+                    if (!scoreManagerInitialized)
+                    {
+                        ScoreManager.Instance.Initialize(_gameSettings);
+                        scoreManagerInitialized = true;
+                    }
 
-                    ScoreManager.Instance.Initialize(_gameSettings);
                     StartCoroutine(ScoreManager.Instance.AddPoints(rotationList));
                     RotationCoroutineWrapper(rotationList);
+                    //StartCoroutine(RotationCoroutineWrapper(rotationList));
                     DestroyFirstMatches();
                     
                 }
@@ -151,7 +157,6 @@ public class CandySwapper : MonoBehaviour
             StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
             //_candyPool.ReturnCandy(candy);
         }
-        
     }
     private void DestroyFirstMatches()
     {

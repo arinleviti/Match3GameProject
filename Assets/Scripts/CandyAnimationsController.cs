@@ -90,7 +90,7 @@ public class CandyAnimationsController : MonoBehaviour
             //Candy cloneCandyScript = cloneCandy.GetComponent<Candy>();
             clonedCandy.transform.position = new Vector3(candy.transform.position.x, candy.transform.position.y, candy.transform.position.z - 2); ;
             clonedLists.Add(clonedCandy);
-            Debug.Log($"Cloned candy {clonedCandy.name} created at {System.DateTime.Now}");
+            //Debug.Log($"Cloned candy {clonedCandy.name} created at {System.DateTime.Now}");
         }
 
         return clonedLists;

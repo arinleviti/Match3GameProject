@@ -31,7 +31,7 @@ public class ScoreManager : MonoBehaviour
     public IEnumerator AddPoints(List<GameObject> listOfMatches)
     {
         CurrentScore += CalculatePoints(listOfMatches);
-        Debug.Log("Invoking OnScoreChanged, current subscribers: " + OnScoreChanged?.GetInvocationList().Length);
+        //Debug.Log("Invoking OnScoreChanged, current subscribers: " + OnScoreChanged?.GetInvocationList().Length);
         OnScoreChanged?.Invoke();
         yield return null;
     }

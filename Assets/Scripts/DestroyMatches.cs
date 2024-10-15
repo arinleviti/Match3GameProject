@@ -50,7 +50,7 @@ public class DestroyMatches : MonoBehaviour
             {
                 if (go != null) // Ensure the GameObject is not null
                 {
-                    Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
+                    //Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
                     int i = go.GetComponent<Candy>().PosInArrayI;
                     int j = go.GetComponent<Candy>().PosInArrayJ;
                     gridManager.candiesArray[i, j] = null;

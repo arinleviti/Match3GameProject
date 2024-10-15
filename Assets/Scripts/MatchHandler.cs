@@ -58,7 +58,7 @@ public class MatchHandler : MonoBehaviour
                         }
                         else if (!useFixMatch)
                         {
-                            Debug.Log($"matches found at:  {i}, {j} and  {i}, {j+1} and {i}, {j +2} ");
+                            //Debug.Log($"matches found at:  {i}, {j} and  {i}, {j+1} and {i}, {j +2} ");
                             bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i, j + 1], _candiesArray, true, out tempMatches);
                             if (isMatch)
                             {
@@ -85,14 +85,14 @@ public class MatchHandler : MonoBehaviour
                         else if (!useFixMatch)
                         {
                             //List<GameObject> tempMatches;
-                            Debug.Log($"matches found at:  {i}, {j} and  {i + 1}, {j} and {i + 2}, {j} ");
+                            //Debug.Log($"matches found at:  {i}, {j} and  {i + 1}, {j} and {i + 2}, {j} ");
                             bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i + 1, j], _candiesArray, false, out tempMatches);
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
                                 yield return StartCoroutine(ScoreManager.Instance.AddPoints(tempMatches));
                             }
-                            
+
                         }
 
                         foundMatch = true;
@@ -167,7 +167,7 @@ public class MatchHandler : MonoBehaviour
             return;
         }
 
-        Debug.Log("Loaded " + prefabs.Length + " prefabs from " + folderPath);
+        //Debug.Log("Loaded " + prefabs.Length + " prefabs from " + folderPath);
 
         Candy oldCandyScript = oldCandy.GetComponent<Candy>();
         List<GameObject> availablePrefabs = new List<GameObject>();
@@ -178,7 +178,7 @@ public class MatchHandler : MonoBehaviour
         foreach (GameObject prefab in prefabs)
         {
             Candy candyPrefab = prefab.GetComponent<Candy>();
-            Debug.Log("Prefab candy type: " + candyPrefab.CandyType); // Debugging output
+            /*Debug.Log("Prefab candy type: " + candyPrefab.CandyType);*/ // Debugging output
             if (candyPrefab.CandyType != oldCandyScript.CandyType)
             {
                 availablePrefabs.Add(prefab);
@@ -200,7 +200,7 @@ public class MatchHandler : MonoBehaviour
         }
         Vector2 position = oldCandy.transform.position;
         newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
-        Debug.Log("Candy about to be destroyed in position X: " + oldCandyScript.PosX + " position Y: " + oldCandyScript.PosY);
+        //Debug.Log("Candy about to be destroyed in position X: " + oldCandyScript.PosX + " position Y: " + oldCandyScript.PosY);
 
         _candyPool.ReturnCandy(oldCandy);
         CandyType newCandyType = newCandyPrefab.GetComponent<Candy>().CandyType;
@@ -221,7 +221,7 @@ public class MatchHandler : MonoBehaviour
         newCandyScript.PosInArrayJ = j;
         newCandyScript.PosX = newCandy.transform.position.x;
         newCandyScript.PosY = newCandy.transform.position.y;
-        Debug.Log($"Fixed match at position: I: {i} J: {j}");
+        //Debug.Log($"Fixed match at position: I: {i} J: {j}");
 
         // Check for missing candies after replacement
         if (_candiesArray[i, j] == null)

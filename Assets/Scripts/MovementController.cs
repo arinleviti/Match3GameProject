@@ -82,7 +82,7 @@ public class MovementController : MonoBehaviour
         }
 
     }
-   
+  
     //The InputAction.CallbackContext object provides the context for the event, including the current value of the action.
     //When an input action is performed, started, or canceled, Unity generates a CallbackContext struct that contains details about that event.
     private void OnMovePerformed(InputAction.CallbackContext context)
@@ -112,8 +112,9 @@ public class MovementController : MonoBehaviour
                 }              
                 Debug.Log("OnMovePerformed triggered");
                 //PostMatchDrop.Instance.PostMovementMatchCheck();
-                OnMovePerformedComplete?.Invoke();
                 isMoving = true;
+                OnMovePerformedComplete?.Invoke();
+                
             }
 
         }

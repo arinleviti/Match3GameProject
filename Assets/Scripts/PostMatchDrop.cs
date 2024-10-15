@@ -79,8 +79,9 @@ public class PostMatchDrop : MonoBehaviour
             }
             //Spawns the candies
             yield return StartCoroutine(CandySpawner.Instance.SpawnObjects());
-            Debug.Log("Performed one cicle of post move checks");
+            //Debug.Log("Performed one cicle of post move checks");
         } while (CheckForMatches());
+        CheckCandiesArrayForNulls();
     }
 
     public bool CheckForMatches()
@@ -141,6 +142,7 @@ public class PostMatchDrop : MonoBehaviour
                 {
                     continue;
                 }
+                else  Debug.Log("Drop type can't be determined.");
             }
         }
         yield return null;
@@ -151,6 +153,23 @@ public class PostMatchDrop : MonoBehaviour
         Candy candyScript = candy.GetComponent<Candy>();
         int oldPositionI = candyScript.PosInArrayI;
         int oldPositionJ = candyScript.PosInArrayJ;
+
+        int newPositionI = candyScript.PosInArrayI + dropIndex;
+        int newPositionJ = candyScript.PosInArrayJ;
+
+        // Log current state and array bounds
+        //Debug.Log($"Trying to access: PosInArrayI: {candyScript.PosInArrayI}, dropIndex: {dropIndex}, PosInArrayJ: {candyScript.PosInArrayJ} new target position: {newPositionI}, {newPositionJ} Array size: {_gridManagerGO.candiesArray.GetLength(0)} x {_gridManagerGO.candiesArray.GetLength(1)}");
+
+
+        // Check if new index is out of bounds
+        //if (newPositionI >= _gridManagerGO.candiesArray.GetLength(0) || newPositionI < 0 ||
+        //    newPositionJ >= _gridManagerGO.candiesArray.GetLength(1) || newPositionJ < 0)
+        //{
+        //    Debug.LogError($"Index out of bounds: {newPositionI}, {newPositionJ}");
+        //    yield break; // Exit the coroutine early if out of bounds
+        //}
+
+
         _gridManagerGO.candiesArray[candyScript.PosInArrayI + dropIndex, candyScript.PosInArrayJ] = candy;
         candyScript.PosInArrayI = candyScript.PosInArrayI + dropIndex;
         GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
@@ -161,13 +180,36 @@ public class PostMatchDrop : MonoBehaviour
         //candy.transform.position = newPosition;
         _gridManagerGO.candiesArray[oldPositionI, oldPositionJ] = null;
         yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, candy.transform.position, newPosition, _gameSettings.dropSpeed));
-        Debug.Log($" Candy Dropped: {candyScript.CandyType}, from {oldPositionI}, {oldPositionJ} to {candyScript.PosInArrayI},  {candyScript.PosInArrayJ} usind drop index {dropIndex}");
+        
+        
+        //Debug.Log($" Candy Dropped: {candyScript.CandyType}, from {oldPositionI}, {oldPositionJ} to {candyScript.PosInArrayI},  {candyScript.PosInArrayJ} usind drop index {dropIndex}");
+
     }
     private void OnDestroy()
     {
         if (_movementController != null)
         {
             _movementController.OnMovePerformedComplete -= EventWrapper;
+        }
+    }
+
+    public void CheckCandiesArrayForNulls()
+    {
+        
+        int rows = _gridManagerGO.candiesArray.GetLength(0); // Number of rows (I dimension)
+        int columns = _gridManagerGO.candiesArray.GetLength(1); // Number of columns (J dimension)
+
+        // Iterate through the array and check for null values
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if (_gridManagerGO.candiesArray[i, j] == null)
+                {
+                    // Log the position of the null value
+                    Debug.LogWarning($"Null found at position: ({i}, {j})");
+                }
+            }
         }
     }
 }
