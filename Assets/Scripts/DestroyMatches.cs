@@ -46,13 +46,18 @@ public class DestroyMatches : MonoBehaviour
     {
         if (matches != null && matches.Count >= 3)
         {
+            HashSet<GameObject> processedCandies = new HashSet<GameObject>();
             foreach (GameObject go in matches)
             {
-                if (go != null) // Ensure the GameObject is not null
+                if (go != null && !processedCandies.Contains(go)) // Ensure the GameObject is not null
                 {
-                    Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
+                    processedCandies.Add(go);
+                    //Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
                     int i = go.GetComponent<Candy>().PosInArrayI;
                     int j = go.GetComponent<Candy>().PosInArrayJ;
+                    float x = go.GetComponent<Candy>().PosX;
+                    float y = go.GetComponent<Candy>().PosY;
+                    Debug.Log($"Candy about to return in list PosInArrayI:{i} and PosInArrayJ: {j}, PosX {x} PosY {y}");
                     gridManager.candiesArray[i, j] = null;
                     candyPool.ReturnCandy(go);
                     // Update the array to reflect that the candy has been returned to the pool

@@ -29,18 +29,33 @@ public class Candy : MonoBehaviour, ICandy
     public float SizeY { get; set; }
     public float PosX { get ; set ; }
     public float PosY { get ; set ; }
-    public int PosInArrayI { get { return posInArrayI; } set { posInArrayI = value; } }
-    public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = value; } }
+    public int PosInArrayI { get { return posInArrayI; } set { posInArrayI = (int)value; } }
+    public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = (int)value; } }
 
     private GameSettings gameSettings;
 
 
     public void ResetProperties()
     {
-        PosX = default;
-        PosY = default;
-        PosInArrayI = default;
-        PosInArrayJ = default;
+        
+        PosX = -20;
+        PosY = -20;
+        PosInArrayI = -1;
+        PosInArrayJ = -1;      
+    }
+
+    public void SetArrayPosition(GameObject candyGO, GameObject[,] candiesArray, int i, int j)
+    {
+        PosInArrayI = i;
+        PosInArrayJ = j;
+        candiesArray[i, j] = candyGO;
+    }
+    public void SetPhysicalPosition(GameObject candyGO, Vector3 position)
+    {
+        PosX = position.x;
+        PosY = position.y;
+        candyGO.transform.position = new Vector3(position.x, position.y, -1);
+
     }
 }
 public enum CandyType { Blue = 0, Green = 1, Yellow =2, Red =3};

@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 1
   candyScaleFactor: 0.9
-  tilesNumberI: 6
-  tilesNumberJ: 10
+  tilesNumberI: 8
+  tilesNumberJ: 9
+  candyTypesCount: 4
   candyTypes: 00000000010000000200000003000000
   candies:
   - {fileID: 8884771664294590454, guid: 2bb46d21c423f404db15f85bb8cebf09, type: 3}
@@ -24,3 +25,19 @@ MonoBehaviour:
   - {fileID: 5063063771068842175, guid: 0a330b793dee9cf45a2db8ef0d990b83, type: 3}
   deltaMovementThreshold: 2
   candiesToMatch: 3
+  dropSpeed: 0.09
+  rotationDuration: 0.3
+  numberOfRotations: 4
+  pointsFor3: 10
+  pointsFor4: 20
+  pointsFor5: 50
+  pointsFor6OrHigher: 70
+  candiesForLevel1: 4
+  candiesForLevel2: 5
+  candiesForLevel3: 6
+  candiesForLevel4: 7
+  pointsToLevel2: 100
+  pointsToLevel3: 300
+  pointsToLevel4: 600
+  pointsToLevel5: 1000
+  pointsToLevel6: 1500
