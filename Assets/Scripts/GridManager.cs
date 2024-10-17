@@ -39,7 +39,7 @@ public class GridManager : MonoBehaviour
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         StartCoroutine(MatchHandler.Instance.CheckAndFixAllMatches(true));
         Debug.Log($"candiesArray dimensions: {candiesArray.GetLength(0)} x {candiesArray.GetLength(1)}");
-        DebugLogCandyArray();
+        //DebugLogCandyArray();
     }
     //j corresponds to the row index (vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
@@ -72,18 +72,12 @@ public class GridManager : MonoBehaviour
       
         CandyType candyType = DetermineCandyType();
         GameObject randomCandy = candyPoolScript.GetCandy(candyType);
-        position = new Vector3(position.x, position.y, -1);
-        randomCandy.transform.position = position;
-        randomCandy.transform.localScale = gridCellGO.transform.localScale * gameSettings.candyScaleFactor;
-        candiesArray[i, j] = randomCandy;
-        randomCandy.transform.SetParent(candyParent.transform);
         Candy randomCandyScript = randomCandy.GetComponent<Candy>();
-        randomCandyScript.PosInArrayI = i;
-        randomCandyScript.PosInArrayJ = j;
-        randomCandyScript.PosX = randomCandy.transform.position.x;
-        randomCandyScript.PosY = randomCandy.transform.position.y;
-        //Debug.Log("Candy in position: X: " + randomCandyScript.PosInArrayX + " Y: " + randomCandyScript.PosInArrayY);
-        
+        position = new Vector3(position.x, position.y, -1);
+        randomCandyScript.SetArrayPosition(randomCandy, candiesArray, i, j);
+        randomCandyScript.SetPhysicalPosition(randomCandy, position);       
+        randomCandy.transform.SetParent(candyParent.transform);
+               
     }
     // Keeps the grind centered around the 0,0 cohordinates.
     private Vector2 CalculateFirstTileXY(float tilesNumberX, float tilesNumberY, float tileSize)

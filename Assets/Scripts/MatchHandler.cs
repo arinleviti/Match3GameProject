@@ -63,7 +63,7 @@ public class MatchHandler : MonoBehaviour
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
-                                yield return StartCoroutine(ScoreManager.Instance.AddPoints(tempMatches));
+                                ScoreManager.Instance.AddPoints(tempMatches);
                             }
                         }
                         foundMatch = true;
@@ -90,7 +90,7 @@ public class MatchHandler : MonoBehaviour
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
-                                yield return StartCoroutine(ScoreManager.Instance.AddPoints(tempMatches));
+                                ScoreManager.Instance.AddPoints(tempMatches);
                             }
 
                         }
@@ -198,16 +198,13 @@ public class MatchHandler : MonoBehaviour
             Debug.LogError("Selected new candy prefab is null.");
             return;
         }
-        Vector2 position = oldCandy.transform.position;
+        Vector3 position = oldCandy.transform.position;
         newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
-        //Debug.Log("Candy about to be destroyed in position X: " + oldCandyScript.PosX + " position Y: " + oldCandyScript.PosY);
 
         _candyPool.ReturnCandy(oldCandy);
         CandyType newCandyType = newCandyPrefab.GetComponent<Candy>().CandyType;
-        //Destroy(oldCandy);
         GameObject newCandy = _candyPool.GetCandy(newCandyType);
-        newCandy.transform.position = new Vector3(position.x, position.y, -1f);
-        //GameObject newCandy = Instantiate(newCandyPrefab, new Vector3(position.x, position.y, -1f), Quaternion.identity);
+        
         if (newCandy == null)
         {
             Debug.LogError("Failed to instantiate new candy.");
@@ -215,20 +212,18 @@ public class MatchHandler : MonoBehaviour
         }
         newCandy.transform.SetParent(_candyParent.transform);
 
-        _candiesArray[i, j] = newCandy;
         Candy newCandyScript = newCandy.GetComponent<Candy>();
-        newCandyScript.PosInArrayI = i;
-        newCandyScript.PosInArrayJ = j;
-        newCandyScript.PosX = newCandy.transform.position.x;
-        newCandyScript.PosY = newCandy.transform.position.y;
-        //Debug.Log($"Fixed match at position: I: {i} J: {j}");
+       
+        newCandyScript.SetArrayPosition(newCandy,_candiesArray,i,j);
+        newCandyScript.SetPhysicalPosition(newCandy, position);
+       
 
         // Check for missing candies after replacement
         if (_candiesArray[i, j] == null)
         {
             Debug.LogError($"Candy missing at position X: {i}, Y: {j} after fixing match.");
         }
-        //}
+        
 
     }
 

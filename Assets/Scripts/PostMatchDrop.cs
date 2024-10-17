@@ -78,10 +78,11 @@ public class PostMatchDrop : MonoBehaviour
                 yield return StartCoroutine(ScanGridforEmptyTiles());
             }
             //Spawns the candies
-            yield return StartCoroutine(CandySpawner.Instance.SpawnObjects());
+            CandySpawner.Instance.CheckEmptiesReplaceSpawn();
+            //yield return StartCoroutine(CandySpawner.Instance.SpawnObjects());
             //Debug.Log("Performed one cicle of post move checks");
         } while (CheckForMatches());
-        CheckCandiesArrayForNulls();
+        //CheckCandiesArrayForNulls();
     }
 
     public bool CheckForMatches()
@@ -156,33 +157,19 @@ public class PostMatchDrop : MonoBehaviour
 
         int newPositionI = candyScript.PosInArrayI + dropIndex;
         int newPositionJ = candyScript.PosInArrayJ;
-
-        // Log current state and array bounds
-        //Debug.Log($"Trying to access: PosInArrayI: {candyScript.PosInArrayI}, dropIndex: {dropIndex}, PosInArrayJ: {candyScript.PosInArrayJ} new target position: {newPositionI}, {newPositionJ} Array size: {_gridManagerGO.candiesArray.GetLength(0)} x {_gridManagerGO.candiesArray.GetLength(1)}");
-
-
-        // Check if new index is out of bounds
-        //if (newPositionI >= _gridManagerGO.candiesArray.GetLength(0) || newPositionI < 0 ||
-        //    newPositionJ >= _gridManagerGO.candiesArray.GetLength(1) || newPositionJ < 0)
-        //{
-        //    Debug.LogError($"Index out of bounds: {newPositionI}, {newPositionJ}");
-        //    yield break; // Exit the coroutine early if out of bounds
-        //}
-
-
-        _gridManagerGO.candiesArray[candyScript.PosInArrayI + dropIndex, candyScript.PosInArrayJ] = candy;
-        candyScript.PosInArrayI = candyScript.PosInArrayI + dropIndex;
+        Vector3 oldPosition = candy.transform.position;
+       
+        candyScript.SetArrayPosition(candy, _gridManagerGO.candiesArray, newPositionI, newPositionJ);
+        candyScript.SetPhysicalPosition(candy, _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ].transform.position);
+        
         GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
         GridCell gridCellScript = gridCellUnderCandy.GetComponent<GridCell>();
-        candyScript.PosX = gridCellScript.PosX;
-        candyScript.PosY = gridCellScript.PosY;
         Vector3 newPosition = new Vector3(gridCellScript.PosX, gridCellScript.PosY, -1);
-        //candy.transform.position = newPosition;
+        yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, oldPosition, newPosition, _gameSettings.dropSpeed));
+        
+        
         _gridManagerGO.candiesArray[oldPositionI, oldPositionJ] = null;
-        yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, candy.transform.position, newPosition, _gameSettings.dropSpeed));
         
-        
-        //Debug.Log($" Candy Dropped: {candyScript.CandyType}, from {oldPositionI}, {oldPositionJ} to {candyScript.PosInArrayI},  {candyScript.PosInArrayJ} usind drop index {dropIndex}");
 
     }
     private void OnDestroy()

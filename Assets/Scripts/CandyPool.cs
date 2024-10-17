@@ -7,6 +7,7 @@ public class CandyPool : MonoBehaviour
 {
     private readonly object getCandyLock = new object();
     private readonly object returnCandyLock = new object();
+    private GridManager gridManager;
     //public Dictionary<CandyType, Queue<GameObject>> candyQueues = new Dictionary<CandyType, Queue<GameObject>>();
     private Queue<GameObject>[] arrayOfcandyQueues;
     [SerializeField] private GameSettings gameSettings;
@@ -21,6 +22,10 @@ public class CandyPool : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+        gridManager = FindAnyObjectByType<GridManager>();
+    }
     public GameObject GetCandy(CandyType candyType)
     {
         lock (getCandyLock)
@@ -30,6 +35,8 @@ public class CandyPool : MonoBehaviour
                 GameObject dequeuedCandy = arrayOfcandyQueues[(int)candyType].Dequeue();
                 //Debug.Log($"Candy {dequeuedCandy.name} dequeued from queue n{(int)candyType} / {candyType}");
                 dequeuedCandy.SetActive(true);
+                
+
                 return dequeuedCandy;
             }
             else
@@ -47,6 +54,7 @@ public class CandyPool : MonoBehaviour
                     return null;
                 }
             }
+            
         }
     }
 
@@ -54,24 +62,30 @@ public class CandyPool : MonoBehaviour
     {
         lock (returnCandyLock)
         {
-            Candy candyComponent = candyGO.GetComponent<Candy>();
-            if (candyComponent == null)
+            Candy candyScript = candyGO.GetComponent<Candy>();
+            if (candyScript == null)
             {
                 Debug.LogError("This GameObject does not have a Candy component.");
                 return;
             }
 
-            CandyType candyType = candyComponent.CandyType;
+            CandyType candyType = candyScript.CandyType;
 
             if ((int)candyType >= 0 && (int)candyType < gameSettings.candyTypesCount)
             {
                 var queue = arrayOfcandyQueues[(int)candyType];
 
-                candyComponent.ResetProperties();
-                candyGO.SetActive(false);
-                candyGO.transform.position = new Vector3(-gameSettings.tilesNumberJ * 1.5f, gameSettings.tilesNumberI * 1.5f, 0);
-                candyGO.transform.parent = this.transform;
+                candyScript.ResetProperties();
+                candyScript.SetPhysicalPosition(candyGO, new Vector3(-gameSettings.tilesNumberJ * 1.5f, gameSettings.tilesNumberI * 1.5f, 0));
+                //candyGO.transform.position = ;
+                GameObject candyParent = GameObject.Find("CandyParent");
 
+                if (candyParent != null)
+                {
+                    // Set candyGO's parent to CandyParent
+                    candyGO.transform.parent = candyParent.transform;
+                }
+                candyGO.SetActive(false);
                 queue.Enqueue(candyGO);
             }
             else

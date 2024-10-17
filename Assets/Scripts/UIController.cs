@@ -8,19 +8,7 @@ public class UIController : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI scoreText;
     private ScoreManager scoreManager;
-    //public static UIController instance;
-    //public static UIController Instance
-    //{
-    //    get
-    //    {
-    //        if (instance == null)
-    //        {
-    //            GameObject go = new GameObject("UIController");
-    //            instance = go.AddComponent<UIController>();
-    //        }
-    //        return instance;
-    //    }
-    //}
+    
 
     private void Awake()
     {

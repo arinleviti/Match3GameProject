@@ -69,20 +69,18 @@ public class CandyAnimationsController : MonoBehaviour
     }
     public List<GameObject> CreateRotationList( List<GameObject> matchesHor, List<GameObject> matchesVer, GameSettings gameSettings, CandyPool candyPool)
     {
-        //List<GameObject> combinedLists = new List<GameObject>();
-        //List<GameObject> clonedLists = new List<GameObject>();
-        combinedLists.Clear();
         clonedLists.Clear();
+        HashSet<GameObject> uniqueCandies = new HashSet<GameObject>();
 
         if (matchesHor.Count >= gameSettings.candiesToMatch)
         {
-            combinedLists.AddRange(matchesHor);
+            uniqueCandies.UnionWith(matchesHor);
         }
         if (matchesVer.Count >= gameSettings.candiesToMatch)
         {
-            combinedLists.AddRange(matchesVer);
+            uniqueCandies.UnionWith(matchesVer);
         }
-        foreach (GameObject candy in combinedLists)
+        foreach (GameObject candy in uniqueCandies)
         {
             Candy parentCandyScript = candy.GetComponent<Candy>();
             CandyType parentCandyType = parentCandyScript.CandyType;

@@ -91,12 +91,9 @@ public class CandySwapper : MonoBehaviour
                 _gridManager.candiesArray[newI, newJ] = _selectedCandy.gameObject;
 
                 // Update their properties
-                secondCandy.PosInArrayI = currentI;
-                secondCandy.PosInArrayJ = currentJ;
 
-                _selectedCandy.PosInArrayI = newI;
-                _selectedCandy.PosInArrayJ = newJ;
-
+                _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.candiesArray, newI, newJ);
+                secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.candiesArray, currentI, currentJ);
                 matchesHor.Clear();
                 matchesVer.Clear();
 
@@ -112,14 +109,9 @@ public class CandySwapper : MonoBehaviour
                     Vector3 selectedCandyTargetPos = _gridManager.gridCellsArray[newI, newJ].transform.position;
                     Vector3 secondCandyTargetPos = _gridManager.gridCellsArray[currentI, currentJ].transform.position;
 
-                    _selectedCandy.transform.position = selectedCandyTargetPos;
-                    secondCandy.transform.position = secondCandyTargetPos;
+                    _selectedCandy.SetPhysicalPosition(_selectedCandy.gameObject, selectedCandyTargetPos);
+                    secondCandy.SetPhysicalPosition(secondCandy.gameObject, secondCandyTargetPos);
 
-                    Vector3 selectedCandyRaisedPos = new Vector3(_selectedCandy.transform.position.x, _selectedCandy.transform.position.y, -1f);
-                    Vector3 secondCandyRaisedPos = new Vector3(secondCandy.transform.position.x, secondCandy.transform.position.y, -1f);
-                    _selectedCandy.transform.position = selectedCandyRaisedPos;
-                    secondCandy.transform.position = secondCandyRaisedPos;
-                    
                     List<GameObject> rotationList = new List<GameObject>();
                     rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
                     if (!scoreManagerInitialized)
@@ -128,7 +120,7 @@ public class CandySwapper : MonoBehaviour
                         scoreManagerInitialized = true;
                     }
 
-                    StartCoroutine(ScoreManager.Instance.AddPoints(rotationList));
+                    ScoreManager.Instance.AddPoints(rotationList);
                     RotationCoroutineWrapper(rotationList);
                     //StartCoroutine(RotationCoroutineWrapper(rotationList));
                     DestroyFirstMatches();
@@ -137,12 +129,9 @@ public class CandySwapper : MonoBehaviour
                 else
                 {
                     Debug.Log("No match, swapping back the array and candy positions.");
-                    _gridManager.candiesArray[currentI, currentJ] = _selectedCandy.gameObject;
-                    _gridManager.candiesArray[newI, newJ] = secondCandy.gameObject;
-                    _selectedCandy.PosInArrayI = currentI;
-                    _selectedCandy.PosInArrayJ = currentJ;
-                    secondCandy.PosInArrayI = newI;
-                    secondCandy.PosInArrayJ = newJ;
+
+                    _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.candiesArray, currentI, currentJ);
+                    secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.candiesArray, newI, newJ);
                 }
             }
             // Deselect the candy after moving
@@ -160,18 +149,38 @@ public class CandySwapper : MonoBehaviour
     }
     private void DestroyFirstMatches()
     {
-        if (matchesHor.Count >= 3)
+        // Create a HashSet to store unique candies
+        HashSet<GameObject> uniqueMatches = new HashSet<GameObject>();
+
+        // Add horizontal matches if they meet the criteria
+        if (matchesHor.Count >= _gameSettings.candiesToMatch)
         {
-            DestroyMatches.Instance.ReturnMatchesInList(matchesHor);
+            foreach (GameObject candy in matchesHor)
+            {
+                uniqueMatches.Add(candy);
+            }
         }
+
+        // Add vertical matches if they meet the criteria
+        if (matchesVer.Count >= _gameSettings.candiesToMatch)
+        {
+            foreach (GameObject candy in matchesVer)
+            {
+                uniqueMatches.Add(candy);
+            }
+        }
+
+        // Convert HashSet back to a list
+        List<GameObject> combinedMatches = new List<GameObject>(uniqueMatches);
+
+        // Call ReturnMatchesInList with the combined list
+        DestroyMatches.Instance.ReturnMatchesInList(combinedMatches);
+
+        // Clear both match lists
         matchesHor.Clear();
-        if (matchesVer.Count >= 3)
-        {
-            DestroyMatches.Instance.ReturnMatchesInList(matchesVer);
-        }
         matchesVer.Clear();
     }
-        
-    
+
+
 
 }

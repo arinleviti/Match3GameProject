@@ -28,12 +28,12 @@ public class ScoreManager : MonoBehaviour
         instance.gameSettings = gameSettings;
     }
     
-    public IEnumerator AddPoints(List<GameObject> listOfMatches)
+    public void AddPoints(List<GameObject> listOfMatches)
     {
         CurrentScore += CalculatePoints(listOfMatches);
         //Debug.Log("Invoking OnScoreChanged, current subscribers: " + OnScoreChanged?.GetInvocationList().Length);
         OnScoreChanged?.Invoke();
-        yield return null;
+        
     }
     
     private int CalculatePoints(List<GameObject> listOfMatches)

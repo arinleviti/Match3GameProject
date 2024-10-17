@@ -41,7 +41,7 @@ public class CandySpawner : MonoBehaviour
         _candyPool = candyPool;
     }
     //This method checks for empties and places the GameObjects in the array but doesn't physically move them.
-    public List<GameObject> CheckAndReplaceEmpties()
+    public void CheckEmptiesReplaceSpawn()
     {
         //newCandiesList.Clear();
         for (int i = 0; i < _gameSettings.tilesNumberI; i++)
@@ -52,42 +52,34 @@ public class CandySpawner : MonoBehaviour
                 {
                     int randomIndex = Random.Range(0, _gameSettings.candyTypes.Count);
                     GameObject newCandy = _candyPool.GetCandy((CandyType)randomIndex);
-                    _gridManager.candiesArray[i, j] = newCandy;
                     Candy newCandyScript = newCandy.GetComponent<Candy>();
-                    newCandyScript.PosInArrayI = i;
-                    newCandyScript.PosInArrayJ = j;
-                    newCandiesList.Add(newCandy);
+                    GameObject gridCell = _gridManager.gridCellsArray[i, j];
+                    Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z - 2);
+                    Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
+                    newCandyScript.SetArrayPosition(newCandy,_gridManager.candiesArray, i,j);
+                    newCandyScript.SetPhysicalPosition(newCandy, endPos);
+                    StartCoroutine(CandyAnimationsController.Instance.MoveCandy(newCandy, startPos, endPos, _gameSettings.dropSpeed));
+                    
                 }
             }
-        }
-     
-            return newCandiesList;
-        
-
+        }    
     }
-    public IEnumerator SpawnObjects()
-    {
-
-            newCandiesList.Clear();
-
-        
-        newCandiesList = CheckAndReplaceEmpties();
-        if (newCandiesList != null)
-        {
-            foreach (GameObject candy in newCandiesList)
-            {
-
-                Candy candyScript = candy.GetComponent<Candy>();
-
-                GameObject gridCell = _gridManager.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
-                Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z -2) ;
-                Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
-
-                candyScript.PosX = gridCell.GetComponent<GridCell>().PosX;
-                candyScript.PosY = gridCell.GetComponent<GridCell>().PosY;
-                StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, startPos, endPos, _gameSettings.dropSpeed));
-            }
-        }
-        yield return null;
-    }
+    //public IEnumerator SpawnObjects()
+    //{
+    //        newCandiesList.Clear();       
+    //    newCandiesList = CheckAndReplaceEmpties();
+    //    if (newCandiesList != null)
+    //    {
+    //        foreach (GameObject candy in newCandiesList)
+    //        {
+    //            Candy candyScript = candy.GetComponent<Candy>();
+    //            GameObject gridCell = _gridManager.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
+    //            Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z -2) ;
+    //            Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
+    //            candyScript.SetPhysicalPosition(candy,endPos);
+    //            StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, startPos, endPos, _gameSettings.dropSpeed));
+    //        }
+    //    }
+    //    yield return null;
+    //}
 }
