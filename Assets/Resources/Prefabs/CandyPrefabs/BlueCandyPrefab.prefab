@@ -98,11 +98,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4de5fe769be06714b90f5c50d0f0f229, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WARNING: '''j'' corresponds to the row index, equivalent to the X-coordinate. ''i''
-    corresponds to the column index, equivalent to the Y-coordinate'
-  candyType: 0
-  posInArrayI: 0
-  posInArrayJ: 0
 --- !u!61 &6948986399794148819
 BoxCollider2D:
   m_ObjectHideFlags: 0

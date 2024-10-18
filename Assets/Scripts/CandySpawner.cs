@@ -52,34 +52,17 @@ public class CandySpawner : MonoBehaviour
                 {
                     int randomIndex = Random.Range(0, _gameSettings.candyTypes.Count);
                     GameObject newCandy = _candyPool.GetCandy((CandyType)randomIndex);
-                    Candy newCandyScript = newCandy.GetComponent<Candy>();
+                    CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
                     GameObject gridCell = _gridManager.gridCellsArray[i, j];
                     Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z - 2);
                     Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
                     newCandyScript.SetArrayPosition(newCandy,_gridManager.candiesArray, i,j);
-                    newCandyScript.SetPhysicalPosition(newCandy, endPos);
+                    newCandyScript.SetPhysicalPosition(endPos);
                     StartCoroutine(CandyAnimationsController.Instance.MoveCandy(newCandy, startPos, endPos, _gameSettings.dropSpeed));
                     
                 }
             }
         }    
     }
-    //public IEnumerator SpawnObjects()
-    //{
-    //        newCandiesList.Clear();       
-    //    newCandiesList = CheckAndReplaceEmpties();
-    //    if (newCandiesList != null)
-    //    {
-    //        foreach (GameObject candy in newCandiesList)
-    //        {
-    //            Candy candyScript = candy.GetComponent<Candy>();
-    //            GameObject gridCell = _gridManager.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
-    //            Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z -2) ;
-    //            Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
-    //            candyScript.SetPhysicalPosition(candy,endPos);
-    //            StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, startPos, endPos, _gameSettings.dropSpeed));
-    //        }
-    //    }
-    //    yield return null;
-    //}
+    
 }

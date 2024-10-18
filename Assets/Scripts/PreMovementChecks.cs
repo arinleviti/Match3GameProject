@@ -42,9 +42,9 @@ public class PreMovementChecks : MonoBehaviour
 
     public bool CheckRowAndColumn(GameObject candy, GameObject[,] candyArray, bool isHorizontal, out List<GameObject> matches)
     {
-        Candy currentCandy = candy.GetComponent<Candy>();
-        int currentI = currentCandy.PosInArrayI;
-        int currentJ = currentCandy.PosInArrayJ;
+        CandyViewer currentCandy = candy.GetComponent<CandyViewer>();
+        int currentI = currentCandy.CandyModel.PosInArrayI;
+        int currentJ = currentCandy.CandyModel.PosInArrayJ;
         
         matches = new List<GameObject>() { candy };
         
@@ -66,7 +66,7 @@ public class PreMovementChecks : MonoBehaviour
                     break;
 
                 GameObject neighborCandyGO = candyArray[nextI, nextJ];
-                Candy neighborCandy = neighborCandyGO?.GetComponent<Candy>();
+                CandyViewer neighborCandy = neighborCandyGO?.GetComponent<CandyViewer>();
 
                 if (neighborCandy != null && neighborCandy.CandyType == currentCandy.CandyType)
                 {

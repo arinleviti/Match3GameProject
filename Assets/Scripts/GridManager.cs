@@ -72,10 +72,10 @@ public class GridManager : MonoBehaviour
       
         CandyType candyType = DetermineCandyType();
         GameObject randomCandy = candyPoolScript.GetCandy(candyType);
-        Candy randomCandyScript = randomCandy.GetComponent<Candy>();
+        CandyViewer randomCandyScript = randomCandy.GetComponent<CandyViewer>();
         position = new Vector3(position.x, position.y, -1);
         randomCandyScript.SetArrayPosition(randomCandy, candiesArray, i, j);
-        randomCandyScript.SetPhysicalPosition(randomCandy, position);       
+        randomCandyScript.SetPhysicalPosition( position);       
         randomCandy.transform.SetParent(candyParent.transform);
                
     }
@@ -91,7 +91,7 @@ public class GridManager : MonoBehaviour
     private CandyType DetermineCandyType()
     {
         int randomIndex = random.Next(gameSettings.candies.Count);
-        return gameSettings.candies[randomIndex].GetComponent<Candy>().CandyType;
+        return gameSettings.candies[randomIndex].GetComponent<CandyViewer>().CandyType;
     }
 
     public void DebugLogCandyArray()
@@ -107,7 +107,7 @@ public class GridManager : MonoBehaviour
                     if (candiesArray[i, j] != null)
                     {
                         // Assuming each candy GameObject has a Candy component
-                        Candy candy = candiesArray[i, j].GetComponent<Candy>();
+                        CandyViewer candy = candiesArray[i, j].GetComponent<CandyViewer>();
 
                         if (candy != null)
                         {
