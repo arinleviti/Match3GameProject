@@ -53,10 +53,10 @@ public class DestroyMatches : MonoBehaviour
                 {
                     processedCandies.Add(go);
                     //Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
-                    int i = go.GetComponent<Candy>().PosInArrayI;
-                    int j = go.GetComponent<Candy>().PosInArrayJ;
-                    float x = go.GetComponent<Candy>().PosX;
-                    float y = go.GetComponent<Candy>().PosY;
+                    int i = go.GetComponent<CandyViewer>().CandyModel.PosInArrayI;
+                    int j = go.GetComponent<CandyViewer>().CandyModel.PosInArrayJ;
+                    float x = go.GetComponent<CandyViewer>().PosX;
+                    float y = go.GetComponent<CandyViewer>().PosY;
                     Debug.Log($"Candy about to return in list PosInArrayI:{i} and PosInArrayJ: {j}, PosX {x} PosY {y}");
                     gridManager.candiesArray[i, j] = null;
                     candyPool.ReturnCandy(go);

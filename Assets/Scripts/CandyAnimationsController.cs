@@ -82,7 +82,7 @@ public class CandyAnimationsController : MonoBehaviour
         }
         foreach (GameObject candy in uniqueCandies)
         {
-            Candy parentCandyScript = candy.GetComponent<Candy>();
+            CandyViewer parentCandyScript = candy.GetComponent<CandyViewer>();
             CandyType parentCandyType = parentCandyScript.CandyType;
             GameObject clonedCandy = candyPool.GetCandy(parentCandyType);
             //Candy cloneCandyScript = cloneCandy.GetComponent<Candy>();

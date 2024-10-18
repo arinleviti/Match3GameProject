@@ -9,7 +9,7 @@ public class MovementController : MonoBehaviour
 {
     public InputAction moveAction;
     public float moveSpeed;
-    private Candy selectedCandy;
+    private CandyViewer selectedCandy;
     //private Vector2 initialTouchPos;
     private PlayerInputActions playerInputActions; // Reference to the input actions
     private GridManager gridManager;
@@ -73,7 +73,7 @@ public class MovementController : MonoBehaviour
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
         if (hit.collider != null)
         {
-            Candy candy = hit.collider.GetComponent<Candy>();
+            CandyViewer candy = hit.collider.GetComponent<CandyViewer>();
             if (candy != null)
             {
                 SelectCandy(candy);
@@ -125,7 +125,7 @@ public class MovementController : MonoBehaviour
 
     }
 
-    public void SelectCandy(Candy candy)
+    public void SelectCandy(CandyViewer candy)
     {
         selectedCandy = candy;
     }

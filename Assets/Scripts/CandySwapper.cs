@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CandySwapper : MonoBehaviour
 {
-    private Candy _selectedCandy;
+    private CandyViewer _selectedCandy;
     private GridManager _gridManager;
     public List<GameObject> matchesVer = new List<GameObject>();
     public List<GameObject> matchesHor = new List<GameObject>();
@@ -36,7 +36,7 @@ public class CandySwapper : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Initialize( Candy selectedCandy, GridManager gridManager, GameSettings gameSettings, CandyPool candyPool)
+    public void Initialize( CandyViewer selectedCandy, GridManager gridManager, GameSettings gameSettings, CandyPool candyPool)
     {
         _selectedCandy = selectedCandy;
         _gridManager = gridManager;
@@ -49,8 +49,8 @@ public class CandySwapper : MonoBehaviour
         {
 
             // Get the current grid coordinates (I, J) of the selected candy
-            int currentI = _selectedCandy.PosInArrayI;
-            int currentJ = _selectedCandy.PosInArrayJ;
+            int currentI = _selectedCandy.CandyModel.PosInArrayI;
+            int currentJ = _selectedCandy.CandyModel.PosInArrayJ;
 
             // Determine new coordinates based on direction
             int newI = currentI;
@@ -84,7 +84,7 @@ public class CandySwapper : MonoBehaviour
             if (newI >= 0 && newI < _gridManager.gameSettings.tilesNumberI && newJ >= 0 && newJ < _gridManager.gameSettings.tilesNumberJ)
             {
                 // Get the second candy to be swapped with the selected candy
-                Candy secondCandy = _gridManager.candiesArray[newI, newJ].GetComponent<Candy>();
+                CandyViewer secondCandy = _gridManager.candiesArray[newI, newJ].GetComponent<CandyViewer>();
 
                 // Swap the candies in the array
                 _gridManager.candiesArray[currentI, currentJ] = secondCandy.gameObject;
@@ -109,8 +109,8 @@ public class CandySwapper : MonoBehaviour
                     Vector3 selectedCandyTargetPos = _gridManager.gridCellsArray[newI, newJ].transform.position;
                     Vector3 secondCandyTargetPos = _gridManager.gridCellsArray[currentI, currentJ].transform.position;
 
-                    _selectedCandy.SetPhysicalPosition(_selectedCandy.gameObject, selectedCandyTargetPos);
-                    secondCandy.SetPhysicalPosition(secondCandy.gameObject, secondCandyTargetPos);
+                    _selectedCandy.SetPhysicalPosition( selectedCandyTargetPos);
+                    secondCandy.SetPhysicalPosition( secondCandyTargetPos);
 
                     List<GameObject> rotationList = new List<GameObject>();
                     rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);

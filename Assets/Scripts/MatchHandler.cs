@@ -140,9 +140,9 @@ public class MatchHandler : MonoBehaviour
     {
         if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
         {
-            Candy c1 = _candiesArray[x1, y1].GetComponent<Candy>();
-            Candy c2 = _candiesArray[x2, y2].GetComponent<Candy>();
-            Candy c3 = _candiesArray[x3, y3].GetComponent<Candy>();
+            CandyViewer c1 = _candiesArray[x1, y1].GetComponent<CandyViewer>();
+            CandyViewer c2 = _candiesArray[x2, y2].GetComponent<CandyViewer>();
+            CandyViewer c3 = _candiesArray[x3, y3].GetComponent<CandyViewer>();
 
             return c1.CandyType == c2.CandyType && c1.CandyType == c3.CandyType;
         }
@@ -169,7 +169,7 @@ public class MatchHandler : MonoBehaviour
 
         //Debug.Log("Loaded " + prefabs.Length + " prefabs from " + folderPath);
 
-        Candy oldCandyScript = oldCandy.GetComponent<Candy>();
+        CandyViewer oldCandyScript = oldCandy.GetComponent<CandyViewer>();
         List<GameObject> availablePrefabs = new List<GameObject>();
 
         // Print all candy types for debugging
@@ -177,7 +177,7 @@ public class MatchHandler : MonoBehaviour
 
         foreach (GameObject prefab in prefabs)
         {
-            Candy candyPrefab = prefab.GetComponent<Candy>();
+            CandyViewer candyPrefab = prefab.GetComponent<CandyViewer>();
             /*Debug.Log("Prefab candy type: " + candyPrefab.CandyType);*/ // Debugging output
             if (candyPrefab.CandyType != oldCandyScript.CandyType)
             {
@@ -202,7 +202,7 @@ public class MatchHandler : MonoBehaviour
         newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
 
         _candyPool.ReturnCandy(oldCandy);
-        CandyType newCandyType = newCandyPrefab.GetComponent<Candy>().CandyType;
+        CandyType newCandyType = newCandyPrefab.GetComponent<CandyViewer>().CandyType;
         GameObject newCandy = _candyPool.GetCandy(newCandyType);
         
         if (newCandy == null)
@@ -212,10 +212,10 @@ public class MatchHandler : MonoBehaviour
         }
         newCandy.transform.SetParent(_candyParent.transform);
 
-        Candy newCandyScript = newCandy.GetComponent<Candy>();
+        CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
        
         newCandyScript.SetArrayPosition(newCandy,_candiesArray,i,j);
-        newCandyScript.SetPhysicalPosition(newCandy, position);
+        newCandyScript.SetPhysicalPosition(position);
        
 
         // Check for missing candies after replacement

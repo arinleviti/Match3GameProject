@@ -151,18 +151,18 @@ public class PostMatchDrop : MonoBehaviour
 
     public IEnumerator DropCandy(GameObject candy, int dropIndex)
     {
-        Candy candyScript = candy.GetComponent<Candy>();
-        int oldPositionI = candyScript.PosInArrayI;
-        int oldPositionJ = candyScript.PosInArrayJ;
+        CandyViewer candyScript = candy.GetComponent<CandyViewer>();
+        int oldPositionI = candyScript.CandyModel.PosInArrayI;
+        int oldPositionJ = candyScript.CandyModel.PosInArrayJ;
 
-        int newPositionI = candyScript.PosInArrayI + dropIndex;
-        int newPositionJ = candyScript.PosInArrayJ;
+        int newPositionI = candyScript.CandyModel.PosInArrayI + dropIndex;
+        int newPositionJ = candyScript.CandyModel.PosInArrayJ;
         Vector3 oldPosition = candy.transform.position;
        
         candyScript.SetArrayPosition(candy, _gridManagerGO.candiesArray, newPositionI, newPositionJ);
-        candyScript.SetPhysicalPosition(candy, _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ].transform.position);
+        candyScript.SetPhysicalPosition(_gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ].transform.position);
         
-        GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
+        GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ];
         GridCell gridCellScript = gridCellUnderCandy.GetComponent<GridCell>();
         Vector3 newPosition = new Vector3(gridCellScript.PosX, gridCellScript.PosY, -1);
         yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, oldPosition, newPosition, _gameSettings.dropSpeed));
