@@ -6,7 +6,7 @@ using UnityEngine;
 public class ArrayGizmo : MonoBehaviour
 {
     [SerializeField]
-    private GridManager gridManager; // Reference to your GridManager
+    private GridManagerViewer gridManager; // Reference to your GridManager
     [SerializeField]
     private GameSettings gameSettings;
 

@@ -7,7 +7,7 @@ public class CandyPool : MonoBehaviour
 {
     private readonly object getCandyLock = new object();
     private readonly object returnCandyLock = new object();
-    private GridManager gridManager;
+    private GridManagerViewer gridManager;
     //public Dictionary<CandyType, Queue<GameObject>> candyQueues = new Dictionary<CandyType, Queue<GameObject>>();
     private Queue<GameObject>[] arrayOfcandyQueues;
     [SerializeField] private GameSettings gameSettings;
@@ -24,7 +24,7 @@ public class CandyPool : MonoBehaviour
 
     private void Start()
     {
-        gridManager = FindAnyObjectByType<GridManager>();
+        gridManager = FindAnyObjectByType<GridManagerViewer>();
     }
     public GameObject GetCandy(CandyType candyType)
     {

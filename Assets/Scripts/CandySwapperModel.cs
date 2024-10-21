@@ -2,46 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CandySwapper : MonoBehaviour
+public class CandySwapperModel
 {
     private CandyViewer _selectedCandy;
-    private GridManager _gridManager;
-    public List<GameObject> matchesVer = new List<GameObject>();
-    public List<GameObject> matchesHor = new List<GameObject>();
+    private GridManagerViewer _gridManager;
     private GameSettings _gameSettings;
     private CandyPool _candyPool;
+    private CandySwapperViewer _swapperViewer;
+    public List<GameObject> matchesVer = new List<GameObject>();
+    public List<GameObject> matchesHor = new List<GameObject>();
     private bool scoreManagerInitialized = false;
-    private static CandySwapper instance;
-    public static CandySwapper Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                GameObject go = new GameObject("CandySwapper");
-                instance = go.AddComponent<CandySwapper>();
-            }
-            return instance;
-        }
-    }
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
-    public void Initialize( CandyViewer selectedCandy, GridManager gridManager, GameSettings gameSettings, CandyPool candyPool)
+    public CandySwapperModel(CandyViewer selectedCandy, GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, CandySwapperViewer swapperViewer)
     {
         _selectedCandy = selectedCandy;
         _gridManager = gridManager;
         _gameSettings = gameSettings;
         _candyPool = candyPool;
+        _swapperViewer = swapperViewer;
     }
     public void SwapCandies(Vector2 direction)
     {
@@ -109,8 +86,8 @@ public class CandySwapper : MonoBehaviour
                     Vector3 selectedCandyTargetPos = _gridManager.gridCellsArray[newI, newJ].transform.position;
                     Vector3 secondCandyTargetPos = _gridManager.gridCellsArray[currentI, currentJ].transform.position;
 
-                    _selectedCandy.SetPhysicalPosition( selectedCandyTargetPos);
-                    secondCandy.SetPhysicalPosition( secondCandyTargetPos);
+                    _selectedCandy.SetPhysicalPosition(selectedCandyTargetPos);
+                    secondCandy.SetPhysicalPosition(secondCandyTargetPos);
 
                     List<GameObject> rotationList = new List<GameObject>();
                     rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
@@ -121,10 +98,10 @@ public class CandySwapper : MonoBehaviour
                     }
 
                     ScoreManager.Instance.AddPoints(rotationList);
-                    RotationCoroutineWrapper(rotationList);
+                    _swapperViewer.RotationCoroutineWrapper(rotationList);
                     //StartCoroutine(RotationCoroutineWrapper(rotationList));
                     DestroyFirstMatches();
-                    
+
                 }
                 else
                 {
@@ -138,15 +115,7 @@ public class CandySwapper : MonoBehaviour
             _selectedCandy = null;
         }
     }
-    
-    private void RotationCoroutineWrapper(List <GameObject> clonedList)
-    {
-        foreach (GameObject candy in clonedList)
-        {
-            StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
-            //_candyPool.ReturnCandy(candy);
-        }
-    }
+   
     private void DestroyFirstMatches()
     {
         // Create a HashSet to store unique candies
@@ -180,7 +149,5 @@ public class CandySwapper : MonoBehaviour
         matchesHor.Clear();
         matchesVer.Clear();
     }
-
-
 
 }

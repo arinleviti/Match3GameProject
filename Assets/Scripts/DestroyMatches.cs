@@ -6,7 +6,7 @@ public class DestroyMatches : MonoBehaviour
 {
     private static DestroyMatches instance;
     private CandyPool candyPool;
-    private GridManager gridManager;
+    private GridManagerViewer gridManager;
     public static DestroyMatches Instance
     {
         get
@@ -39,7 +39,7 @@ public class DestroyMatches : MonoBehaviour
         candyPool = FindAnyObjectByType<CandyPool>();
         //? checks if controller is null. If it is, returns the empty list. If controller.matchesHor is null, returns an empty list. If the value is not null, returns its value
         //matches = controller?.matches?? new List<GameObject>();
-        gridManager = FindAnyObjectByType<GridManager>();
+        gridManager = FindAnyObjectByType<GridManagerViewer>();
     }
    
     public void ReturnMatchesInList(List<GameObject> matches)
