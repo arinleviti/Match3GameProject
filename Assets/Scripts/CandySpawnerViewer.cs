@@ -1,22 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
-public class CandySpawner : MonoBehaviour
+public class CandySpawnerViewer : MonoBehaviour
 {
-    private static CandySpawner instance;
-    private GridManager _gridManager;
+    private static CandySpawnerViewer instance;
+    private GridManagerViewer _gridManager;
     private GameSettings _gameSettings;
     private CandyPool _candyPool;
-    List<GameObject> newCandiesList = new List<GameObject>();
-    public static CandySpawner Instance
+    //List<GameObject> newCandiesList = new List<GameObject>();
+    public CandySpawnerModel SpawnerModel { get; private set; }
+    public static CandySpawnerViewer Instance
     {
         get
         {
             if (instance == null)
             {
-                GameObject go = new GameObject("CandySpawner");
-                instance = go.AddComponent<CandySpawner>();
+                GameObject go = new GameObject("CandySpawnerViewer");
+                instance = go.AddComponent<CandySpawnerViewer>();
             }
             return instance;
         }
@@ -34,11 +36,12 @@ public class CandySpawner : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Initialize(GameSettings gameSettings, GridManager gridManager, CandyPool candyPool)
+    public void Initialize(GameSettings gameSettings, GridManagerViewer gridManager, CandyPool candyPool)
     {
         _gameSettings = gameSettings;
         _gridManager = gridManager;
         _candyPool = candyPool;
+        SpawnerModel = new CandySpawnerModel(_gameSettings, _candyPool, _gridManager, this);
     }
     //This method checks for empties and places the GameObjects in the array but doesn't physically move them.
     public void CheckEmptiesReplaceSpawn()
@@ -52,34 +55,20 @@ public class CandySpawner : MonoBehaviour
                 {
                     int randomIndex = Random.Range(0, _gameSettings.candyTypes.Count);
                     GameObject newCandy = _candyPool.GetCandy((CandyType)randomIndex);
-                    Candy newCandyScript = newCandy.GetComponent<Candy>();
+                    CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
                     GameObject gridCell = _gridManager.gridCellsArray[i, j];
                     Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z - 2);
                     Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
                     newCandyScript.SetArrayPosition(newCandy,_gridManager.candiesArray, i,j);
-                    newCandyScript.SetPhysicalPosition(newCandy, endPos);
+                    newCandyScript.SetPhysicalPosition(endPos);
                     StartCoroutine(CandyAnimationsController.Instance.MoveCandy(newCandy, startPos, endPos, _gameSettings.dropSpeed));
                     
                 }
             }
         }    
     }
-    //public IEnumerator SpawnObjects()
-    //{
-    //        newCandiesList.Clear();       
-    //    newCandiesList = CheckAndReplaceEmpties();
-    //    if (newCandiesList != null)
-    //    {
-    //        foreach (GameObject candy in newCandiesList)
-    //        {
-    //            Candy candyScript = candy.GetComponent<Candy>();
-    //            GameObject gridCell = _gridManager.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
-    //            Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z -2) ;
-    //            Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
-    //            candyScript.SetPhysicalPosition(candy,endPos);
-    //            StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, startPos, endPos, _gameSettings.dropSpeed));
-    //        }
-    //    }
-    //    yield return null;
-    //}
+    public void CoroutineWrapper(GameObject newCandy, Vector3 startPos, Vector3 endPos)
+    {
+        StartCoroutine(CandyAnimationsController.Instance.MoveCandy(newCandy, startPos, endPos, _gameSettings.dropSpeed));
+    }
 }

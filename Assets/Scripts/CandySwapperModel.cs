@@ -2,46 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CandySwapper : MonoBehaviour
+public class CandySwapperModel
 {
-    private Candy _selectedCandy;
-    private GridManager _gridManager;
-    public List<GameObject> matchesVer = new List<GameObject>();
-    public List<GameObject> matchesHor = new List<GameObject>();
+    private CandyViewer _selectedCandy;
+    private GridManagerViewer _gridManager;
     private GameSettings _gameSettings;
     private CandyPool _candyPool;
+    private CandySwapperViewer _swapperViewer;
+    public List<GameObject> matchesVer = new List<GameObject>();
+    public List<GameObject> matchesHor = new List<GameObject>();
     private bool scoreManagerInitialized = false;
-    private static CandySwapper instance;
-    public static CandySwapper Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                GameObject go = new GameObject("CandySwapper");
-                instance = go.AddComponent<CandySwapper>();
-            }
-            return instance;
-        }
-    }
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else if (instance != this)
-        {
-            Destroy(gameObject);
-        }
-    }
-    public void Initialize( Candy selectedCandy, GridManager gridManager, GameSettings gameSettings, CandyPool candyPool)
+    public CandySwapperModel(CandyViewer selectedCandy, GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, CandySwapperViewer swapperViewer)
     {
         _selectedCandy = selectedCandy;
         _gridManager = gridManager;
         _gameSettings = gameSettings;
         _candyPool = candyPool;
+        _swapperViewer = swapperViewer;
     }
     public void SwapCandies(Vector2 direction)
     {
@@ -49,8 +26,8 @@ public class CandySwapper : MonoBehaviour
         {
 
             // Get the current grid coordinates (I, J) of the selected candy
-            int currentI = _selectedCandy.PosInArrayI;
-            int currentJ = _selectedCandy.PosInArrayJ;
+            int currentI = _selectedCandy.CandyModel.PosInArrayI;
+            int currentJ = _selectedCandy.CandyModel.PosInArrayJ;
 
             // Determine new coordinates based on direction
             int newI = currentI;
@@ -84,7 +61,7 @@ public class CandySwapper : MonoBehaviour
             if (newI >= 0 && newI < _gridManager.gameSettings.tilesNumberI && newJ >= 0 && newJ < _gridManager.gameSettings.tilesNumberJ)
             {
                 // Get the second candy to be swapped with the selected candy
-                Candy secondCandy = _gridManager.candiesArray[newI, newJ].GetComponent<Candy>();
+                CandyViewer secondCandy = _gridManager.candiesArray[newI, newJ].GetComponent<CandyViewer>();
 
                 // Swap the candies in the array
                 _gridManager.candiesArray[currentI, currentJ] = secondCandy.gameObject;
@@ -109,8 +86,8 @@ public class CandySwapper : MonoBehaviour
                     Vector3 selectedCandyTargetPos = _gridManager.gridCellsArray[newI, newJ].transform.position;
                     Vector3 secondCandyTargetPos = _gridManager.gridCellsArray[currentI, currentJ].transform.position;
 
-                    _selectedCandy.SetPhysicalPosition(_selectedCandy.gameObject, selectedCandyTargetPos);
-                    secondCandy.SetPhysicalPosition(secondCandy.gameObject, secondCandyTargetPos);
+                    _selectedCandy.SetPhysicalPosition(selectedCandyTargetPos);
+                    secondCandy.SetPhysicalPosition(secondCandyTargetPos);
 
                     List<GameObject> rotationList = new List<GameObject>();
                     rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
@@ -121,10 +98,10 @@ public class CandySwapper : MonoBehaviour
                     }
 
                     ScoreManager.Instance.AddPoints(rotationList);
-                    RotationCoroutineWrapper(rotationList);
+                    _swapperViewer.RotationCoroutineWrapper(rotationList);
                     //StartCoroutine(RotationCoroutineWrapper(rotationList));
                     DestroyFirstMatches();
-                    
+
                 }
                 else
                 {
@@ -138,15 +115,7 @@ public class CandySwapper : MonoBehaviour
             _selectedCandy = null;
         }
     }
-    
-    private void RotationCoroutineWrapper(List <GameObject> clonedList)
-    {
-        foreach (GameObject candy in clonedList)
-        {
-            StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
-            //_candyPool.ReturnCandy(candy);
-        }
-    }
+   
     private void DestroyFirstMatches()
     {
         // Create a HashSet to store unique candies
@@ -180,7 +149,5 @@ public class CandySwapper : MonoBehaviour
         matchesHor.Clear();
         matchesVer.Clear();
     }
-
-
 
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ArrayGizmo : MonoBehaviour
 {
     [SerializeField]
-    private GridManager gridManager; // Reference to your GridManager
+    private GridManagerViewer gridManager; // Reference to your GridManager
     [SerializeField]
     private GameSettings gameSettings;
 
@@ -31,11 +31,11 @@ public class ArrayGizmo : MonoBehaviour
                 {
                     if (gridManager.candiesArray[i, j] != null)
                     {
-                        Candy candy = gridManager.candiesArray[i, j].GetComponent<Candy>();
+                        CandyViewer candy = gridManager.candiesArray[i, j].GetComponent<CandyViewer>();
                         if (candy != null)
                         {
 
-                            Gizmos.color = GetColorFromCandyType(gridManager.candiesArray[i, j].GetComponent<Candy>().CandyType);
+                            Gizmos.color = GetColorFromCandyType(gridManager.candiesArray[i, j].GetComponent<CandyViewer>().CandyType);
 
                             // Offset the position based on the grid and draw the cube
                             Vector3 cubePosition = basePosition + new Vector3(j + offsetX, i + offsetY, 0);
@@ -48,7 +48,7 @@ public class ArrayGizmo : MonoBehaviour
         }
     }
 
-    private void DisplayCandyProperties(Vector3 position, Candy candy)
+    private void DisplayCandyProperties(Vector3 position, CandyViewer candy)
     {
         // You can adjust the offset as needed
         Vector3 labelPosition = position + new Vector3(0, 0.5f, 0); // Adjust Y offset for visibility
@@ -57,8 +57,8 @@ public class ArrayGizmo : MonoBehaviour
         // Display the candy properties using Handles
         Handles.Label(labelPosition,
             $"Type: {candy.CandyType}\n" +
-            $"PosI: {candy.PosInArrayI}\n" +
-            $"PosJ: {candy.PosInArrayJ}\n" +
+            $"PosI: {candy.CandyModel.PosInArrayI}\n" +
+            $"PosJ: {candy.CandyModel.PosInArrayJ}\n" +
             $"PosX: {candy.PosX}\n" +
             $"PosY: {candy.PosY}");
 #endif

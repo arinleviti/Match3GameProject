@@ -1,47 +1,31 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchHandler : MonoBehaviour
+public class MatchHandlerModel
 {
-    private static MatchHandler instance;
+    private bool keepLooking;
+    private GameObject[,] _candiesArray;
+    private MatchHandlerViewer _matchHandlerViewer;
+    private CandyPool _candyPool;
+    private GameObject _candyParent;
     public List<GameObject> Matches { get; private set; } = new List<GameObject>();
     private GameSettings _gameSettings;
-    private GameObject[,] _candiesArray;
-    private GameObject[,] _gridCellsArray;
-    private GameObject _candyParent;
-    private CandyPool _candyPool;
-    public bool keepLooking; 
 
-    public static MatchHandler Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                GameObject go = new GameObject("MatchHandler");
-                instance = go.AddComponent<MatchHandler>();
-            }
-            return instance;
-        }
-    }
-
-    public void Initialize(GameSettings gameSettings, GameObject[,] candiesArray, GameObject candyParent, GameObject candyPool)
+    public MatchHandlerModel(GameSettings gameSettings, GameObject[,] candiesArray, MatchHandlerViewer matchHandlerViewer, CandyPool candyPool, GameObject candyParent)
     {
         _gameSettings = gameSettings;
         _candiesArray = candiesArray;
+        _matchHandlerViewer = matchHandlerViewer;
+        _candyPool = candyPool;
         _candyParent = candyParent;
-        _candyPool = candyPool.GetComponent<CandyPool>();
     }
-    //Called by GridManager to remove matches when the game loads (using FixMatch (useFixMatch =true)), and after each user-prompted match (using CheckRowAndColumn (useFixMatch = false)
-    //to check if the swap creates more matches.
     public IEnumerator CheckAndFixAllMatches(bool useFixMatch)
     {
         bool foundMatch;
         keepLooking = true;
         do
-        {           
+        {
             Matches.Clear();
             List<GameObject> tempMatches = new List<GameObject>(); // Ensure tempMatches is a new instance
             foundMatch = false;
@@ -69,7 +53,7 @@ public class MatchHandler : MonoBehaviour
                         foundMatch = true;
                     }
                 }
-                
+
             }
             // Check columns for matches
             for (int j = 0; j < _gameSettings.tilesNumberJ; j++)
@@ -98,17 +82,18 @@ public class MatchHandler : MonoBehaviour
                         foundMatch = true;
                     }
                 }
-                
+
             }
-            if ( Matches.Count >= _gameSettings.candiesToMatch)
-            {              
+            if (Matches.Count >= _gameSettings.candiesToMatch)
+            {
                 List<GameObject> emptyList = new List<GameObject>();
                 List<GameObject> clonedList = CandyAnimationsController.Instance.CreateRotationList(Matches, emptyList, _gameSettings, _candyPool);
                 foreach (GameObject candy in clonedList)
                 {
-                    StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
+                    _matchHandlerViewer.CoroutineWrapper(candy);
+                   
                 }
-                DestroyMatches.Instance.ReturnMatchesInList(Matches); 
+                DestroyMatches.Instance.ReturnMatchesInList(Matches);
                 Matches.Clear();
                 keepLooking = true;
             }
@@ -123,7 +108,6 @@ public class MatchHandler : MonoBehaviour
         }
         yield return null;
     }
-
     private void AddToMatchList(List<GameObject> tempMatches)
     {
         foreach (var match in tempMatches)
@@ -135,14 +119,13 @@ public class MatchHandler : MonoBehaviour
         }
     }
 
-
     public bool IsMatch(int x1, int y1, int x2, int y2, int x3, int y3)
     {
         if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
         {
-            Candy c1 = _candiesArray[x1, y1].GetComponent<Candy>();
-            Candy c2 = _candiesArray[x2, y2].GetComponent<Candy>();
-            Candy c3 = _candiesArray[x3, y3].GetComponent<Candy>();
+            CandyViewer c1 = _candiesArray[x1, y1].GetComponent<CandyViewer>();
+            CandyViewer c2 = _candiesArray[x2, y2].GetComponent<CandyViewer>();
+            CandyViewer c3 = _candiesArray[x3, y3].GetComponent<CandyViewer>();
 
             return c1.CandyType == c2.CandyType && c1.CandyType == c3.CandyType;
         }
@@ -169,7 +152,7 @@ public class MatchHandler : MonoBehaviour
 
         //Debug.Log("Loaded " + prefabs.Length + " prefabs from " + folderPath);
 
-        Candy oldCandyScript = oldCandy.GetComponent<Candy>();
+        CandyViewer oldCandyScript = oldCandy.GetComponent<CandyViewer>();
         List<GameObject> availablePrefabs = new List<GameObject>();
 
         // Print all candy types for debugging
@@ -177,7 +160,7 @@ public class MatchHandler : MonoBehaviour
 
         foreach (GameObject prefab in prefabs)
         {
-            Candy candyPrefab = prefab.GetComponent<Candy>();
+            CandyViewer candyPrefab = prefab.GetComponent<CandyViewer>();
             /*Debug.Log("Prefab candy type: " + candyPrefab.CandyType);*/ // Debugging output
             if (candyPrefab.CandyType != oldCandyScript.CandyType)
             {
@@ -202,9 +185,9 @@ public class MatchHandler : MonoBehaviour
         newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
 
         _candyPool.ReturnCandy(oldCandy);
-        CandyType newCandyType = newCandyPrefab.GetComponent<Candy>().CandyType;
+        CandyType newCandyType = newCandyPrefab.GetComponent<CandyViewer>().CandyType;
         GameObject newCandy = _candyPool.GetCandy(newCandyType);
-        
+
         if (newCandy == null)
         {
             Debug.LogError("Failed to instantiate new candy.");
@@ -212,20 +195,18 @@ public class MatchHandler : MonoBehaviour
         }
         newCandy.transform.SetParent(_candyParent.transform);
 
-        Candy newCandyScript = newCandy.GetComponent<Candy>();
-       
-        newCandyScript.SetArrayPosition(newCandy,_candiesArray,i,j);
-        newCandyScript.SetPhysicalPosition(newCandy, position);
-       
+        CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
+
+        newCandyScript.SetArrayPosition(newCandy, _candiesArray, i, j);
+        newCandyScript.SetPhysicalPosition(position);
+
 
         // Check for missing candies after replacement
         if (_candiesArray[i, j] == null)
         {
             Debug.LogError($"Candy missing at position X: {i}, Y: {j} after fixing match.");
         }
-        
+
 
     }
-
-    
 }
