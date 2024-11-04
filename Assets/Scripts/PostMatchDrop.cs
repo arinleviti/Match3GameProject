@@ -4,30 +4,34 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
+
 public class PostMatchDrop : MonoBehaviour
 {
-    //public MatchHandler MatchHandler;
+    //public MatchHandlerViewer MatchHandlerViewer;
     private static PostMatchDrop instance;
     private CandyPool _candyPool;
     private GameSettings _gameSettings;
-    private GridManager _gridManagerGO;
-    private GameObject _movementControllerGO;
-    private MovementController _movementController;
+    private GridManagerViewer _gridManagerGO;
+    private GameObject _movementViewerGO;
+    private MovementViewer _movementViewer;
     //private List<(int,int)> droppingCandiesCoordinates = new List<(int,int)> ();
     private bool keepChecking = true;
 
-    public MatchHandler MatchHandler { get; set; }
+    public MatchHandlerViewer MatchHandlerViewer { get; set; }
     public static PostMatchDrop Instance
     {
         get
         {
+
             if (instance == null)
             {
                 GameObject go = new GameObject("PostMatchDrop");
                 instance = go.AddComponent<PostMatchDrop>();
-                DontDestroyOnLoad(go); // Ensure this new GameObject persists
+                /*DontDestroyOnLoad(go);*/ // Ensure this new GameObject persists
                 Debug.Log("PostMatchDrop instance created.");
             }
+
+
             return instance;
         }
     }
@@ -46,19 +50,19 @@ public class PostMatchDrop : MonoBehaviour
 
     private void Start()
     {
-        GridManager gridManager = _gridManagerGO.GetComponent<GridManager>();
-        CandySpawner.Instance.Initialize(_gameSettings, gridManager, _candyPool);
+        GridManagerViewer gridManager = _gridManagerGO.GetComponent<GridManagerViewer>();
+        CandySpawnerViewer.Instance.Initialize(_gameSettings, gridManager, _candyPool);
     }
 
-    public void Initialize(MatchHandler matchHandler, CandyPool candyPool, GameSettings gameSettings, GridManager gridManager, GameObject movementController)
+    public void Initialize(MatchHandlerViewer matchHandler, CandyPool candyPool, GameSettings gameSettings, GridManagerViewer gridManager, GameObject movementViewerGO)
     {
-        MatchHandler = matchHandler;
+        MatchHandlerViewer = matchHandler;
         _candyPool = candyPool;
         _gameSettings = gameSettings;
         _gridManagerGO = gridManager;
-        _movementControllerGO = movementController;
-        _movementController = _movementControllerGO.GetComponent<MovementController>();
-        _movementController.OnMovePerformedComplete += EventWrapper;
+        _movementViewerGO = movementViewerGO;
+        _movementViewer = _movementViewerGO.GetComponent<MovementViewer>();
+        _movementViewer.OnMovePerformedComplete += EventWrapper;
     }
     private void EventWrapper()
     {
@@ -73,13 +77,13 @@ public class PostMatchDrop : MonoBehaviour
             while (keepChecking)
             {
                 //Checks for matches and destroys them.
-                yield return StartCoroutine(MatchHandler.Instance.CheckAndFixAllMatches(false));
+                yield return StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(false));
                 //Scans the grid for empty tiles and drops the tiles above the empty slots.
                 yield return StartCoroutine(ScanGridforEmptyTiles());
             }
             //Spawns the candies
-            CandySpawner.Instance.CheckEmptiesReplaceSpawn();
-            //yield return StartCoroutine(CandySpawner.Instance.SpawnObjects());
+            CandySpawnerViewer.Instance.SpawnerModel.CheckEmptiesReplaceSpawn();
+            //yield return StartCoroutine(CandySpawnerViewer.Instance.SpawnObjects());
             //Debug.Log("Performed one cicle of post move checks");
         } while (CheckForMatches());
         //CheckCandiesArrayForNulls();
@@ -91,7 +95,7 @@ public class PostMatchDrop : MonoBehaviour
         {
             for (int j = 0; j < _gameSettings.tilesNumberJ - 2; j++)
             {
-                if (MatchHandler.IsMatch(i, j, i, j + 1, i, j + 2))
+                if (MatchHandlerViewer.MatchHandlerModel.IsMatch(i, j, i, j + 1, i, j + 2))
                 {
                     return true;
                 }
@@ -101,7 +105,7 @@ public class PostMatchDrop : MonoBehaviour
         {
             for (int i = 0; i < _gameSettings.tilesNumberI - 2; i++)
             {
-                if (MatchHandler.IsMatch(i, j, i + 1, j, i + 2, j))
+                if (MatchHandlerViewer.MatchHandlerModel.IsMatch(i, j, i + 1, j, i + 2, j))
                 {
                     return true;
                 }
@@ -143,7 +147,7 @@ public class PostMatchDrop : MonoBehaviour
                 {
                     continue;
                 }
-                else  Debug.Log("Drop type can't be determined.");
+                else Debug.Log("Drop type can't be determined.");
             }
         }
         yield return null;
@@ -151,38 +155,38 @@ public class PostMatchDrop : MonoBehaviour
 
     public IEnumerator DropCandy(GameObject candy, int dropIndex)
     {
-        Candy candyScript = candy.GetComponent<Candy>();
-        int oldPositionI = candyScript.PosInArrayI;
-        int oldPositionJ = candyScript.PosInArrayJ;
+        CandyViewer candyScript = candy.GetComponent<CandyViewer>();
+        int oldPositionI = candyScript.CandyModel.PosInArrayI;
+        int oldPositionJ = candyScript.CandyModel.PosInArrayJ;
 
-        int newPositionI = candyScript.PosInArrayI + dropIndex;
-        int newPositionJ = candyScript.PosInArrayJ;
+        int newPositionI = candyScript.CandyModel.PosInArrayI + dropIndex;
+        int newPositionJ = candyScript.CandyModel.PosInArrayJ;
         Vector3 oldPosition = candy.transform.position;
-       
+
         candyScript.SetArrayPosition(candy, _gridManagerGO.candiesArray, newPositionI, newPositionJ);
-        candyScript.SetPhysicalPosition(candy, _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ].transform.position);
-        
-        GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.PosInArrayI, candyScript.PosInArrayJ];
+        candyScript.SetPhysicalPosition(_gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ].transform.position);
+
+        GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ];
         GridCell gridCellScript = gridCellUnderCandy.GetComponent<GridCell>();
         Vector3 newPosition = new Vector3(gridCellScript.PosX, gridCellScript.PosY, -1);
         yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, oldPosition, newPosition, _gameSettings.dropSpeed));
-        
-        
+
+
         _gridManagerGO.candiesArray[oldPositionI, oldPositionJ] = null;
-        
+
 
     }
     private void OnDestroy()
     {
-        if (_movementController != null)
+        if (_movementViewer != null)
         {
-            _movementController.OnMovePerformedComplete -= EventWrapper;
+            _movementViewer.OnMovePerformedComplete -= EventWrapper;
         }
     }
 
     public void CheckCandiesArrayForNulls()
     {
-        
+
         int rows = _gridManagerGO.candiesArray.GetLength(0); // Number of rows (I dimension)
         int columns = _gridManagerGO.candiesArray.GetLength(1); // Number of columns (J dimension)
 
