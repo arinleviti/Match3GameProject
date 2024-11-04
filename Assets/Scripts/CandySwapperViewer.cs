@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CandySwapperViewer : MonoBehaviour
+
+
+
+public class CandySwapperViewer :  MonoBehaviour
 {
     private CandyViewer _selectedCandy;
     private GridManagerViewer _gridManager;
     //public List<GameObject> matchesVer = new List<GameObject>();
     //public List<GameObject> matchesHor = new List<GameObject>();
-    private GameSettings _gameSettings;
+    public GameSettings _gameSettings; 
     private CandyPool _candyPool;
     //private bool scoreManagerInitialized = false;
     public CandySwapperModel SwapperModel { get; private set; }

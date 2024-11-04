@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using PIANamespace;
 
 
 // This class contains the logic that allows candies to be moved, interacting with the Input System.
@@ -20,7 +21,8 @@ public class MovementViewer : MonoBehaviour
     private CandyPool candyPool;
     private MovementModelController movementModelController;
     public event Action OnMovePerformedComplete;
-
+    
+    
 
     //private bool isActive1 = false;
 
@@ -33,19 +35,22 @@ public class MovementViewer : MonoBehaviour
         gridManager = FindObjectOfType<GridManagerViewer>();
         matchHandler = FindObjectOfType<MatchHandlerViewer>();
         moveAction.Enable();
+        //_candySwapperViewer = CandySwapperViewer.Instance;
+        //_candySwapperModel =  _candySwapperViewer.
     }
     public void Initialize(CandyPool candyPoolScript )
     {
         
         candyPool = candyPoolScript;
         movementModelController = new MovementModelController(gridManager, gameSettings, candyPool, matchHandler, this);
-        moveAction.performed += movementModelController.OnMovePerformed;
+       
+        moveAction.performed += movementModelController.OnMoveCallback;
     }
     
 
     private void OnDisable()
     {
-        moveAction.performed -= movementModelController.OnMovePerformed; // Unsubscribe from the event to avoid memory leaks
+        moveAction.performed -= movementModelController.OnMoveCallback; // Unsubscribe from the event to avoid memory leaks
         moveAction.Disable();
     }
 

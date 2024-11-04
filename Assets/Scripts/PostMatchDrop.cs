@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
+
 public class PostMatchDrop : MonoBehaviour
 {
     //public MatchHandlerViewer MatchHandlerViewer;
@@ -21,13 +22,16 @@ public class PostMatchDrop : MonoBehaviour
     {
         get
         {
+
             if (instance == null)
             {
                 GameObject go = new GameObject("PostMatchDrop");
                 instance = go.AddComponent<PostMatchDrop>();
-                DontDestroyOnLoad(go); // Ensure this new GameObject persists
+                /*DontDestroyOnLoad(go);*/ // Ensure this new GameObject persists
                 Debug.Log("PostMatchDrop instance created.");
             }
+
+
             return instance;
         }
     }
@@ -143,7 +147,7 @@ public class PostMatchDrop : MonoBehaviour
                 {
                     continue;
                 }
-                else  Debug.Log("Drop type can't be determined.");
+                else Debug.Log("Drop type can't be determined.");
             }
         }
         yield return null;
@@ -158,18 +162,18 @@ public class PostMatchDrop : MonoBehaviour
         int newPositionI = candyScript.CandyModel.PosInArrayI + dropIndex;
         int newPositionJ = candyScript.CandyModel.PosInArrayJ;
         Vector3 oldPosition = candy.transform.position;
-       
+
         candyScript.SetArrayPosition(candy, _gridManagerGO.candiesArray, newPositionI, newPositionJ);
         candyScript.SetPhysicalPosition(_gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ].transform.position);
-        
+
         GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ];
         GridCell gridCellScript = gridCellUnderCandy.GetComponent<GridCell>();
         Vector3 newPosition = new Vector3(gridCellScript.PosX, gridCellScript.PosY, -1);
         yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, oldPosition, newPosition, _gameSettings.dropSpeed));
-        
-        
+
+
         _gridManagerGO.candiesArray[oldPositionI, oldPositionJ] = null;
-        
+
 
     }
     private void OnDestroy()
@@ -182,7 +186,7 @@ public class PostMatchDrop : MonoBehaviour
 
     public void CheckCandiesArrayForNulls()
     {
-        
+
         int rows = _gridManagerGO.candiesArray.GetLength(0); // Number of rows (I dimension)
         int columns = _gridManagerGO.candiesArray.GetLength(1); // Number of columns (J dimension)
 

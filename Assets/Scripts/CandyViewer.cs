@@ -33,7 +33,10 @@ public class CandyViewer : MonoBehaviour, ICandyViewer
     {
         CandyModel = new CandyModel(CandyType);
     }
-
+    public void InitializeForTest(CandyType candyType)
+    {
+        CandyModel = new CandyModel(candyType);
+    }
    
     public void SetPhysicalPosition(Vector3 position)
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static MovementModelController;
 
 public class MovementModelController
 {
@@ -14,7 +15,8 @@ public class MovementModelController
     private MovementViewer _movementViewer;
     public bool IsMoving { get; set; } = false;
     private bool isActive1 = false;
- 
+    private CandySwapperViewer _candySwapperViewer;
+    private PostMatchDrop _postMatchDrop;
 
     public MovementModelController(GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, MatchHandlerViewer matchHandler, MovementViewer movementViewer)
     {
@@ -23,34 +25,48 @@ public class MovementModelController
         _candyPool = candyPool;
         _matchHandler = matchHandler;
         _movementViewer = movementViewer;
+        _candySwapperViewer = CandySwapperViewer.Instance;
     }
-
-    public void OnMovePerformed(InputAction.CallbackContext context/*, CandyViewer selectedCandy*/)
+    public void OnMoveCallback(InputAction.CallbackContext context)
     {
+        // Convert the context to Vector2 and pass it to OnMovePerformed
+        Vector2 moveInput = context.ReadValue<Vector2>();
+        OnMovePerformed(moveInput);
+       
+    }
+    private void InitializePMDIfNeeded()
+    {
+        if (_postMatchDrop == null)
+        {
+            _postMatchDrop = PostMatchDrop.Instance;
+            _postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject);
+     
+        }
+        
+    }
+    public void OnMovePerformed(Vector2 moveInput)
+    {
+       
         // Get the swipe direction from the Move action.
         // returns a Vector2 value that represents how much the mouse has moved on the X and Y axes since the last frame.
         // values received represent the movement of the mouse relative to its previous position, not the actual world position of the mouse.
-        Vector2 moveInput = context.ReadValue<Vector2>();
+        //Vector2 moveInput = context.ReadValue<Vector2>();
 
         if (SelectedCandy != null && moveInput.magnitude > _gameSettings.deltaMovementThreshold)
         {
             if (!IsMoving)
             {
-                
-                CandySwapperViewer.Instance.Initialize(SelectedCandy, _gridManager, _gameSettings, _candyPool);
-                // SwapCandiesWrapper(moveInput);
-                CandySwapperViewer.Instance.SwapperModel.SwapCandies(moveInput);
-                /*SwapCandies(moveInput);*/  // Move the candy based on the input direction
-                Debug.Log("Move Input Magnitude: " + moveInput.magnitude);
-                //matchHandler = FindObjectOfType<MatchHandlerViewer>();
+
+                _candySwapperViewer.Initialize(SelectedCandy, _gridManager, _gameSettings, _candyPool);
+                _candySwapperViewer.SwapperModel.SwapCandies(moveInput);
 
                 if (isActive1 == false)
                 {
-                    PostMatchDrop.Instance.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject);
+                    InitializePMDIfNeeded();
+                    //_postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject);
                     isActive1 = true;
                 }
-                Debug.Log("OnMovePerformed triggered");
-                // PostMatchDrop.Instance.PostMovementMatchCheck();
+
                 IsMoving = true;
                 _movementViewer.InvokeEvent();
             }

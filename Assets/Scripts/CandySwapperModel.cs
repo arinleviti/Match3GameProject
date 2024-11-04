@@ -2,16 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CandySwapperModel
+
+public class CandySwapperModel 
 {
     private CandyViewer _selectedCandy;
     private GridManagerViewer _gridManager;
-    private GameSettings _gameSettings;
+    public GameSettings _gameSettings; 
     private CandyPool _candyPool;
     private CandySwapperViewer _swapperViewer;
     public List<GameObject> matchesVer = new List<GameObject>();
     public List<GameObject> matchesHor = new List<GameObject>();
     private bool scoreManagerInitialized = false;
+    private DestroyMatches _destroyMatches; // New field for dependency injection
     public CandySwapperModel(CandyViewer selectedCandy, GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, CandySwapperViewer swapperViewer)
     {
         _selectedCandy = selectedCandy;
@@ -19,6 +21,16 @@ public class CandySwapperModel
         _gameSettings = gameSettings;
         _candyPool = candyPool;
         _swapperViewer = swapperViewer;
+    }
+    // New constructor for testing
+    public CandySwapperModel(CandyViewer selectedCandy, GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, CandySwapperViewer swapperViewer, DestroyMatches destroyMatches)
+    {
+        _selectedCandy = selectedCandy;
+        _gridManager = gridManager;
+        _gameSettings = gameSettings;
+        _candyPool = candyPool;
+        _swapperViewer = swapperViewer;
+        _destroyMatches = destroyMatches; // Use the injected instance
     }
     public void SwapCandies(Vector2 direction)
     {
@@ -116,7 +128,7 @@ public class CandySwapperModel
         }
     }
    
-    private void DestroyFirstMatches()
+    public void DestroyFirstMatches()
     {
         // Create a HashSet to store unique candies
         HashSet<GameObject> uniqueMatches = new HashSet<GameObject>();
