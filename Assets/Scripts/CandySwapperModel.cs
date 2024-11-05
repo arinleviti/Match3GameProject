@@ -73,21 +73,21 @@ public class CandySwapperModel
             if (newI >= 0 && newI < _gridManager.gameSettings.tilesNumberI && newJ >= 0 && newJ < _gridManager.gameSettings.tilesNumberJ)
             {
                 // Get the second candy to be swapped with the selected candy
-                CandyViewer secondCandy = _gridManager.candiesArray[newI, newJ].GetComponent<CandyViewer>();
+                CandyViewer secondCandy = _gridManager.CandiesArray[newI, newJ].GetComponent<CandyViewer>();
 
                 // Swap the candies in the array
-                _gridManager.candiesArray[currentI, currentJ] = secondCandy.gameObject;
-                _gridManager.candiesArray[newI, newJ] = _selectedCandy.gameObject;
+                _gridManager.CandiesArray[currentI, currentJ] = secondCandy.gameObject;
+                _gridManager.CandiesArray[newI, newJ] = _selectedCandy.gameObject;
 
                 // Update their properties
 
-                _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.candiesArray, newI, newJ);
-                secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.candiesArray, currentI, currentJ);
+                _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.CandiesArray, newI, newJ);
+                secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.CandiesArray, currentI, currentJ);
                 matchesHor.Clear();
                 matchesVer.Clear();
 
-                bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(_selectedCandy.gameObject, _gridManager.candiesArray, true, out matchesHor);
-                bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(_selectedCandy.gameObject, _gridManager.candiesArray, false, out matchesVer);
+                bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(_selectedCandy.gameObject, _gridManager.CandiesArray, true, out matchesHor);
+                bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(_selectedCandy.gameObject, _gridManager.CandiesArray, false, out matchesVer);
                 //List<GameObject> combinedMatches = new List<GameObject>(matchesHor);
                 //combinedMatches.AddRange(matchesVer);
 
@@ -119,8 +119,8 @@ public class CandySwapperModel
                 {
                     Debug.Log("No match, swapping back the array and candy positions.");
 
-                    _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.candiesArray, currentI, currentJ);
-                    secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.candiesArray, newI, newJ);
+                    _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.CandiesArray, currentI, currentJ);
+                    secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.CandiesArray, newI, newJ);
                 }
             }
             // Deselect the candy after moving

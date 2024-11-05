@@ -15,7 +15,7 @@ public class ArrayGizmo : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if (gridManager.candiesArray != null)
+        if (gridManager.CandiesArray != null)
         {
             // Get the position of the ArrayGizmo GameObject
             Vector3 basePosition = transform.position;
@@ -25,17 +25,17 @@ public class ArrayGizmo : MonoBehaviour
             float offsetY = gameSettings.tilesNumberI * 0.5f; // Adjust the multiplier as needed
 
             // Loop through the array to draw Gizmos
-            for (int i = 0; i < gridManager.candiesArray.GetLength(0); i++)
+            for (int i = 0; i < gridManager.CandiesArray.GetLength(0); i++)
             {
-                for (int j = 0; j < gridManager.candiesArray.GetLength(1); j++)
+                for (int j = 0; j < gridManager.CandiesArray.GetLength(1); j++)
                 {
-                    if (gridManager.candiesArray[i, j] != null)
+                    if (gridManager.CandiesArray[i, j] != null)
                     {
-                        CandyViewer candy = gridManager.candiesArray[i, j].GetComponent<CandyViewer>();
+                        CandyViewer candy = gridManager.CandiesArray[i, j].GetComponent<CandyViewer>();
                         if (candy != null)
                         {
 
-                            Gizmos.color = GetColorFromCandyType(gridManager.candiesArray[i, j].GetComponent<CandyViewer>().CandyType);
+                            Gizmos.color = GetColorFromCandyType(gridManager.CandiesArray[i, j].GetComponent<CandyViewer>().CandyType);
 
                             // Offset the position based on the grid and draw the cube
                             Vector3 cubePosition = basePosition + new Vector3(j + offsetX, i + offsetY, 0);

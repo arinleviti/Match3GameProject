@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class CandyPool : MonoBehaviour
+public class CandyPool : MonoBehaviour, ICandyPool
 {
     private readonly object getCandyLock = new object();
     private readonly object returnCandyLock = new object();
@@ -12,6 +12,9 @@ public class CandyPool : MonoBehaviour
     private Queue<GameObject>[] arrayOfcandyQueues;
     [SerializeField] public GameSettings _gameSettings;
     private ICandyFactory _candyFactory;
+    
+    //Only needed for the mock class
+    public List<GameObject> ReturnedCandies { get; set; }
 
     private void Awake()
     {
@@ -146,4 +149,10 @@ public class MockCandyFactory : ICandyFactory
          
         return mockCandy;
     }
+}
+
+public interface ICandyPool
+{
+    public List<GameObject> ReturnedCandies { get; set; }
+    public void ReturnCandy(GameObject candyGO);
 }
