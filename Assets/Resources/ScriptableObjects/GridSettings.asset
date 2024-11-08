@@ -15,7 +15,7 @@ MonoBehaviour:
   tileSize: 1
   candyScaleFactor: 0.9
   tilesNumberI: 8
-  tilesNumberJ: 9
+  tilesNumberJ: 7
   candyTypesCount: 4
   candyTypes: 00000000010000000200000003000000
   candies:

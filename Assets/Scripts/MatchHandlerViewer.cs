@@ -41,5 +41,34 @@ public class MatchHandlerViewer : MonoBehaviour
     {
         StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
     }
- 
+    public GameObject[] LoadAllPrefabs(string folderPath)
+    {
+        GameObject[] prefabs = Resources.LoadAll<GameObject>(folderPath);
+        return prefabs;
+    }
+    public CandyViewer GetCandyComponent(GameObject candy)
+    {
+        CandyViewer candyViewerScript = candy.GetComponent<CandyViewer>();
+        return candyViewerScript; 
+    }
+
+    public GameObject SelectRandomPrefab(List<GameObject> availablePrefabs)
+    {
+        GameObject newCandyPrefab = availablePrefabs[UnityEngine.Random.Range(0, availablePrefabs.Count)];
+        if (newCandyPrefab == null)
+        {
+            Debug.LogError("Selected new candy prefab is null.");           
+        }
+        return newCandyPrefab;
+    }
+    public Vector3 TransferPositionAndScale(GameObject oldCandy, GameObject newCandyPrefab)
+    {
+        Vector3 position = oldCandy.transform.position;
+        newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
+        return position;
+    }
+    public void SetCandyParent(GameObject newCandy, GameObject parent)
+    {
+        newCandy.transform.SetParent(parent.transform);
+    }
 }

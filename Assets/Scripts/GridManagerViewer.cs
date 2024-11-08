@@ -37,9 +37,9 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
         gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        gridManagerModel = new GridManagerModel();
+        gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
         Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-        PopulateBackdropGrid(firstTilePos, gridCellGO, CandiesArray);
+        gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
         MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
         movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
         movementViewerScript.Initialize(candyPoolScript);
@@ -60,14 +60,30 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
         gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        gridManagerModel = new GridManagerModel();
+        gridManagerModel = new GridManagerModel( gameSettings, this, gridCellsArray);
         Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-        PopulateBackdropGrid(firstTilePos, gridCellGO, CandiesArray);
+        gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
         MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
         movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
         movementViewerScript.Initialize(candyPoolScript);
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
+    }
+    public GameObject SetGridCellPosition(Vector2 firstTilePos, int i, int j)
+    {
+        Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
+        gridCellGO = InstantiateGridCell();
+        gridCellGO.transform.position = position;
+        gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 1);
+        return gridCellGO;
+    }
+    public void InitializeGridCell(int i, int j)
+    {
+        gridCellScript = gridCellGO.GetComponent<GridCell>();
+        gridCellScript.PosX = gridCellGO.transform.position.x;
+        gridCellScript.PosY = gridCellGO.transform.position.y;
+        gridCellScript.PosInArrayJ = j;
+        gridCellScript.PosInArrayI = i;
     }
     public GameObject InstantiateGridCell()
     {
@@ -88,6 +104,17 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         int randomIndex = random.Next(gameSettings.candies.Count);
         return gameSettings.candies[randomIndex].GetComponent<CandyViewer>().CandyType;
     }
+    public CandyViewer SetCandyInPlace(CandyType candyType)
+    {
+        Vector3 position = gridCellGO.transform.position;
+        GameObject randomCandy = candyPoolScript.GetCandy(candyType);
+        CandyViewer randomCandyScript = randomCandy.GetComponent<CandyViewer>();
+        Vector3 newPosition = new Vector3(position.x, position.y, -1);
+        randomCandyScript.SetPhysicalPosition(newPosition);
+        SetCandyParent(randomCandy);
+        return randomCandyScript;
+    }
+
     public void PopulateBackdropGrid(Vector2 firstTilePos, GameObject gridCellGO, GameObject[,] candiesArray)
     {
         for (int i = 0; i < gameSettings.tilesNumberI; i++)
