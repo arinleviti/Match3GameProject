@@ -114,45 +114,58 @@ public class CandyPool : MonoBehaviour, ICandyPool
 public interface ICandyFactory
 {
     GameObject CreateCandy(CandyType candyType, GameSettings gameSettings);
+    //CandyViewer GetCandyComponent(GameObject c, CandyType candyType);
+    //GameObject InstantiateAndActivateGO(GameObject prefab, GameSettings gameSettings);
 }
 
 public class CandyFactory : ICandyFactory
 {
     public GameObject CreateCandy(CandyType candyType, GameSettings gameSettings)
     {
-        GameObject prefab = gameSettings.candies.Find(c => c.GetComponent<CandyViewer>().CandyType == candyType);
+        GameObject prefab = gameSettings.candies.Find(c => GetCandyComponent(c, candyType).CandyType == candyType);
         if (prefab != null)
         {
-            var newCandy = Object.Instantiate(prefab);
-            newCandy.transform.localScale = new Vector3(gameSettings.candyScaleFactor, gameSettings.candyScaleFactor, gameSettings.candyScaleFactor);
-            newCandy.SetActive(true);
+            GameObject newCandy = InstantiateAndActivateGO(prefab, gameSettings);
             return newCandy;
         }
         else
         {
-            Debug.LogError($"No prefab found for CandyType: {candyType}");
             return null;
         }
     }
-}
-
-public class MockCandyFactory : ICandyFactory
-{
-    public GameObject CreateCandy(CandyType candyType, GameSettings gameSettings)
+    public CandyViewer GetCandyComponent(GameObject c, CandyType candyType) //candyType is for testing purposes only.
     {
-        // Create a mock GameObject for testing purposes
-        GameObject mockCandy = new GameObject($"MockCandy_{candyType}");
-        CandyViewer mockCandyScript = mockCandy.AddComponent<CandyViewer>();
-        mockCandyScript.CandyType = candyType;
-        mockCandyScript.InitializeForTest(candyType);
-        
-         
-        return mockCandy;
+        CandyViewer candyViewer = c.GetComponent<CandyViewer>();
+        return candyViewer;
+    }
+    public GameObject InstantiateAndActivateGO(GameObject prefab, GameSettings gameSettings)
+    {
+        var newCandy = Object.Instantiate(prefab);
+        newCandy.transform.localScale = new Vector3(gameSettings.candyScaleFactor, gameSettings.candyScaleFactor, gameSettings.candyScaleFactor);
+        newCandy.SetActive(true);
+        return newCandy;
     }
 }
+
+
+//public class MockCandyFactory : ICandyFactory
+//{
+//    public GameObject CreateCandy(CandyType candyType, GameSettings gameSettings)
+//    {
+//        // Create a mock GameObject for testing purposes
+//        GameObject mockCandy = new GameObject($"MockCandy_{candyType}");
+//        CandyViewer mockCandyScript = mockCandy.AddComponent<CandyViewer>();
+//        mockCandyScript.CandyType = candyType;
+//        mockCandyScript.InitializeForTest(candyType);
+        
+         
+//        return mockCandy;
+//    }
+//}
 
 public interface ICandyPool
 {
     public List<GameObject> ReturnedCandies { get; set; }
     public void ReturnCandy(GameObject candyGO);
+    public GameObject GetCandy(CandyType candyType);
 }

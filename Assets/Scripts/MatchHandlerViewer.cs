@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MatchHandlerViewer : MonoBehaviour
+public class MatchHandlerViewer : MonoBehaviour, IMatchHandlerViewer
 {
     private static MatchHandlerViewer instance;
     public MatchHandlerModel MatchHandlerModel { get; private set; }
@@ -71,4 +71,14 @@ public class MatchHandlerViewer : MonoBehaviour
     {
         newCandy.transform.SetParent(parent.transform);
     }
+}
+public interface IMatchHandlerViewer
+{
+    public void CoroutineWrapper(GameObject candy);
+    public CandyViewer GetCandyComponent(GameObject candy);
+    public GameObject[] LoadAllPrefabs(string folderPath);
+    public GameObject SelectRandomPrefab(List<GameObject> availablePrefabs);
+    public Vector3 TransferPositionAndScale(GameObject oldCandy, GameObject newCandyPrefab);
+    public void SetCandyParent(GameObject newCandy, GameObject parent);
+
 }

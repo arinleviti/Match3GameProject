@@ -47,20 +47,20 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
 
     }
-    //j corresponds to the row index (vertical position), which is equivalent to the X-coordinate
-    //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
+    //j corresponds to the row index(vertical position), which is equivalent to the X-coordinate
+    //i corresponds to the column index(horizontal position), which is equivalent to the Y-coordinate
     public void StartForTest()
     {
         candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
         candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
-        ICandyFactory candyFactory = new MockCandyFactory();
-        candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
+        //ICandyFactory candyFactory = new MockCandyFactory();
+        //candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
         gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
         gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        gridManagerModel = new GridManagerModel( gameSettings, this, gridCellsArray);
+        gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
         Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
         gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
         MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);

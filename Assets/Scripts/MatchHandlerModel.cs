@@ -5,14 +5,15 @@ using UnityEngine;
 public class MatchHandlerModel
 {
     private bool keepLooking;
-    private GameObject[,] _candiesArray;
-    private MatchHandlerViewer _matchHandlerViewer;
-    private CandyPool _candyPool;
+    public GameObject[,] _candiesArray;
+    private IMatchHandlerViewer _matchHandlerViewer;
+    private ICandyPool _candyPool;
     private GameObject _candyParent;
     public List<GameObject> Matches { get; private set; } = new List<GameObject>();
     private GameSettings _gameSettings;
 
-    public MatchHandlerModel(GameSettings gameSettings, GameObject[,] candiesArray, MatchHandlerViewer matchHandlerViewer, CandyPool candyPool, GameObject candyParent)
+    
+    public MatchHandlerModel(GameSettings gameSettings, GameObject[,] candiesArray, IMatchHandlerViewer matchHandlerViewer, ICandyPool candyPool, GameObject candyParent)
     {
         _gameSettings = gameSettings;
         _candiesArray = candiesArray;
@@ -124,7 +125,6 @@ public class MatchHandlerModel
         if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
         {
             CandyViewer c1 = _matchHandlerViewer.GetCandyComponent(_candiesArray[x1, y1]);
-            //CandyViewer c1 = _candiesArray[x1, y1].GetComponent<CandyViewer>();
             CandyViewer c2 = _matchHandlerViewer.GetCandyComponent(_candiesArray[x2, y2]);
             CandyViewer c3 = _matchHandlerViewer.GetCandyComponent(_candiesArray[x3, y3]);
 

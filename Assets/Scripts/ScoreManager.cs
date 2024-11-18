@@ -7,7 +7,7 @@ public class ScoreManager : MonoBehaviour
 {
     public int CurrentScore {  get; private set; }
     public event Action OnScoreChanged;
-    private GameSettings gameSettings;
+    public GameSettings gameSettings;
     
 
     public static ScoreManager instance;
@@ -36,8 +36,11 @@ public class ScoreManager : MonoBehaviour
         
     }
     
-    private int CalculatePoints(List<GameObject> listOfMatches)
-    {       
+    public int CalculatePoints(List<GameObject> listOfMatches)
+    {
+        if (listOfMatches.Count < 3)
+            throw new InvalidOperationException("List must contain at least 3 elements to calculate points.");
+
         switch (listOfMatches.Count)
         
         {
@@ -45,7 +48,7 @@ public class ScoreManager : MonoBehaviour
             case 4: return gameSettings.pointsFor4;
             case 5: return gameSettings.pointsFor5;
             case 6: return gameSettings.pointsFor6OrHigher;
-            default: return 0;
+            default: return listOfMatches.Count >= 6 ? gameSettings.pointsFor6OrHigher : 0;
         }
     }
 
