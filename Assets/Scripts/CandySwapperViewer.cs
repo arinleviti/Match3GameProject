@@ -103,11 +103,11 @@ public class CandySwapperViewer :  MonoBehaviour
     }
     public void InitializeScoreManager(GameSettings gameSettings)
     {
-        ScoreManager.Instance.Initialize(gameSettings);
+        ScoreManagerViewer.Instance.Initialize(gameSettings);
     }
     public void AddPoints(List<GameObject> rotationList)
     {
-        ScoreManager.Instance.AddPoints(rotationList);
+        ScoreManagerViewer.Instance.AddPoints(rotationList);
     }
     public (List<GameObject> CheckRowAndColumn, bool horVerCheck) CheckRowAndColumns (GameObject selectedCandy, GameObject[,] candiesArray, bool isHorizontal, List<GameObject> matchesHorVer)
     {

@@ -9,6 +9,7 @@ public class CandySpawnerModel
     private GridManagerViewer _gridManager;
     private CandySpawnerViewer _candySpawnerViewer;
 
+
     public CandySpawnerModel(GameSettings gameSettings, CandyPool candyPool, GridManagerViewer gridManager, CandySpawnerViewer candySpawnerViewer)
     {
         _gameSettings = gameSettings;
@@ -16,7 +17,7 @@ public class CandySpawnerModel
         _gridManager = gridManager;
         _candySpawnerViewer = candySpawnerViewer;
     }
-    public void CheckEmptiesReplaceSpawn()
+    public void CheckEmptiesReplaceSpawn(int candyTypeIndex)
     {
         //newCandiesList.Clear();
         for (int i = 0; i < _gameSettings.tilesNumberI; i++)
@@ -25,7 +26,7 @@ public class CandySpawnerModel
             {
                 if (_gridManager.CandiesArray[i, j] == null)
                 {
-                    int randomIndex = Random.Range(0, _gameSettings.candyTypes.Count);
+                    int randomIndex = Random.Range(0, candyTypeIndex );
                     GameObject newCandy = _candyPool.GetCandy((CandyType)randomIndex);
                     CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
                     GameObject gridCell = _gridManager.gridCellsArray[i, j];

@@ -20,12 +20,12 @@ public class IsMatchTest
     [SetUp]
     public void SetUp()
     {
-        candy1 = CreateCandy("Candy1", CandyType.Blue, 0, 0, 4.5f, 4.5f);
-        candy2 = CreateCandy("Candy2", CandyType.Blue, 0, 1, 4.5f, 4.5f);
-        candy3 = CreateCandy("Candy3", CandyType.Blue, 0, 2, 6.5f, 6.5f);
-        candy1 = CreateCandy("Candy4", CandyType.Blue, 0, 0, 4.5f, 4.5f);
-        candy2 = CreateCandy("Candy5", CandyType.Blue, 0, 1, 4.5f, 4.5f);
-        candy3 = CreateCandy("Candy6", CandyType.Yellow, 0, 2, 6.5f, 6.5f);
+        candy1 = CreateCandy("Candy1", CandyType.Pumpkin, 0, 0, 4.5f, 4.5f);
+        candy2 = CreateCandy("Candy2", CandyType.Pumpkin, 0, 1, 4.5f, 4.5f);
+        candy3 = CreateCandy("Candy3", CandyType.Pumpkin, 0, 2, 6.5f, 6.5f);
+        candy1 = CreateCandy("Candy4", CandyType.Pumpkin, 0, 0, 4.5f, 4.5f);
+        candy2 = CreateCandy("Candy5", CandyType.Pumpkin, 0, 1, 4.5f, 4.5f);
+        candy3 = CreateCandy("Candy6", CandyType.FrankenDead, 0, 2, 6.5f, 6.5f);
 
         // Initialize a 2D array with 1 row and 3 columns
         candiesArray = new GameObject[1, 3];

@@ -55,4 +55,5 @@ public class CandyViewer : MonoBehaviour, ICandyViewer
         candyModel.SetArrayPosition(candyGO, candiesArray, i, j);
     }
 }
-public enum CandyType { Blue = 0, Green = 1, Yellow =2, Red =3};
+public enum CandyType { Pumpkin = 0, Bat =1, BlackCandy =2, Coffin =3, Frankenstein =4,
+FrankenDead =6, Hat =7, Mummy =8, Potion =5, Vampire =9, WhiteCandy =10, Witch =11};

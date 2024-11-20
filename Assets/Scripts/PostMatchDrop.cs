@@ -16,7 +16,8 @@ public class PostMatchDrop : MonoBehaviour
     private MovementViewer _movementViewer;
     //private List<(int,int)> droppingCandiesCoordinates = new List<(int,int)> ();
     private bool keepChecking = true;
-
+    private int _numberOfCandyTypes =4;
+    private ScoreManagerViewer _scoreManager;
     public MatchHandlerViewer MatchHandlerViewer { get; set; }
     public static PostMatchDrop Instance
     {
@@ -63,6 +64,9 @@ public class PostMatchDrop : MonoBehaviour
         _movementViewerGO = movementViewerGO;
         _movementViewer = _movementViewerGO.GetComponent<MovementViewer>();
         _movementViewer.OnMovePerformedComplete += EventWrapper;
+        _scoreManager = ScoreManagerViewer.Instance;
+        _scoreManager.Initialize(gameSettings);
+        _scoreManager.OnLevelUp += ChangeNumberOfCandyTypes;
     }
     private void EventWrapper()
     {
@@ -82,13 +86,16 @@ public class PostMatchDrop : MonoBehaviour
                 yield return StartCoroutine(ScanGridforEmptyTiles());
             }
             //Spawns the candies
-            CandySpawnerViewer.Instance.SpawnerModel.CheckEmptiesReplaceSpawn();
+            CandySpawnerViewer.Instance.SpawnerModel.CheckEmptiesReplaceSpawn(_numberOfCandyTypes);
             //yield return StartCoroutine(CandySpawnerViewer.Instance.SpawnObjects());
             //Debug.Log("Performed one cicle of post move checks");
         } while (CheckForMatches());
         //CheckCandiesArrayForNulls();
     }
-
+    public void ChangeNumberOfCandyTypes(int numberOfCandyTypesTypes)
+    {
+        _numberOfCandyTypes = numberOfCandyTypesTypes;
+    }
     public bool CheckForMatches()
     {
         for (int i = 0; i < _gameSettings.tilesNumberI; i++)

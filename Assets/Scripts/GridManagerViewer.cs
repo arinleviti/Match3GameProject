@@ -101,7 +101,7 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
 
     public CandyType DetermineCandyType()
     {
-        int randomIndex = random.Next(gameSettings.candies.Count);
+        int randomIndex = random.Next(gameSettings.CandyTypesLevel1);
         return gameSettings.candies[randomIndex].GetComponent<CandyViewer>().CandyType;
     }
     public CandyViewer SetCandyInPlace(CandyType candyType)

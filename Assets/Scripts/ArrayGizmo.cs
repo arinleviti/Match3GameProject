@@ -65,22 +65,38 @@ public class ArrayGizmo : MonoBehaviour
     }
 
 
-    
+
 
     private Color GetColorFromCandyType(CandyType candyType)
     {
         switch (candyType)
         {
-            case CandyType.Blue:
-                return Color.blue;
-            case CandyType.Green:
-                return Color.green;
-            case CandyType.Yellow:
-                return Color.yellow;
-            case CandyType.Red:
-                return Color.red;
+            case CandyType.Pumpkin:
+                return new Color(1.0f, 0.6f, 0.0f); // Orange
+            case CandyType.Bat:
+                return new Color(0.2f, 0.2f, 0.2f); // Dark Gray
+            case CandyType.BlackCandy:
+                return Color.black; // Black
+            case CandyType.Coffin:
+                return new Color(0.4f, 0.2f, 0.1f); // Brown
+            case CandyType.FrankenDead:
+                return new Color(0.5f, 0.9f, 0.5f); // Pale Green
+            case CandyType.Frankenstein:
+                return new Color(0.3f, 0.7f, 0.3f); // Green
+            case CandyType.Hat:
+                return new Color(0.5f, 0.0f, 0.5f); // Purple
+            case CandyType.Mummy:
+                return new Color(0.9f, 0.9f, 0.9f); // Off White
+            case CandyType.Potion:
+                return new Color(0.6f, 0.2f, 0.8f); // Magenta
+            case CandyType.Vampire:
+                return new Color(0.8f, 0.0f, 0.0f); // Dark Red
+            case CandyType.WhiteCandy:
+                return Color.white; // Pure White
+            case CandyType.Witch:
+                return new Color(0.0f, 0.5f, 0.0f); // Dark Green
             default:
-                return Color.white; // Fallback color
+                return Color.gray; // Fallback color
         }
     }
 }
