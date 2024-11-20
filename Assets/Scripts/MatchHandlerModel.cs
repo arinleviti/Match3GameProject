@@ -5,14 +5,15 @@ using UnityEngine;
 public class MatchHandlerModel
 {
     private bool keepLooking;
-    private GameObject[,] _candiesArray;
-    private MatchHandlerViewer _matchHandlerViewer;
-    private CandyPool _candyPool;
+    public GameObject[,] _candiesArray;
+    private IMatchHandlerViewer _matchHandlerViewer;
+    private ICandyPool _candyPool;
     private GameObject _candyParent;
     public List<GameObject> Matches { get; private set; } = new List<GameObject>();
     private GameSettings _gameSettings;
 
-    public MatchHandlerModel(GameSettings gameSettings, GameObject[,] candiesArray, MatchHandlerViewer matchHandlerViewer, CandyPool candyPool, GameObject candyParent)
+    
+    public MatchHandlerModel(GameSettings gameSettings, GameObject[,] candiesArray, IMatchHandlerViewer matchHandlerViewer, ICandyPool candyPool, GameObject candyParent)
     {
         _gameSettings = gameSettings;
         _candiesArray = candiesArray;
@@ -43,7 +44,7 @@ public class MatchHandlerModel
                         else if (!useFixMatch)
                         {
                             //Debug.Log($"matches found at:  {i}, {j} and  {i}, {j+1} and {i}, {j +2} ");
-                            bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i, j + 1], _candiesArray, true, out tempMatches);
+                            bool isMatch = PreMovementChecksViewer.Instance._preMovementChecksModel.CheckRowAndColumn(_candiesArray[i, j + 1], _candiesArray, true, out tempMatches);
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
@@ -70,7 +71,7 @@ public class MatchHandlerModel
                         {
                             //List<GameObject> tempMatches;
                             //Debug.Log($"matches found at:  {i}, {j} and  {i + 1}, {j} and {i + 2}, {j} ");
-                            bool isMatch = PreMovementChecks.Instance.CheckRowAndColumn(_candiesArray[i + 1, j], _candiesArray, false, out tempMatches);
+                            bool isMatch = PreMovementChecksViewer.Instance._preMovementChecksModel.CheckRowAndColumn(_candiesArray[i + 1, j], _candiesArray, false, out tempMatches);
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
@@ -123,9 +124,9 @@ public class MatchHandlerModel
     {
         if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
         {
-            CandyViewer c1 = _candiesArray[x1, y1].GetComponent<CandyViewer>();
-            CandyViewer c2 = _candiesArray[x2, y2].GetComponent<CandyViewer>();
-            CandyViewer c3 = _candiesArray[x3, y3].GetComponent<CandyViewer>();
+            CandyViewer c1 = _matchHandlerViewer.GetCandyComponent(_candiesArray[x1, y1]);
+            CandyViewer c2 = _matchHandlerViewer.GetCandyComponent(_candiesArray[x2, y2]);
+            CandyViewer c3 = _matchHandlerViewer.GetCandyComponent(_candiesArray[x3, y3]);
 
             return c1.CandyType == c2.CandyType && c1.CandyType == c3.CandyType;
         }
@@ -141,18 +142,15 @@ public class MatchHandlerModel
             return; // Exit if there's no candy to replace
         }
 
-        string folderPath = "Prefabs/CandyPrefabs";
-        GameObject[] prefabs = Resources.LoadAll<GameObject>(folderPath);
-
+        string folderPath = "Prefabs/CandyPrefabs";        
+        GameObject[] prefabs = _matchHandlerViewer.LoadAllPrefabs(folderPath);
         if (prefabs.Length == 0)
         {
             Debug.LogError("No prefabs found in the specified path: " + folderPath);
             return;
         }
 
-        //Debug.Log("Loaded " + prefabs.Length + " prefabs from " + folderPath);
-
-        CandyViewer oldCandyScript = oldCandy.GetComponent<CandyViewer>();
+        CandyViewer oldCandyScript = _matchHandlerViewer.GetCandyComponent(oldCandy);
         List<GameObject> availablePrefabs = new List<GameObject>();
 
         // Print all candy types for debugging
@@ -160,7 +158,7 @@ public class MatchHandlerModel
 
         foreach (GameObject prefab in prefabs)
         {
-            CandyViewer candyPrefab = prefab.GetComponent<CandyViewer>();
+            CandyViewer candyPrefab = _matchHandlerViewer.GetCandyComponent(prefab);
             /*Debug.Log("Prefab candy type: " + candyPrefab.CandyType);*/ // Debugging output
             if (candyPrefab.CandyType != oldCandyScript.CandyType)
             {
@@ -175,17 +173,12 @@ public class MatchHandlerModel
         }
 
         // Select a random candy from available prefabs
-        GameObject newCandyPrefab = availablePrefabs[UnityEngine.Random.Range(0, availablePrefabs.Count)];
-        if (newCandyPrefab == null)
-        {
-            Debug.LogError("Selected new candy prefab is null.");
-            return;
-        }
-        Vector3 position = oldCandy.transform.position;
-        newCandyPrefab.transform.localScale = oldCandy.transform.localScale;
+        GameObject newCandyPrefab = _matchHandlerViewer.SelectRandomPrefab(availablePrefabs);
+        Vector3 position = _matchHandlerViewer.TransferPositionAndScale(oldCandy, newCandyPrefab);
 
         _candyPool.ReturnCandy(oldCandy);
-        CandyType newCandyType = newCandyPrefab.GetComponent<CandyViewer>().CandyType;
+        CandyType newCandyType = _matchHandlerViewer.GetCandyComponent(newCandyPrefab).CandyType;
+        
         GameObject newCandy = _candyPool.GetCandy(newCandyType);
 
         if (newCandy == null)
@@ -193,9 +186,10 @@ public class MatchHandlerModel
             Debug.LogError("Failed to instantiate new candy.");
             return;
         }
-        newCandy.transform.SetParent(_candyParent.transform);
+        _matchHandlerViewer.SetCandyParent(newCandy, _candyParent);
 
-        CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
+        CandyViewer newCandyScript = _matchHandlerViewer.GetCandyComponent(newCandy);
+        //CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
 
         newCandyScript.SetArrayPosition(newCandy, _candiesArray, i, j);
         newCandyScript.SetPhysicalPosition(position);

@@ -130,20 +130,20 @@ public class PostMatchDrop : MonoBehaviour
             int dropIndex = 1;
             for (int i = _gameSettings.tilesNumberI - 2; i >= 0; i--)
             {
-                if (_gridManagerGO.candiesArray[i, j] != null && _gridManagerGO.candiesArray[i + 1, j] == null)
+                if (_gridManagerGO.CandiesArray[i, j] != null && _gridManagerGO.CandiesArray[i + 1, j] == null)
                 {
                     keepChecking = true;
-                    yield return StartCoroutine(DropCandy(_gridManagerGO.candiesArray[i, j], dropIndex));
+                    yield return StartCoroutine(DropCandy(_gridManagerGO.CandiesArray[i, j], dropIndex));
                 }
-                else if (_gridManagerGO.candiesArray[i, j] == null && _gridManagerGO.candiesArray[i + 1, j] == null)
+                else if (_gridManagerGO.CandiesArray[i, j] == null && _gridManagerGO.CandiesArray[i + 1, j] == null)
                 {
                     dropIndex++;
                 }
-                else if (_gridManagerGO.candiesArray[i, j] == null && _gridManagerGO.candiesArray[i + 1, j] != null)
+                else if (_gridManagerGO.CandiesArray[i, j] == null && _gridManagerGO.CandiesArray[i + 1, j] != null)
                 {
                     continue;
                 }
-                else if ((_gridManagerGO.candiesArray[i, j] != null && _gridManagerGO.candiesArray[i + 1, j] != null))
+                else if ((_gridManagerGO.CandiesArray[i, j] != null && _gridManagerGO.CandiesArray[i + 1, j] != null))
                 {
                     continue;
                 }
@@ -163,7 +163,7 @@ public class PostMatchDrop : MonoBehaviour
         int newPositionJ = candyScript.CandyModel.PosInArrayJ;
         Vector3 oldPosition = candy.transform.position;
 
-        candyScript.SetArrayPosition(candy, _gridManagerGO.candiesArray, newPositionI, newPositionJ);
+        candyScript.SetArrayPosition(candy, _gridManagerGO.CandiesArray, newPositionI, newPositionJ);
         candyScript.SetPhysicalPosition(_gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ].transform.position);
 
         GameObject gridCellUnderCandy = _gridManagerGO.gridCellsArray[candyScript.CandyModel.PosInArrayI, candyScript.CandyModel.PosInArrayJ];
@@ -172,7 +172,7 @@ public class PostMatchDrop : MonoBehaviour
         yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, oldPosition, newPosition, _gameSettings.dropSpeed));
 
 
-        _gridManagerGO.candiesArray[oldPositionI, oldPositionJ] = null;
+        _gridManagerGO.CandiesArray[oldPositionI, oldPositionJ] = null;
 
 
     }
@@ -187,15 +187,15 @@ public class PostMatchDrop : MonoBehaviour
     public void CheckCandiesArrayForNulls()
     {
 
-        int rows = _gridManagerGO.candiesArray.GetLength(0); // Number of rows (I dimension)
-        int columns = _gridManagerGO.candiesArray.GetLength(1); // Number of columns (J dimension)
+        int rows = _gridManagerGO.CandiesArray.GetLength(0); // Number of rows (I dimension)
+        int columns = _gridManagerGO.CandiesArray.GetLength(1); // Number of columns (J dimension)
 
         // Iterate through the array and check for null values
         for (int i = 0; i < rows; i++)
         {
             for (int j = 0; j < columns; j++)
             {
-                if (_gridManagerGO.candiesArray[i, j] == null)
+                if (_gridManagerGO.CandiesArray[i, j] == null)
                 {
                     // Log the position of the null value
                     Debug.LogWarning($"Null found at position: ({i}, {j})");

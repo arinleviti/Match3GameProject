@@ -5,8 +5,8 @@ using UnityEngine;
 public class DestroyMatches : MonoBehaviour
 {
     private static DestroyMatches instance;
-    private CandyPool candyPool;
-    private GridManagerViewer gridManager;
+    public ICandyPool candyPool;
+    public IGridManagerViewer gridManager;
     public static DestroyMatches Instance
     {
         get
@@ -58,7 +58,7 @@ public class DestroyMatches : MonoBehaviour
                     float x = go.GetComponent<CandyViewer>().PosX;
                     float y = go.GetComponent<CandyViewer>().PosY;
                     Debug.Log($"Candy about to return in list PosInArrayI:{i} and PosInArrayJ: {j}, PosX {x} PosY {y}");
-                    gridManager.candiesArray[i, j] = null;
+                    gridManager.CandiesArray[i, j] = null;
                     candyPool.ReturnCandy(go);
                     // Update the array to reflect that the candy has been returned to the pool
                     

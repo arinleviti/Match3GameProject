@@ -7,13 +7,13 @@ using UnityEditor.Experimental.GraphView;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
-public class GridManagerViewer : MonoBehaviour
+public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
 {
     private GameObject gridCellGO;
     //private int gridSize;
     //private int candyTypes;
     public GameObject[,] gridCellsArray;
-    public GameObject[,] candiesArray;
+    public GameObject[,] CandiesArray { get; set; }
     private GameObject gridParent;
     private GameObject candyParent;
     private GridCell gridCellScript;
@@ -36,38 +36,54 @@ public class GridManagerViewer : MonoBehaviour
         candyParent = new GameObject("CandyParent");
         gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
         gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        candiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        gridManagerModel = new GridManagerModel();
+        CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
+        gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
         Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-        PopulateBackdropGrid(firstTilePos, gridCellGO, candiesArray);
-        MatchHandlerViewer.Instance.Initialize(gameSettings, candiesArray, candyParent, candyPoolGO);
+        gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
+        MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
         movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
         movementViewerScript.Initialize(candyPoolScript);
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
 
     }
-    //j corresponds to the row index (vertical position), which is equivalent to the X-coordinate
-    //i corresponds to the column index (horizontal position), which is equivalent to the Y-coordinate
+    //j corresponds to the row index(vertical position), which is equivalent to the X-coordinate
+    //i corresponds to the column index(horizontal position), which is equivalent to the Y-coordinate
     public void StartForTest()
     {
         candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
         candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
-        ICandyFactory candyFactory = new MockCandyFactory();
-        candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
+        //ICandyFactory candyFactory = new MockCandyFactory();
+        //candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
         gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
         gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        candiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        gridManagerModel = new GridManagerModel();
+        CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
+        gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
         Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-        PopulateBackdropGrid(firstTilePos, gridCellGO, candiesArray);
-        MatchHandlerViewer.Instance.Initialize(gameSettings, candiesArray, candyParent, candyPoolGO);
+        gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
+        MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
         movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
         movementViewerScript.Initialize(candyPoolScript);
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
+    }
+    public GameObject SetGridCellPosition(Vector2 firstTilePos, int i, int j)
+    {
+        Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
+        gridCellGO = InstantiateGridCell();
+        gridCellGO.transform.position = position;
+        gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 1);
+        return gridCellGO;
+    }
+    public void InitializeGridCell(int i, int j)
+    {
+        gridCellScript = gridCellGO.GetComponent<GridCell>();
+        gridCellScript.PosX = gridCellGO.transform.position.x;
+        gridCellScript.PosY = gridCellGO.transform.position.y;
+        gridCellScript.PosInArrayJ = j;
+        gridCellScript.PosInArrayI = i;
     }
     public GameObject InstantiateGridCell()
     {
@@ -88,6 +104,17 @@ public class GridManagerViewer : MonoBehaviour
         int randomIndex = random.Next(gameSettings.candies.Count);
         return gameSettings.candies[randomIndex].GetComponent<CandyViewer>().CandyType;
     }
+    public CandyViewer SetCandyInPlace(CandyType candyType)
+    {
+        Vector3 position = gridCellGO.transform.position;
+        GameObject randomCandy = candyPoolScript.GetCandy(candyType);
+        CandyViewer randomCandyScript = randomCandy.GetComponent<CandyViewer>();
+        Vector3 newPosition = new Vector3(position.x, position.y, -1);
+        randomCandyScript.SetPhysicalPosition(newPosition);
+        SetCandyParent(randomCandy);
+        return randomCandyScript;
+    }
+
     public void PopulateBackdropGrid(Vector2 firstTilePos, GameObject gridCellGO, GameObject[,] candiesArray)
     {
         for (int i = 0; i < gameSettings.tilesNumberI; i++)
@@ -100,11 +127,13 @@ public class GridManagerViewer : MonoBehaviour
                 gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 1);
                 SetGridCellParent(gridCellGO);
                 gridCellsArray[i, j] = gridCellGO;
+                //
                 gridCellScript = gridCellGO.GetComponent<GridCell>();
                 gridCellScript.PosX = gridCellGO.transform.position.x;
                 gridCellScript.PosY = gridCellGO.transform.position.y;
                 gridCellScript.PosInArrayJ = j;
                 gridCellScript.PosInArrayI = i;
+                //
                 //Debug.Log("Cell in position: X: " + gridCellScript.PosX + " Y: " + gridCellScript.PosY);
                 //Debug.Log($"GridCell Created at ({i}, {j}): PosInArrayJ = {gridCellScript.PosInArrayJ}, PosInArrayI = {gridCellScript.PosInArrayI}");
                 PopulateCandiesArray(position, gridCellGO, candiesArray, i, j);
@@ -122,4 +151,9 @@ public class GridManagerViewer : MonoBehaviour
         randomCandyScript.SetPhysicalPosition(position);
         SetCandyParent(randomCandy);
     }
+}
+
+public interface IGridManagerViewer
+{
+    public GameObject[,] CandiesArray { get; set; }
 }

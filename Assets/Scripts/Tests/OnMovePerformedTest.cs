@@ -63,7 +63,7 @@ public class OnMovePerformedTest
 
         _gridManager.gameSettings = _gameSettings;
         //_candyPool.InitializeForTesting();
-        _gridManager.StartForTest();
+        //_gridManager.StartForTest();
 
         _candyPool = _gridManager.candyPoolScript;
         _candyPool.gridManager = _gridManager;

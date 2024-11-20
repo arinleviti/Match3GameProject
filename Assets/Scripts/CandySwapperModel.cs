@@ -44,83 +44,60 @@ public class CandySwapperModel
             // Determine new coordinates based on direction
             int newI = currentI;
             int newJ = currentJ;
-            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-            {
-                // Move horizontally (left or right)
-                if (direction.x > 0)
-                {
-                    newJ++; // Move right               
-                }
-                else if (direction.x < 0)
-                {
-                    newJ--; // Move left
-                }
-            }
-            else
-            {
-                // Move vertically (up or down)
-                if (direction.y > 0)
-                {
-                    newI--; // Move up
-                }
-                else if (direction.y < 0)
-                {
-                    newI++; // Move down
-                }
-            }
+            Vector2 newCoordinates = _swapperViewer.DetermineCoordinatesFromDirection(direction, newI, newJ);
+            newI = (int)newCoordinates.x;
+            newJ = (int)newCoordinates.y;
+
 
             // Ensure the new position is within grid bounds
             if (newI >= 0 && newI < _gridManager.gameSettings.tilesNumberI && newJ >= 0 && newJ < _gridManager.gameSettings.tilesNumberJ)
             {
                 // Get the second candy to be swapped with the selected candy
-                CandyViewer secondCandy = _gridManager.candiesArray[newI, newJ].GetComponent<CandyViewer>();
+                CandyViewer secondCandy = _swapperViewer.GetCandyComponent(newI, newJ);
 
                 // Swap the candies in the array
-                _gridManager.candiesArray[currentI, currentJ] = secondCandy.gameObject;
-                _gridManager.candiesArray[newI, newJ] = _selectedCandy.gameObject;
+                _gridManager.CandiesArray[currentI, currentJ] = secondCandy.gameObject;
+                _gridManager.CandiesArray[newI, newJ] = _selectedCandy.gameObject;
 
                 // Update their properties
 
-                _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.candiesArray, newI, newJ);
-                secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.candiesArray, currentI, currentJ);
+                _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.CandiesArray, newI, newJ);
+                secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.CandiesArray, currentI, currentJ);
                 matchesHor.Clear();
                 matchesVer.Clear();
 
-                bool horizontalCheck = PreMovementChecks.Instance.CheckRowAndColumn(_selectedCandy.gameObject, _gridManager.candiesArray, true, out matchesHor);
-                bool verticalCheck = PreMovementChecks.Instance.CheckRowAndColumn(_selectedCandy.gameObject, _gridManager.candiesArray, false, out matchesVer);
-                //List<GameObject> combinedMatches = new List<GameObject>(matchesHor);
-                //combinedMatches.AddRange(matchesVer);
-
+                var horizontalCheckVar = _swapperViewer.CheckRowAndColumns(_selectedCandy.gameObject, _gridManager.CandiesArray, true, matchesHor);
+                var verticalCheckVar = _swapperViewer.CheckRowAndColumns(_selectedCandy.gameObject, _gridManager.CandiesArray, false, matchesVer);
+                bool horizontalCheck = horizontalCheckVar.horVerCheck;
+                matchesHor = horizontalCheckVar.CheckRowAndColumn;
+                bool verticalCheck = verticalCheckVar.horVerCheck;
+                matchesVer = verticalCheckVar.CheckRowAndColumn;
+                
+               
 
                 if (horizontalCheck || verticalCheck)
                 {
-                    // Swap their world positions
-                    Vector3 selectedCandyTargetPos = _gridManager.gridCellsArray[newI, newJ].transform.position;
-                    Vector3 secondCandyTargetPos = _gridManager.gridCellsArray[currentI, currentJ].transform.position;
-
-                    _selectedCandy.SetPhysicalPosition(selectedCandyTargetPos);
-                    secondCandy.SetPhysicalPosition(secondCandyTargetPos);
+                    _swapperViewer.SwapPositions(newI, newJ, currentI, currentJ, secondCandy);
 
                     List<GameObject> rotationList = new List<GameObject>();
-                    rotationList = CandyAnimationsController.Instance.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
+                    rotationList = _swapperViewer.CreateRotationList(matchesHor, matchesVer, _gameSettings, _candyPool);
                     if (!scoreManagerInitialized)
                     {
-                        ScoreManager.Instance.Initialize(_gameSettings);
+                        _swapperViewer.InitializeScoreManager(_gameSettings);
                         scoreManagerInitialized = true;
                     }
 
-                    ScoreManager.Instance.AddPoints(rotationList);
+                    _swapperViewer.AddPoints(rotationList);
                     _swapperViewer.RotationCoroutineWrapper(rotationList);
-                    //StartCoroutine(RotationCoroutineWrapper(rotationList));
                     DestroyFirstMatches();
 
                 }
                 else
                 {
-                    Debug.Log("No match, swapping back the array and candy positions.");
+                    //No match, swapping back the array and candy positions.
 
-                    _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.candiesArray, currentI, currentJ);
-                    secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.candiesArray, newI, newJ);
+                    _selectedCandy.SetArrayPosition(_selectedCandy.gameObject, _gridManager.CandiesArray, currentI, currentJ);
+                    secondCandy.SetArrayPosition(secondCandy.gameObject, _gridManager.CandiesArray, newI, newJ);
                 }
             }
             // Deselect the candy after moving

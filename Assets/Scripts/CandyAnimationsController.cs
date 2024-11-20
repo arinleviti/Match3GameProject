@@ -67,7 +67,7 @@ public class CandyAnimationsController : MonoBehaviour
             }
         pool.ReturnCandy(candy);
     }
-    public List<GameObject> CreateRotationList( List<GameObject> matchesHor, List<GameObject> matchesVer, GameSettings gameSettings, CandyPool candyPool)
+    public List<GameObject> CreateRotationList( List<GameObject> matchesHor, List<GameObject> matchesVer, GameSettings gameSettings, ICandyPool candyPool)
     {
         clonedLists.Clear();
         HashSet<GameObject> uniqueCandies = new HashSet<GameObject>();
