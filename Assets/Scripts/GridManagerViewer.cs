@@ -26,6 +26,8 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
     private GameObject movementViewer;
     private MovementViewer movementViewerScript;
     private GridManagerModel gridManagerModel;
+    [SerializeField] private GameObject backgroundImage;
+    private AnchorsManager anchorsManager;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +37,7 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         gridParent = new GameObject("GridParent");
         candyParent = new GameObject("CandyParent");
         gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
+        gridCellGO.SetActive(false);
         gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
         gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
@@ -43,32 +46,35 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
         movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
         movementViewerScript.Initialize(candyPoolScript);
+        anchorsManager = backgroundImage.GetComponent<AnchorsManager>();
+        anchorsManager.Initialize(gridCellsArray, gameSettings);
+        anchorsManager.FindGridObjectsInCorners();
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
 
     }
     //j corresponds to the row index(vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index(horizontal position), which is equivalent to the Y-coordinate
-    public void StartForTest()
-    {
-        candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
-        candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
-        //ICandyFactory candyFactory = new MockCandyFactory();
-        //candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
-        gridParent = new GameObject("GridParent");
-        candyParent = new GameObject("CandyParent");
-        gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
-        gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-        gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
-        Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-        gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
-        MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
-        movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
-        movementViewerScript.Initialize(candyPoolScript);
-        // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
-        StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
-    }
+    //public void StartForTest()
+    //{
+    //    candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
+    //    candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
+    //    //ICandyFactory candyFactory = new MockCandyFactory();
+    //    //candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
+    //    gridParent = new GameObject("GridParent");
+    //    candyParent = new GameObject("CandyParent");
+    //    gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
+    //    gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
+    //    CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
+    //    gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
+    //    Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
+    //    gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
+    //    MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
+    //    movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
+    //    movementViewerScript.Initialize(candyPoolScript);
+    //    // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
+    //    StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
+    //}
     public GameObject SetGridCellPosition(Vector2 firstTilePos, int i, int j)
     {
         Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);

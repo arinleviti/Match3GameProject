@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName= "GridSettings", menuName = "ScriptableObjects/GridSettings")]
 public class GameSettings : ScriptableObject
 {
-    public int tileSize = 1;
+    public float tileSize = 1;
     public float candyScaleFactor = 0.9f;
     public int tilesNumberI = 4;
     public int tilesNumberJ = 4;

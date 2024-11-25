@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e683c8c81de25c840b31f61a99eb5e1d, type: 3}
   m_Name: GridSettings
   m_EditorClassIdentifier: 
-  tileSize: 1
+  tileSize: 1.2
   candyScaleFactor: 0.257
   tilesNumberI: 8
   tilesNumberJ: 7
@@ -46,8 +46,8 @@ MonoBehaviour:
   CandyTypesLevel4: 7
   CandyTypesLevel5: 9
   CandyTypesLevel6: 12
-  pointsToLevel2: 200
-  pointsToLevel3: 500
-  pointsToLevel4: 1000
-  pointsToLevel5: 1500
-  pointsToLevel6: 2000
+  pointsToLevel2: 500
+  pointsToLevel3: 1000
+  pointsToLevel4: 1500
+  pointsToLevel5: 2000
+  pointsToLevel6: 2500
