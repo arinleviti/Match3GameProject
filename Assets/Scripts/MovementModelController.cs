@@ -17,8 +17,9 @@ public class MovementModelController
     private bool isActive1 = false;
     private CandySwapperViewer _candySwapperViewer;
     private PostMatchDrop _postMatchDrop;
+    private AudioManager _audioManager;
 
-    public MovementModelController(GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, MatchHandlerViewer matchHandler, MovementViewer movementViewer)
+    public MovementModelController(GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, MatchHandlerViewer matchHandler, MovementViewer movementViewer, AudioManager audioManager)
     {
         _gridManager = gridManager;
         _gameSettings = gameSettings;
@@ -26,6 +27,7 @@ public class MovementModelController
         _matchHandler = matchHandler;
         _movementViewer = movementViewer;
         _candySwapperViewer = CandySwapperViewer.Instance;
+        _audioManager = audioManager;
     }
     public void OnMoveCallback(InputAction.CallbackContext context)
     {
@@ -39,7 +41,7 @@ public class MovementModelController
         if (_postMatchDrop == null)
         {
             _postMatchDrop = PostMatchDrop.Instance;
-            _postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject);
+            _postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject, _audioManager);
      
         }
         
@@ -57,7 +59,7 @@ public class MovementModelController
             if (!IsMoving)
             {
 
-                _candySwapperViewer.Initialize(SelectedCandy, _gridManager, _gameSettings, _candyPool);
+                _candySwapperViewer.Initialize(SelectedCandy, _gridManager, _gameSettings, _candyPool, _audioManager);
                 _candySwapperViewer.SwapperModel.SwapCandies(moveInput);
 
                 if (isActive1 == false)

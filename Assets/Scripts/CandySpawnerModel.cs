@@ -30,8 +30,8 @@ public class CandySpawnerModel
                     GameObject newCandy = _candyPool.GetCandy((CandyType)randomIndex);
                     CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
                     GameObject gridCell = _gridManager.gridCellsArray[i, j];
-                    Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z - 2);
-                    Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1, endPos.z - 2);
+                    Vector3 endPos = new Vector3(gridCell.transform.position.x, gridCell.transform.position.y, gridCell.transform.position.z/* - 2*/);
+                    Vector3 startPos = new Vector3(endPos.x, (_gameSettings.tilesNumberI / 2) + 1,0 /*endPos.z - 2*/);
                     newCandyScript.SetArrayPosition(newCandy, _gridManager.CandiesArray, i, j);
                     newCandyScript.SetPhysicalPosition(endPos);
                     _candySpawnerViewer.CoroutineWrapper(newCandy, startPos, endPos);

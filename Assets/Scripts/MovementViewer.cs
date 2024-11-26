@@ -21,6 +21,7 @@ public class MovementViewer : MonoBehaviour
     private CandyPool candyPool;
     private MovementModelController movementModelController;
     public event Action OnMovePerformedComplete;
+    private AudioManager _audioManager;
     
     
 
@@ -38,11 +39,11 @@ public class MovementViewer : MonoBehaviour
         //_candySwapperViewer = CandySwapperViewer.Instance;
         //_candySwapperModel =  _candySwapperViewer.
     }
-    public void Initialize(CandyPool candyPoolScript )
+    public void Initialize(CandyPool candyPoolScript, AudioManager audioManager )
     {
-        
+        _audioManager = audioManager;
         candyPool = candyPoolScript;
-        movementModelController = new MovementModelController(gridManager, gameSettings, candyPool, matchHandler, this);
+        movementModelController = new MovementModelController(gridManager, gameSettings, candyPool, matchHandler, this, _audioManager);
        
         moveAction.performed += movementModelController.OnMoveCallback;
     }

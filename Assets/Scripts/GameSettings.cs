@@ -40,5 +40,7 @@ public class GameSettings : ScriptableObject
     public int pointsToLevel4;
     public int pointsToLevel5;
     public int pointsToLevel6;
-    
+
+    [Header("Variables for Sounds:")]
+    public float volume;
 }

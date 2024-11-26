@@ -14,6 +14,7 @@ public class CandySwapperViewer :  MonoBehaviour
     //public List<GameObject> matchesHor = new List<GameObject>();
     public GameSettings _gameSettings; 
     private CandyPool _candyPool;
+    private AudioManager _audioManager;
     
     public CandySwapperModel SwapperModel { get; private set; }
     private static CandySwapperViewer instance;
@@ -41,13 +42,14 @@ public class CandySwapperViewer :  MonoBehaviour
             Destroy(gameObject);
         }
     }
-    public void Initialize( CandyViewer selectedCandy, GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool)
+    public void Initialize( CandyViewer selectedCandy, GridManagerViewer gridManager, GameSettings gameSettings, CandyPool candyPool, AudioManager audioManager)
     {
         _selectedCandy = selectedCandy;
         _gridManager = gridManager;
         _gameSettings = gameSettings;
         _candyPool = candyPool;
         SwapperModel = new CandySwapperModel(_selectedCandy, _gridManager, _gameSettings, _candyPool, this);
+        _audioManager = audioManager;
     }
   
     public void RotationCoroutineWrapper(List <GameObject> clonedList)
@@ -103,7 +105,7 @@ public class CandySwapperViewer :  MonoBehaviour
     }
     public void InitializeScoreManager(GameSettings gameSettings)
     {
-        ScoreManagerViewer.Instance.Initialize(gameSettings);
+        ScoreManagerViewer.Instance.Initialize(gameSettings, _audioManager);
     }
     public void AddPoints(List<GameObject> rotationList)
     {

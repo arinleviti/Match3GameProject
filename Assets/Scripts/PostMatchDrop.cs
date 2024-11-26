@@ -19,6 +19,7 @@ public class PostMatchDrop : MonoBehaviour
     private int _numberOfCandyTypes =4;
     private ScoreManagerViewer _scoreManager;
     public MatchHandlerViewer MatchHandlerViewer { get; set; }
+    private AudioManager _audioManager;
     public static PostMatchDrop Instance
     {
         get
@@ -55,8 +56,9 @@ public class PostMatchDrop : MonoBehaviour
         CandySpawnerViewer.Instance.Initialize(_gameSettings, gridManager, _candyPool);
     }
 
-    public void Initialize(MatchHandlerViewer matchHandler, CandyPool candyPool, GameSettings gameSettings, GridManagerViewer gridManager, GameObject movementViewerGO)
+    public void Initialize(MatchHandlerViewer matchHandler, CandyPool candyPool, GameSettings gameSettings, GridManagerViewer gridManager, GameObject movementViewerGO, AudioManager audioManager)
     {
+        _audioManager = audioManager;
         MatchHandlerViewer = matchHandler;
         _candyPool = candyPool;
         _gameSettings = gameSettings;
@@ -65,7 +67,7 @@ public class PostMatchDrop : MonoBehaviour
         _movementViewer = _movementViewerGO.GetComponent<MovementViewer>();
         _movementViewer.OnMovePerformedComplete += EventWrapper;
         _scoreManager = ScoreManagerViewer.Instance;
-        _scoreManager.Initialize(gameSettings);
+        _scoreManager.Initialize(gameSettings, _audioManager);
         _scoreManager.OnLevelUp += ChangeNumberOfCandyTypes;
     }
     private void EventWrapper()

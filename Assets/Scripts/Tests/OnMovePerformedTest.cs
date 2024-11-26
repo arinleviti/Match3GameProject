@@ -14,6 +14,7 @@ public class OnMovePerformedTest
     private MovementViewer _movementViewer;
     private CandySwapperViewer _candySwapperViewer;
     private CandyViewer _candyViewer;
+    private AudioManager _audioManager;
 
     [SetUp]
     public void Setup()
@@ -28,7 +29,7 @@ public class OnMovePerformedTest
         _matchHandler = gameObject.AddComponent<MatchHandlerViewer>();
         _movementViewer = gameObject.AddComponent<MovementViewer>();
         _candySwapperViewer = gameObject.AddComponent<CandySwapperViewer>();
-
+        _audioManager = gameObject.AddComponent<AudioManager>();
 
 
         GameObject blueCandy = new GameObject();
@@ -71,14 +72,15 @@ public class OnMovePerformedTest
         
 
         _candyViewer = gameObject.AddComponent<CandyViewer>();
-       
+
         // Create an instance of MovementModelController
         _movementModelController = new MovementModelController(
             _gridManager,
             _gameSettings,
             _candyPool,
             _matchHandler,
-            _movementViewer
+            _movementViewer,
+            _audioManager
         );
 
         GameObject mockBlueCandy = new GameObject();
@@ -90,7 +92,7 @@ public class OnMovePerformedTest
         _gridManager.gameSettings = _gameSettings;
         
        
-        _candySwapperViewer.Initialize(_candyViewer, _gridManager, _gameSettings, _candyPool);
+        _candySwapperViewer.Initialize(_candyViewer, _gridManager, _gameSettings, _candyPool, _audioManager);
        
 
     }

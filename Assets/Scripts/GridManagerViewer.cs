@@ -28,6 +28,7 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
     private GridManagerModel gridManagerModel;
     [SerializeField] private GameObject backgroundImage;
     private AnchorsManager anchorsManager;
+    [SerializeField] private AudioManager audioManager;
 
     // Start is called before the first frame update
     void Start()
@@ -45,13 +46,13 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
         MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
         movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
-        movementViewerScript.Initialize(candyPoolScript);
+        movementViewerScript.Initialize(candyPoolScript, audioManager);
         anchorsManager = backgroundImage.GetComponent<AnchorsManager>();
         anchorsManager.Initialize(gridCellsArray, gameSettings);
         anchorsManager.FindGridObjectsInCorners();
         // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
         StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
-
+        audioManager.PlayBackgroundMusic("Background Music");
     }
     //j corresponds to the row index(vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index(horizontal position), which is equivalent to the Y-coordinate

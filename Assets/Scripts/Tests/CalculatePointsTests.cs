@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 public class CalculatePointsTests
 {
     private ScoreManagerModel _scoreManagerModel;
-    private ScoreManagerViewer _scoreManagerViewer;
+    private MockScoreManagerViewer _scoreManagerViewer;
     private GameSettings _gameSettings;
     private GameObject _gameObject1;
     private GameObject _gameObject2;
@@ -31,7 +31,7 @@ public class CalculatePointsTests
         _gameObject6 = CreateCandy(CandyType.Pumpkin);
         _gameObject7 = CreateCandy(CandyType.Pumpkin);
         _gameObject8 = CreateCandy(CandyType.Pumpkin);
-        _scoreManagerViewer = someGameObject.AddComponent<ScoreManagerViewer>();
+        _scoreManagerViewer = new MockScoreManagerViewer();
         _gameSettings = ScriptableObject.CreateInstance<GameSettings>();
         _gameSettings.pointsFor3 = 10;
         _gameSettings.pointsFor4 = 20;

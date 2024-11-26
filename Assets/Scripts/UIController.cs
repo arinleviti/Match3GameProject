@@ -30,6 +30,7 @@ public class UIController : MonoBehaviour
     private void UpdateLevel(int placeholder)
     {
         levelText.text = "Level: " + scoreManager.updatedLevel.ToString();
+
     }
     private void OnDestroy()
     {

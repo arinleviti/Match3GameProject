@@ -89,3 +89,22 @@ public class MockMatchHandlerViewer : IMatchHandlerViewer
     public void SetCandyParent(GameObject newCandy, GameObject parent)
     { }
 }
+public class MockScoreManagerViewer : IScoreManagerViewer
+{
+    public void PlaySoundMatch3()
+    {
+        
+    }
+    public void PlaySoundMatch4()
+    {
+       
+    }
+    public void PlaySoundMatch5()
+    {
+       
+    }
+    public void PlaySoundMatch6()
+    {
+       
+    }
+}

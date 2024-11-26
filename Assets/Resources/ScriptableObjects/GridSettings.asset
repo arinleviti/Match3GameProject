@@ -51,3 +51,4 @@ MonoBehaviour:
   pointsToLevel4: 1500
   pointsToLevel5: 2000
   pointsToLevel6: 2500
+  volume: 0.1

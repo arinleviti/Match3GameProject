@@ -6,13 +6,14 @@ using UnityEngine;
 public class ScoreManagerModel
 {
     public GameSettings _gameSettings;
-    private ScoreManagerViewer _scoreManagerViewer;
+    private IScoreManagerViewer _scoreManagerViewer;
     public int numberOfCandies;
 
-    public ScoreManagerModel(GameSettings gameSettings, ScoreManagerViewer scoreManagerViewer)
+    public ScoreManagerModel(GameSettings gameSettings, IScoreManagerViewer scoreManagerViewer)
     {
         _gameSettings = gameSettings;
         _scoreManagerViewer = scoreManagerViewer;
+
     }
     
     public (int, int) CandiesForCurrentLevel(int currentScore, int currentLevel)
@@ -56,10 +57,14 @@ public class ScoreManagerModel
         switch (listOfMatches.Count)
 
         {
-            case 3: return _gameSettings.pointsFor3;
-            case 4: return _gameSettings.pointsFor4;
-            case 5: return _gameSettings.pointsFor5;
-            case 6: return _gameSettings.pointsFor6OrHigher;
+            case 3: _scoreManagerViewer.PlaySoundMatch3();
+                return _gameSettings.pointsFor3;
+            case 4: _scoreManagerViewer.PlaySoundMatch4();
+                return _gameSettings.pointsFor4;
+            case 5: _scoreManagerViewer.PlaySoundMatch5();
+                return _gameSettings.pointsFor5;
+            case 6: _scoreManagerViewer.PlaySoundMatch6();
+                return _gameSettings.pointsFor6OrHigher;
             default: return listOfMatches.Count >= 6 ? _gameSettings.pointsFor6OrHigher : 0;
         }
     }

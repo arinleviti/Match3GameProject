@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class ScoreManagerViewer : MonoBehaviour
+public class ScoreManagerViewer : MonoBehaviour, IScoreManagerViewer
 {
     public int CurrentScore {  get; private set; }
     public event Action OnScoreChanged;
@@ -14,6 +14,8 @@ public class ScoreManagerViewer : MonoBehaviour
     public ScoreManagerModel scoreManagerModel;
     public static ScoreManagerViewer instance;
     public int updatedLevel;
+    private AudioManager _audioManager;
+
     public static ScoreManagerViewer Instance
     {
         get
@@ -26,13 +28,14 @@ public class ScoreManagerViewer : MonoBehaviour
             return instance;
         }      
     }
-    public void Initialize(GameSettings gameSettings)
+    public void Initialize(GameSettings gameSettings, AudioManager audioManager)
     {
         instance.gameSettings = gameSettings;
         if (scoreManagerModel == null)
         {
             scoreManagerModel = new ScoreManagerModel(gameSettings, this);
         }
+        _audioManager = audioManager;
     }
     
     public void AddPoints(List<GameObject> listOfMatches)
@@ -50,9 +53,35 @@ public class ScoreManagerViewer : MonoBehaviour
         int numberOfCandies = levelAndnumberOfCandies.Item2;
         if (oldLevel < updatedLevel)
         {
+            currentLevel = updatedLevel; // Update currentLevel to prevent repeated level-ups
             OnLevelUp?.Invoke(numberOfCandies);
+            _audioManager.PlayAllEffects("Level Up");
         }
     }
     
+    public void PlaySoundMatch3()
+    {
+        _audioManager.PlayAllEffectsWrapper("Match3 Sound");
+    }
+    public void PlaySoundMatch4()
+    {
+        _audioManager.PlayAllEffectsWrapper("Match4 Sound");
+    }
+    public void PlaySoundMatch5()
+    {
+        _audioManager.PlayAllEffectsWrapper("Match5 Sound");
+    }
+    public void PlaySoundMatch6()
+    {
+        _audioManager.PlayAllEffectsWrapper("Match6 Sound");
+    }
+
+}
+public interface IScoreManagerViewer
+{
+    public void PlaySoundMatch3();
+    public void PlaySoundMatch4();
+    public void PlaySoundMatch5();
+    public void PlaySoundMatch6();
 
 }
