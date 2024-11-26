@@ -7,7 +7,8 @@ using UnityEngine.TestTools;
 
 public class CalculatePointsTests
 {
-    private ScoreManager _scoreManager;
+    private ScoreManagerModel _scoreManagerModel;
+    private MockScoreManagerViewer _scoreManagerViewer;
     private GameSettings _gameSettings;
     private GameObject _gameObject1;
     private GameObject _gameObject2;
@@ -22,28 +23,30 @@ public class CalculatePointsTests
     public void SetUp()
     {
         GameObject someGameObject = new GameObject();
-        _gameObject1 = CreateCandy(CandyType.Blue);
-        _gameObject2 = CreateCandy(CandyType.Blue);
-        _gameObject3 = CreateCandy(CandyType.Blue);
-        _gameObject4 = CreateCandy(CandyType.Blue);
-        _gameObject5 = CreateCandy(CandyType.Blue);
-        _gameObject6 = CreateCandy(CandyType.Blue);
-        _gameObject7 = CreateCandy(CandyType.Blue);
-        _gameObject8 = CreateCandy(CandyType.Blue);
-        _scoreManager = someGameObject.AddComponent<ScoreManager>();
+        _gameObject1 = CreateCandy(CandyType.Pumpkin);
+        _gameObject2 = CreateCandy(CandyType.Pumpkin);
+        _gameObject3 = CreateCandy(CandyType.Pumpkin);
+        _gameObject4 = CreateCandy(CandyType.Pumpkin);
+        _gameObject5 = CreateCandy(CandyType.Pumpkin);
+        _gameObject6 = CreateCandy(CandyType.Pumpkin);
+        _gameObject7 = CreateCandy(CandyType.Pumpkin);
+        _gameObject8 = CreateCandy(CandyType.Pumpkin);
+        _scoreManagerViewer = new MockScoreManagerViewer();
         _gameSettings = ScriptableObject.CreateInstance<GameSettings>();
         _gameSettings.pointsFor3 = 10;
         _gameSettings.pointsFor4 = 20;
         _gameSettings.pointsFor5 = 50;
         _gameSettings.pointsFor6OrHigher = 70;
-        _scoreManager.gameSettings = _gameSettings;
+        _scoreManagerModel = new ScoreManagerModel(_gameSettings, _scoreManagerViewer);
+        
+        //_scoreManagerModel._gameSettings = _gameSettings;
     }
 
     [Test]
     public void CalculatePointsTests_three()
     {
         AddObjectsToList(_gameObject1, _gameObject2, _gameObject3);
-        int points = _scoreManager.CalculatePoints(listOfMatches);
+        int points = _scoreManagerModel.CalculatePoints(listOfMatches);
         Assert.AreEqual(_gameSettings.pointsFor3, points);
     }
 
@@ -51,7 +54,7 @@ public class CalculatePointsTests
     public void CalculatePointsTests_four()
     {
         AddObjectsToList(_gameObject1, _gameObject2, _gameObject3, _gameObject4);
-        int points = _scoreManager.CalculatePoints(listOfMatches);
+        int points =_scoreManagerModel.CalculatePoints(listOfMatches);
         Assert.AreEqual(_gameSettings.pointsFor4, points);
     }
 
@@ -59,7 +62,7 @@ public class CalculatePointsTests
     public void CalculatePointsTests_five()
     {
         AddObjectsToList(_gameObject1, _gameObject2, _gameObject3, _gameObject4, _gameObject5);
-        int points = _scoreManager.CalculatePoints(listOfMatches);
+        int points = _scoreManagerModel.CalculatePoints(listOfMatches);
         Assert.AreEqual(_gameSettings.pointsFor5, points);
     }
 
@@ -67,7 +70,7 @@ public class CalculatePointsTests
     public void CalculatePointsTests_six()
     {
         AddObjectsToList(_gameObject1, _gameObject2, _gameObject3, _gameObject4, _gameObject5, _gameObject6);
-        int points = _scoreManager.CalculatePoints(listOfMatches);
+        int points = _scoreManagerModel.CalculatePoints(listOfMatches);
         Assert.AreEqual(_gameSettings.pointsFor6OrHigher, points);
     }
 
@@ -75,7 +78,7 @@ public class CalculatePointsTests
     public void CalculatePointsTests_eight()
     {
         AddObjectsToList(_gameObject1, _gameObject2, _gameObject3, _gameObject4, _gameObject5, _gameObject6, _gameObject7, _gameObject8);
-        int points = _scoreManager.CalculatePoints(listOfMatches);
+        int points = _scoreManagerModel.CalculatePoints(listOfMatches);
         Assert.AreEqual(_gameSettings.pointsFor6OrHigher, points);
     }
 
@@ -84,7 +87,7 @@ public class CalculatePointsTests
     {
         AddObjectsToList(_gameObject1, _gameObject2);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => _scoreManager.CalculatePoints(listOfMatches));
+        var ex = Assert.Throws<InvalidOperationException>(() => _scoreManagerModel.CalculatePoints(listOfMatches));
         Assert.AreEqual("List must contain at least 3 elements to calculate points.", ex.Message);
     }
     [TearDown]

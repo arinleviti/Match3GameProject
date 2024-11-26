@@ -7,21 +7,30 @@ public class UIController : MonoBehaviour
 {
 
     [SerializeField] private TextMeshProUGUI scoreText;
-    private ScoreManager scoreManager;
+    [SerializeField] private TextMeshProUGUI levelText;
+    private ScoreManagerViewer scoreManager;
     
 
     private void Awake()
     {
-        scoreManager = ScoreManager.Instance;
+        scoreManager = ScoreManagerViewer.Instance;
         if (scoreManager != null)
         {
             scoreManager.OnScoreChanged += UpdateScoreUI;
+            scoreManager.OnLevelUp += UpdateLevel;
         }
+        scoreText.text = "Score: 0";
+        levelText.text = "Level: 1";
     }
 
     private void UpdateScoreUI()
     {
         scoreText.text = "Score: " + scoreManager.CurrentScore.ToString();
+    }
+    private void UpdateLevel(int placeholder)
+    {
+        levelText.text = "Level: " + scoreManager.updatedLevel.ToString();
+
     }
     private void OnDestroy()
     {

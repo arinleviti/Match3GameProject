@@ -12,17 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e683c8c81de25c840b31f61a99eb5e1d, type: 3}
   m_Name: GridSettings
   m_EditorClassIdentifier: 
-  tileSize: 1
-  candyScaleFactor: 0.9
+  tileSize: 1.2
+  candyScaleFactor: 0.257
   tilesNumberI: 8
   tilesNumberJ: 7
-  candyTypesCount: 4
-  candyTypes: 00000000010000000200000003000000
+  candyTypesCount: 12
+  candyTypes: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b000000
   candies:
-  - {fileID: 8884771664294590454, guid: 2bb46d21c423f404db15f85bb8cebf09, type: 3}
-  - {fileID: 5747576531944224525, guid: d960fd7174638b04ba5d7fdbbcac26b5, type: 3}
-  - {fileID: 5660424723495470974, guid: 23106e5d9c8a9634f9789e0d12f71e87, type: 3}
-  - {fileID: 5063063771068842175, guid: 0a330b793dee9cf45a2db8ef0d990b83, type: 3}
+  - {fileID: 5480651156608308647, guid: 3d884c50715207c48801d2b286b00820, type: 3}
+  - {fileID: 5056544627342372859, guid: d9511542b545d37489e1f721d059503f, type: 3}
+  - {fileID: 11404457660687051, guid: b2780019632a81f458b3a24528521470, type: 3}
+  - {fileID: 1353347938445061972, guid: b0c24e3051cac3d42b92fdb2de940ba8, type: 3}
+  - {fileID: 8767491678189786971, guid: d4023eff44152d940b3c60c9fa0facb7, type: 3}
+  - {fileID: 8593058339908471142, guid: f0b1ff79829086240a528bde55d099b9, type: 3}
+  - {fileID: 5964002355196516594, guid: 8ec56c390ce072349aed0d2930d8e6a2, type: 3}
+  - {fileID: 4764684117300062262, guid: fb2307ee399c12347b2e52266c927995, type: 3}
+  - {fileID: 5748651182507976708, guid: e2147c02c5dbbd444ae553e3496fb740, type: 3}
+  - {fileID: 4342834918142264560, guid: 5f6162d4b1873044baa32c9e745bde4e, type: 3}
+  - {fileID: 3933872207158773107, guid: 8deba772ebceaba40a8f61599c7f2759, type: 3}
+  - {fileID: 1839188268583992313, guid: 1424ebd08e1d65747ab8cc5773390262, type: 3}
   deltaMovementThreshold: 2
   candiesToMatch: 3
   dropSpeed: 0.09
@@ -32,12 +40,15 @@ MonoBehaviour:
   pointsFor4: 20
   pointsFor5: 50
   pointsFor6OrHigher: 70
-  candiesForLevel1: 4
-  candiesForLevel2: 5
-  candiesForLevel3: 6
-  candiesForLevel4: 7
-  pointsToLevel2: 100
-  pointsToLevel3: 300
-  pointsToLevel4: 600
-  pointsToLevel5: 1000
-  pointsToLevel6: 1500
+  CandyTypesLevel1: 4
+  CandyTypesLevel2: 5
+  CandyTypesLevel3: 6
+  CandyTypesLevel4: 7
+  CandyTypesLevel5: 9
+  CandyTypesLevel6: 12
+  pointsToLevel2: 500
+  pointsToLevel3: 1000
+  pointsToLevel4: 1500
+  pointsToLevel5: 2000
+  pointsToLevel6: 2500
+  volume: 0.1

@@ -14,7 +14,7 @@ public class SetArrayPositionTest
     [SetUp]
     public void SetUp ()
     {
-        _candyModel = new CandyModel (CandyType.Blue);
+        _candyModel = new CandyModel (CandyType.Pumpkin);
         _candyGO = new GameObject();
 
         _candiesArray = new GameObject[3,3] ;

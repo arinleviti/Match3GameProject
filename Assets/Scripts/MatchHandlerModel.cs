@@ -48,7 +48,7 @@ public class MatchHandlerModel
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
-                                ScoreManager.Instance.AddPoints(tempMatches);
+                                ScoreManagerViewer.Instance.AddPoints(tempMatches);
                             }
                         }
                         foundMatch = true;
@@ -75,7 +75,7 @@ public class MatchHandlerModel
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
-                                ScoreManager.Instance.AddPoints(tempMatches);
+                                ScoreManagerViewer.Instance.AddPoints(tempMatches);
                             }
 
                         }
@@ -160,7 +160,7 @@ public class MatchHandlerModel
         {
             CandyViewer candyPrefab = _matchHandlerViewer.GetCandyComponent(prefab);
             /*Debug.Log("Prefab candy type: " + candyPrefab.CandyType);*/ // Debugging output
-            if (candyPrefab.CandyType != oldCandyScript.CandyType)
+            if (candyPrefab.CandyType != oldCandyScript.CandyType && (int)candyPrefab.CandyType<_gameSettings.CandyTypesLevel1)
             {
                 availablePrefabs.Add(prefab);
             }

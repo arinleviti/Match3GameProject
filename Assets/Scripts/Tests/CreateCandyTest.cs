@@ -16,9 +16,9 @@ public class CreateCandyTest
         GameObject gameObject = new GameObject();
         factory = new CandyFactory();
         settings = ScriptableObject.CreateInstance<GameSettings>();
-        type = CandyType.Blue;
-        candy1 = CreateCandy("Candy1", CandyType.Blue, 0, 0, 4.5f, 4.5f);
-        candy2 = CreateCandy("Candy2", CandyType.Green, 1, 1, 5.5f, 5.5f);
+        type = CandyType.Pumpkin;
+        candy1 = CreateCandy("Candy1", CandyType.Pumpkin, 0, 0, 4.5f, 4.5f);
+        candy2 = CreateCandy("Candy2", CandyType.Vampire, 1, 1, 5.5f, 5.5f);
         settings.candies.Add(candy1);
         settings.candies.Add(candy2);
     }

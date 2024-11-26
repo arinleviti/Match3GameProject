@@ -30,12 +30,12 @@ public class ReturnMatchesInListTest
         _destroyMatches.gridManager = _gridManagerViewer;
         _destroyMatches.candyPool = _candyPool;
 
-        candy1 = CreateCandy("Candy1", CandyType.Blue, 0, 0, 4.5f, 4.5f);
-        candy2 = CreateCandy("Candy2", CandyType.Green, 1, 1, 5.5f, 5.5f);
-        candy3 = CreateCandy("Candy3", CandyType.Yellow, 2, 2, 6.5f, 6.5f);
-        candy4 = CreateCandy("Candy4", CandyType.Red, 3, 3, 7.5f, 7.5f);
-        candy5 = CreateCandy("Candy1", CandyType.Blue, 0, 0, 4.5f, 4.5f);
-        candy6 = CreateCandy("Candy3", CandyType.Yellow, 2, 2, 6.5f, 6.5f);
+        candy1 = CreateCandy("Candy1", CandyType.Pumpkin, 0, 0, 4.5f, 4.5f);
+        candy2 = CreateCandy("Candy2", CandyType.Bat, 1, 1, 5.5f, 5.5f);
+        candy3 = CreateCandy("Candy3", CandyType.FrankenDead, 2, 2, 6.5f, 6.5f);
+        candy4 = CreateCandy("Candy4", CandyType.Vampire, 3, 3, 7.5f, 7.5f);
+        candy5 = CreateCandy("Candy1", CandyType.Pumpkin, 0, 0, 4.5f, 4.5f);
+        candy6 = CreateCandy("Candy3", CandyType.FrankenDead, 2, 2, 6.5f, 6.5f);
 
 
         matches = new List<GameObject> { candy1, candy2, candy3, candy4, candy5, candy6 };

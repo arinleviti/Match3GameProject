@@ -14,6 +14,7 @@ public class OnMovePerformedTest
     private MovementViewer _movementViewer;
     private CandySwapperViewer _candySwapperViewer;
     private CandyViewer _candyViewer;
+    private AudioManager _audioManager;
 
     [SetUp]
     public void Setup()
@@ -28,32 +29,32 @@ public class OnMovePerformedTest
         _matchHandler = gameObject.AddComponent<MatchHandlerViewer>();
         _movementViewer = gameObject.AddComponent<MovementViewer>();
         _candySwapperViewer = gameObject.AddComponent<CandySwapperViewer>();
-
+        _audioManager = gameObject.AddComponent<AudioManager>();
 
 
         GameObject blueCandy = new GameObject();
         CandyViewer blueCandyScript = blueCandy.AddComponent<CandyViewer>();
-        blueCandyScript.CandyType = CandyType.Blue;
-        blueCandyScript.InitializeForTest(CandyType.Blue);
+        blueCandyScript.CandyType = CandyType.Pumpkin;
+        blueCandyScript.InitializeForTest(CandyType.Pumpkin);
         GameObject greenCandy = new GameObject();
         CandyViewer greenCandyScript = greenCandy.AddComponent<CandyViewer>();
-        greenCandyScript.CandyType = CandyType.Green;
-        greenCandyScript.InitializeForTest(CandyType.Green);
+        greenCandyScript.CandyType = CandyType.Frankenstein;
+        greenCandyScript.InitializeForTest(CandyType.Frankenstein);
         GameObject yellowCandy = new GameObject();
         CandyViewer yellowCandyScript = yellowCandy.AddComponent<CandyViewer>();
-        yellowCandyScript.CandyType = CandyType.Yellow;
-        yellowCandyScript.InitializeForTest(CandyType.Yellow);
+        yellowCandyScript.CandyType = CandyType.Hat;
+        yellowCandyScript.InitializeForTest(CandyType.Hat);
         GameObject redCandy = new GameObject();
         CandyViewer redCandyScript = redCandy.AddComponent<CandyViewer>();
-        redCandyScript.CandyType = CandyType.Red;
-        redCandyScript.InitializeForTest(CandyType.Red);
+        redCandyScript.CandyType = CandyType.Mummy;
+        redCandyScript.InitializeForTest(CandyType.Mummy);
 
         _gameSettings.tilesNumberI = 8;
         _gameSettings.tilesNumberJ = 8;
         _gameSettings.tileSize = 1;
         _gameSettings.candyScaleFactor = 1;
         _gameSettings.candyTypesCount = 4;
-        _gameSettings.candyTypes = new List<CandyType> { CandyType.Blue, CandyType.Red, CandyType.Green, CandyType.Yellow };
+        _gameSettings.candyTypes = new List<CandyType> { CandyType.Pumpkin, CandyType.Mummy, CandyType.Frankenstein, CandyType.Hat };
         _gameSettings.candies = new List<GameObject> { blueCandy, greenCandy, yellowCandy, redCandy };
         _gameSettings.deltaMovementThreshold = 2;
         _gameSettings.candiesToMatch = 3;
@@ -71,26 +72,27 @@ public class OnMovePerformedTest
         
 
         _candyViewer = gameObject.AddComponent<CandyViewer>();
-       
+
         // Create an instance of MovementModelController
         _movementModelController = new MovementModelController(
             _gridManager,
             _gameSettings,
             _candyPool,
             _matchHandler,
-            _movementViewer
+            _movementViewer,
+            _audioManager
         );
 
         GameObject mockBlueCandy = new GameObject();
         CandyViewer mockBlueCandyScript = mockBlueCandy.AddComponent<CandyViewer>();
-        mockBlueCandyScript.CandyType = CandyType.Blue;
-        mockBlueCandyScript.InitializeForTest(CandyType.Blue);
+        mockBlueCandyScript.CandyType = CandyType.Pumpkin;
+        mockBlueCandyScript.InitializeForTest(CandyType.Pumpkin);
 
         _movementModelController.SelectedCandy = mockBlueCandyScript;
         _gridManager.gameSettings = _gameSettings;
         
        
-        _candySwapperViewer.Initialize(_candyViewer, _gridManager, _gameSettings, _candyPool);
+        _candySwapperViewer.Initialize(_candyViewer, _gridManager, _gameSettings, _candyPool, _audioManager);
        
 
     }
