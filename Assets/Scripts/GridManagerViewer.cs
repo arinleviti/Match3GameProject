@@ -2,10 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TreeEditor;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.SceneManagement;
+//using TreeEditor;
+//using UnityEditor.Experimental.GraphView;
+//using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
 {
@@ -56,26 +57,7 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
     }
     //j corresponds to the row index(vertical position), which is equivalent to the X-coordinate
     //i corresponds to the column index(horizontal position), which is equivalent to the Y-coordinate
-    //public void StartForTest()
-    //{
-    //    candyPoolGO = Instantiate(Resources.Load<GameObject>("Prefabs/CandyPoolPrefab"));
-    //    candyPoolScript = candyPoolGO.GetComponent<CandyPool>();
-    //    //ICandyFactory candyFactory = new MockCandyFactory();
-    //    //candyPoolScript.InitializeForTesting(gameSettings, candyFactory);
-    //    gridParent = new GameObject("GridParent");
-    //    candyParent = new GameObject("CandyParent");
-    //    gridCellGO = Instantiate(Resources.Load<GameObject>("Prefabs/GridCellPrefab"));
-    //    gridCellsArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-    //    CandiesArray = new GameObject[gameSettings.tilesNumberI, gameSettings.tilesNumberJ];
-    //    gridManagerModel = new GridManagerModel(gameSettings, this, gridCellsArray);
-    //    Vector2 firstTilePos = gridManagerModel.CalculateFirstTileXY(gameSettings.tilesNumberI, gameSettings.tilesNumberJ, gameSettings.tileSize);
-    //    gridManagerModel.PopulateBackdropGrid(gridCellGO, firstTilePos, CandiesArray);
-    //    MatchHandlerViewer.Instance.Initialize(gameSettings, CandiesArray, candyParent, candyPoolGO);
-    //    movementViewerScript = Instantiate(Resources.Load<GameObject>("Prefabs/MovementControllerPrefab")).GetComponent<MovementViewer>();
-    //    movementViewerScript.Initialize(candyPoolScript);
-    //    // option 1 passed as paramerer. CheckAndFixAllMatches will use FixMatch();
-    //    StartCoroutine(MatchHandlerViewer.Instance.MatchHandlerModel.CheckAndFixAllMatches(true));
-    //}
+    
     public GameObject SetGridCellPosition(Vector2 firstTilePos, int i, int j)
     {
         Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
@@ -157,6 +139,12 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         randomCandyScript.SetArrayPosition(randomCandy, candiesArray, i, j);
         randomCandyScript.SetPhysicalPosition(position);
         SetCandyParent(randomCandy);
+    }
+    public void RestartGame()
+    {
+        Destroy(GameObject.Find("PersistentObject"));
+        // Reload the current scene
+        SceneManager.LoadScene("SampleScene");
     }
 }
 

@@ -11,7 +11,8 @@ public class AudioManager : MonoBehaviour
     private AudioListener _listener;
     private Coroutine _backgroundMusicCoroutine;
     [SerializeField] private GameSettings gameSettings;
-
+    private bool isMusicPlaying = true;
+    private List<AudioSource> _activeAudioSources = new List<AudioSource>();
 
     private void Awake()
     {
@@ -124,12 +125,22 @@ public class AudioManager : MonoBehaviour
             {
                 if (clip == null) continue;
 
-                if (_listener == null)
-                {
-                    _listener = FindObjectOfType<AudioListener>();
-                }
-                AudioSource.PlayClipAtPoint(clip, _listener.transform.position, gameSettings.volume); // Play clips at 50% volume
-                yield return new WaitForSeconds(clip.length); // Wait for the clip to finish
+                // Create a new GameObject to hold the AudioSource
+                GameObject audioObject = new GameObject("BackgroundMusicSource");
+                AudioSource source = audioObject.AddComponent<AudioSource>();
+                source.clip = clip;
+                source.volume = gameSettings.volume;
+                source.loop = false; // Ensure the clip itself does not loop
+                source.Play();
+
+                // Track the AudioSource for cleanup later
+                _activeAudioSources.Add(source);
+
+                // Destroy the GameObject after the clip has finished playing
+                Destroy(audioObject, clip.length);
+
+                // Wait for the clip to finish before playing the next one
+                yield return new WaitForSeconds(clip.length);
             }
         }
     }
@@ -141,5 +152,30 @@ public class AudioManager : MonoBehaviour
             StopCoroutine(_backgroundMusicCoroutine);
             _backgroundMusicCoroutine = null;
         }
+
+        // Stop and clean up all active sources
+        foreach (var source in _activeAudioSources)
+        {
+            if (source != null)
+            {
+                source.Stop();
+                Destroy(source.gameObject); // Clean up the AudioSource object created by PlayClipAtPoint
+            }
+        }
+        _activeAudioSources.Clear();
+    }
+
+    public void ToggleMusic()
+    {
+        if (isMusicPlaying)
+        {
+            StopBackgroundMusic();
+        }
+        else
+        {
+            PlayBackgroundMusic("Background Music");
+        }
+
+        isMusicPlaying = !isMusicPlaying;
     }
 }
