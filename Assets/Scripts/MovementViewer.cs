@@ -22,7 +22,7 @@ public class MovementViewer : MonoBehaviour
     private MovementModelController movementModelController;
     public event Action OnMovePerformedComplete;
     private AudioManager _audioManager;
-    
+
     
 
     //private bool isActive1 = false;
@@ -36,15 +36,15 @@ public class MovementViewer : MonoBehaviour
         gridManager = FindObjectOfType<GridManagerViewer>();
         matchHandler = FindObjectOfType<MatchHandlerViewer>();
         moveAction.Enable();
-        //_candySwapperViewer = CandySwapperViewer.Instance;
-        //_candySwapperModel =  _candySwapperViewer.
+        EventDispatcher.DisableInputEvent += DisableInputSystem;
+        EventDispatcher.EnableInputEvent += EnableInputSystem;
     }
     public void Initialize(CandyPool candyPoolScript, AudioManager audioManager )
     {
         _audioManager = audioManager;
         candyPool = candyPoolScript;
         movementModelController = new MovementModelController(gridManager, gameSettings, candyPool, matchHandler, this, _audioManager);
-       
+        //OnMoveCallback is a method that will be called whenever the moveAction.performed event occurs.
         moveAction.performed += movementModelController.OnMoveCallback;
     }
     
@@ -53,18 +53,20 @@ public class MovementViewer : MonoBehaviour
     {
         moveAction.performed -= movementModelController.OnMoveCallback; // Unsubscribe from the event to avoid memory leaks
         moveAction.Disable();
+        EventDispatcher.DisableInputEvent -= DisableInputSystem;
+        EventDispatcher.EnableInputEvent -= EnableInputSystem;
     }
 
     private void Update()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            SelectCandyWithMouse();
+            SelectCandyWithMouse();           
         }
         else if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             movementModelController.SelectedCandy = null; // Reset selectedCandy when mouse button is released
-            movementModelController.IsMoving = false;
+            movementModelController.IsMoving = false;           
         }
     }
 
@@ -84,15 +86,25 @@ public class MovementViewer : MonoBehaviour
         }
     }
     public void InvokeEvent()
-    {
-       
+    {      
         OnMovePerformedComplete?.Invoke();
+    }
+    private void DisableInputSystem()
+    {
+        moveAction.Disable();
+        Debug.Log($"Player input disabled at {System.DateTime.Now:HH:mm:ss.fff}.");
+    }
+    private void EnableInputSystem()
+    {
+        moveAction.Enable();
+        Debug.Log($"Player input enabled at{System.DateTime.Now:HH:mm:ss.fff}");
     }
     public void SelectCandy(CandyViewer candy)
     {
         movementModelController.SelectedCandy = candy;
     }
 }
+
 
 
 

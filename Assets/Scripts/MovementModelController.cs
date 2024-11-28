@@ -32,6 +32,9 @@ public class MovementModelController
     public void OnMoveCallback(InputAction.CallbackContext context)
     {
         // Convert the context to Vector2 and pass it to OnMovePerformed
+        // Get the swipe direction from the Move action.
+        // returns a Vector2 value that represents how much the mouse has moved on the X and Y axes since the last frame.
+        // values received represent the movement of the mouse relative to its previous position, not the actual world position of the mouse.
         Vector2 moveInput = context.ReadValue<Vector2>();
         OnMovePerformed(moveInput);
        
@@ -41,19 +44,12 @@ public class MovementModelController
         if (_postMatchDrop == null)
         {
             _postMatchDrop = PostMatchDrop.Instance;
-            _postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject, _audioManager);
-     
+            _postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject, _audioManager);    
         }
         
     }
     public void OnMovePerformed(Vector2 moveInput)
     {
-       
-        // Get the swipe direction from the Move action.
-        // returns a Vector2 value that represents how much the mouse has moved on the X and Y axes since the last frame.
-        // values received represent the movement of the mouse relative to its previous position, not the actual world position of the mouse.
-        //Vector2 moveInput = context.ReadValue<Vector2>();
-
         if (SelectedCandy != null && moveInput.magnitude > _gameSettings.deltaMovementThreshold)
         {
             if (!IsMoving)

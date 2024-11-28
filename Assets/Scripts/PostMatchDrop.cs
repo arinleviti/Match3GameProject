@@ -20,6 +20,7 @@ public class PostMatchDrop : MonoBehaviour
     private ScoreManagerViewer _scoreManager;
     public MatchHandlerViewer MatchHandlerViewer { get; set; }
     private AudioManager _audioManager;
+    
     public static PostMatchDrop Instance
     {
         get
@@ -76,6 +77,7 @@ public class PostMatchDrop : MonoBehaviour
     }
     public IEnumerator HandlePostMoveCheck()
     {
+        EventDispatcher.TriggerDisableInput();
         //This do-while loop stops when there are no more matches in the grid
         do
         {
@@ -93,6 +95,7 @@ public class PostMatchDrop : MonoBehaviour
             //Debug.Log("Performed one cicle of post move checks");
         } while (CheckForMatches());
         //CheckCandiesArrayForNulls();
+        EventDispatcher.TriggerEnableInput();
     }
     public void ChangeNumberOfCandyTypes(int numberOfCandyTypesTypes)
     {
