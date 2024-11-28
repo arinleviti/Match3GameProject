@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface ICandyViewer
-{
-    
+{    
     float SizeX { get; set; }
     float SizeY { get; set; }
     float PosX { get; set; }

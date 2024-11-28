@@ -11,7 +11,6 @@ public class MovementViewer : MonoBehaviour
 {
     public InputAction moveAction;
     public float moveSpeed;
-    //private Vector2 initialTouchPos;
     private PlayerInputActions playerInputActions; // Reference to the input actions
     private GridManagerViewer gridManager;
     public GameSettings gameSettings;
@@ -22,10 +21,6 @@ public class MovementViewer : MonoBehaviour
     private MovementModelController movementModelController;
     public event Action OnMovePerformedComplete;
     private AudioManager _audioManager;
-
-    
-
-    //private bool isActive1 = false;
 
     private void Awake()
     {

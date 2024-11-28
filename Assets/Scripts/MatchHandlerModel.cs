@@ -11,8 +11,7 @@ public class MatchHandlerModel
     private GameObject _candyParent;
     public List<GameObject> Matches { get; private set; } = new List<GameObject>();
     private GameSettings _gameSettings;
-
-    
+   
     public MatchHandlerModel(GameSettings gameSettings, GameObject[,] candiesArray, IMatchHandlerViewer matchHandlerViewer, ICandyPool candyPool, GameObject candyParent)
     {
         _gameSettings = gameSettings;
@@ -43,7 +42,6 @@ public class MatchHandlerModel
                         }
                         else if (!useFixMatch)
                         {
-                            //Debug.Log($"matches found at:  {i}, {j} and  {i}, {j+1} and {i}, {j +2} ");
                             bool isMatch = PreMovementChecksViewer.Instance._preMovementChecksModel.CheckRowAndColumn(_candiesArray[i, j + 1], _candiesArray, true, out tempMatches);
                             if (isMatch)
                             {
@@ -69,17 +67,13 @@ public class MatchHandlerModel
                         }
                         else if (!useFixMatch)
                         {
-                            //List<GameObject> tempMatches;
-                            //Debug.Log($"matches found at:  {i}, {j} and  {i + 1}, {j} and {i + 2}, {j} ");
                             bool isMatch = PreMovementChecksViewer.Instance._preMovementChecksModel.CheckRowAndColumn(_candiesArray[i + 1, j], _candiesArray, false, out tempMatches);
                             if (isMatch)
                             {
                                 AddToMatchList(tempMatches);
                                 ScoreManagerViewer.Instance.AddPoints(tempMatches);
                             }
-
                         }
-
                         foundMatch = true;
                     }
                 }
@@ -91,17 +85,12 @@ public class MatchHandlerModel
                 List<GameObject> clonedList = CandyAnimationsController.Instance.CreateRotationList(Matches, emptyList, _gameSettings, _candyPool);
                 foreach (GameObject candy in clonedList)
                 {
-                    _matchHandlerViewer.CoroutineWrapper(candy);
-                   
+                    _matchHandlerViewer.CoroutineWrapper(candy);                  
                 }
                 DestroyMatches.Instance.ReturnMatchesInList(Matches);
                 Matches.Clear();
                 keepLooking = true;
             }
-            //else 
-            //{
-            //    keepLooking = false;
-            //}
         } while (foundMatch);
         if (Matches.Count < _gameSettings.candiesToMatch)
         {
@@ -119,7 +108,6 @@ public class MatchHandlerModel
             }
         }
     }
-
     public bool IsMatch(int x1, int y1, int x2, int y2, int x3, int y3)
     {
         if (_candiesArray[x1, y1] != null && _candiesArray[x2, y2] != null && _candiesArray[x3, y3] != null)
@@ -159,7 +147,6 @@ public class MatchHandlerModel
         foreach (GameObject prefab in prefabs)
         {
             CandyViewer candyPrefab = _matchHandlerViewer.GetCandyComponent(prefab);
-            /*Debug.Log("Prefab candy type: " + candyPrefab.CandyType);*/ // Debugging output
             if (candyPrefab.CandyType != oldCandyScript.CandyType && (int)candyPrefab.CandyType<_gameSettings.CandyTypesLevel1)
             {
                 availablePrefabs.Add(prefab);
@@ -189,7 +176,6 @@ public class MatchHandlerModel
         _matchHandlerViewer.SetCandyParent(newCandy, _candyParent);
 
         CandyViewer newCandyScript = _matchHandlerViewer.GetCandyComponent(newCandy);
-        //CandyViewer newCandyScript = newCandy.GetComponent<CandyViewer>();
 
         newCandyScript.SetArrayPosition(newCandy, _candiesArray, i, j);
         newCandyScript.SetPhysicalPosition(position);

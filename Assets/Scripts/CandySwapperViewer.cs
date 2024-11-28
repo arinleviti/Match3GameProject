@@ -10,8 +10,6 @@ public class CandySwapperViewer :  MonoBehaviour
 {
     private CandyViewer _selectedCandy;
     private GridManagerViewer _gridManager;
-    //public List<GameObject> matchesVer = new List<GameObject>();
-    //public List<GameObject> matchesHor = new List<GameObject>();
     public GameSettings _gameSettings; 
     private CandyPool _candyPool;
     private AudioManager _audioManager;
@@ -34,8 +32,7 @@ public class CandySwapperViewer :  MonoBehaviour
     {
         if (instance == null)
         {
-            instance = this;
-            //DontDestroyOnLoad(gameObject);
+            instance = this;            
         }
         else if (instance != this)
         {
@@ -56,8 +53,7 @@ public class CandySwapperViewer :  MonoBehaviour
     {
         foreach (GameObject candy in clonedList)
         {
-            StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));
-            //_candyPool.ReturnCandy(candy);
+            StartCoroutine(CandyAnimationsController.Instance.RotateMatchingCandies(candy, _gameSettings.rotationDuration, _gameSettings.numberOfRotations));            
         }
     }
     public Vector2 DetermineCoordinatesFromDirection(Vector2 direction, int newI, int newJ)

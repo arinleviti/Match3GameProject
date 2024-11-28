@@ -24,31 +24,6 @@ public class AudioManager : MonoBehaviour
         _listener = FindObjectOfType<AudioListener>();
     }
 
-    public void PlayEffect(string effectName)
-    {
-        if (_listener == null)
-        {
-            _listener = FindObjectOfType<AudioListener>();
-        }
-        PlayEffect(effectName, _listener.transform.position);
-    }
-
-    public IEnumerator PlayEffect(string effectName, Vector3 position)
-    {
-        if(_effectDictionary.ContainsKey(effectName) == false)
-        {
-            Debug.LogWarningFormat("Effect {0} is not registered.", effectName);
-            yield return null;
-        }
-        var clip = _effectDictionary[effectName].GetRandomClip();
-
-        if (clip == null)
-        {
-            Debug.LogWarningFormat("Effect {0} has no clips to play.", effectName);
-            yield return null;
-        }
-        AudioSource.PlayClipAtPoint(clip, position);
-    }
     public void PlayAllEffects(string effectName)
     {
         if (_listener == null)

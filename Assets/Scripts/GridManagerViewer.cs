@@ -2,17 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-//using TreeEditor;
-//using UnityEditor.Experimental.GraphView;
-//using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
 {
     private GameObject gridCellGO;
-    //private int gridSize;
-    //private int candyTypes;
     public GameObject[,] gridCellsArray;
     public GameObject[,] CandiesArray { get; set; }
     private GameObject gridParent;
@@ -20,8 +15,6 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
     private GridCell gridCellScript;
     public GameSettings gameSettings;
     private System.Random random = new System.Random();
-
-    //private List<List<GameObject>> ListsOfColors = new List<List<GameObject>>();
     private GameObject candyPoolGO;
     public CandyPool candyPoolScript;
     private GameObject movementViewer;
@@ -116,17 +109,12 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
                 gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 1);
                 SetGridCellParent(gridCellGO);
                 gridCellsArray[i, j] = gridCellGO;
-                //
                 gridCellScript = gridCellGO.GetComponent<GridCell>();
                 gridCellScript.PosX = gridCellGO.transform.position.x;
                 gridCellScript.PosY = gridCellGO.transform.position.y;
                 gridCellScript.PosInArrayJ = j;
                 gridCellScript.PosInArrayI = i;
-                //
-                //Debug.Log("Cell in position: X: " + gridCellScript.PosX + " Y: " + gridCellScript.PosY);
-                //Debug.Log($"GridCell Created at ({i}, {j}): PosInArrayJ = {gridCellScript.PosInArrayJ}, PosInArrayI = {gridCellScript.PosInArrayI}");
                 PopulateCandiesArray(position, gridCellGO, candiesArray, i, j);
-
             }
         }
     }

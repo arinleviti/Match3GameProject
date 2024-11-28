@@ -36,9 +36,7 @@ public class DestroyMatches : MonoBehaviour
     }
     private void Initialize()
     {
-        candyPool = FindAnyObjectByType<CandyPool>();
-        //? checks if controller is null. If it is, returns the empty list. If controller.matchesHor is null, returns an empty list. If the value is not null, returns its value
-        //matches = controller?.matches?? new List<GameObject>();
+        candyPool = FindAnyObjectByType<CandyPool>();        
         gridManager = FindAnyObjectByType<GridManagerViewer>();
     }
    
@@ -51,17 +49,14 @@ public class DestroyMatches : MonoBehaviour
             {
                 if (go != null && !processedCandies.Contains(go)) // Ensure the GameObject is not null
                 {
-                    processedCandies.Add(go);
-                    //Debug.Log("Candy returned to pool: " + go.GetComponent<Candy>().CandyType + " Position I: " + go.GetComponent<Candy>().PosInArrayI + " Position J: " + go.GetComponent<Candy>().PosInArrayJ);
+                    processedCandies.Add(go);                    
                     int i = go.GetComponent<CandyViewer>().CandyModel.PosInArrayI;
                     int j = go.GetComponent<CandyViewer>().CandyModel.PosInArrayJ;
                     float x = go.GetComponent<CandyViewer>().PosX;
                     float y = go.GetComponent<CandyViewer>().PosY;
                     Debug.Log($"Candy about to return in list PosInArrayI:{i} and PosInArrayJ: {j}, PosX {x} PosY {y}");
                     gridManager.CandiesArray[i, j] = null;
-                    candyPool.ReturnCandy(go);
-                    // Update the array to reflect that the candy has been returned to the pool
-                    
+                    candyPool.ReturnCandy(go);                                      
                 }
             }
         }

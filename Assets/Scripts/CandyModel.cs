@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public interface ICandyModel
 {
-
     int PosInArrayI { get; set; }
     int PosInArrayJ { get; set; }
-
 }
 public class CandyModel : ICandyModel
 {

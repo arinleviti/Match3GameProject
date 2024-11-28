@@ -61,7 +61,6 @@ public class MovementModelController
                 if (isActive1 == false)
                 {
                     InitializePMDIfNeeded();
-                    //_postMatchDrop.Initialize(_matchHandler, _candyPool, _gameSettings, _gridManager, _movementViewer.gameObject);
                     isActive1 = true;
                 }
 
