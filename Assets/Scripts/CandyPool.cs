@@ -8,7 +8,6 @@ public class CandyPool : MonoBehaviour, ICandyPool
     private readonly object getCandyLock = new object();
     private readonly object returnCandyLock = new object();
     public GridManagerViewer gridManager;
-    //public Dictionary<CandyType, Queue<GameObject>> candyQueues = new Dictionary<CandyType, Queue<GameObject>>();
     private Queue<GameObject>[] arrayOfcandyQueues;
     [SerializeField] public GameSettings _gameSettings;
     private ICandyFactory _candyFactory;
@@ -45,8 +44,7 @@ public class CandyPool : MonoBehaviour, ICandyPool
         {
             if (arrayOfcandyQueues[(int)candyType] != null && arrayOfcandyQueues[(int)candyType].Count > 0)
             {
-                GameObject dequeuedCandy = arrayOfcandyQueues[(int)candyType].Dequeue();
-                //Debug.Log($"Candy {dequeuedCandy.name} dequeued from queue n{(int)candyType} / {candyType}");
+                GameObject dequeuedCandy = arrayOfcandyQueues[(int)candyType].Dequeue();                
                 dequeuedCandy.SetActive(true);
                 
 
@@ -54,19 +52,7 @@ public class CandyPool : MonoBehaviour, ICandyPool
             }
             else
             {
-                return _candyFactory.CreateCandy(candyType, _gameSettings);
-                //GameObject prefab = _gameSettings.candies.Find(c => c.GetComponent<CandyViewer>().CandyType == candyType);
-                //if (prefab != null)
-                //{
-                //    var newCandy = Instantiate(prefab);
-                //    newCandy.SetActive(true);
-                //    return newCandy;
-                //}
-                //else
-                //{
-                //    Debug.LogError($"No prefab found for CandyType: {candyType}");
-                //    return null;
-                //}
+                return _candyFactory.CreateCandy(candyType, _gameSettings);                
             }
             
         }
@@ -91,7 +77,7 @@ public class CandyPool : MonoBehaviour, ICandyPool
 
                 candyScript.ResetProperties();
                 candyScript.SetPhysicalPosition(new Vector3(-_gameSettings.tilesNumberJ * 1.5f, _gameSettings.tilesNumberI * 1.5f, 0));
-                //candyGO.transform.position = ;
+
                 GameObject candyParent = GameObject.Find("CandyParent");
 
                 if (candyParent != null)
@@ -113,9 +99,7 @@ public class CandyPool : MonoBehaviour, ICandyPool
 
 public interface ICandyFactory
 {
-    GameObject CreateCandy(CandyType candyType, GameSettings gameSettings);
-    //CandyViewer GetCandyComponent(GameObject c, CandyType candyType);
-    //GameObject InstantiateAndActivateGO(GameObject prefab, GameSettings gameSettings);
+    GameObject CreateCandy(CandyType candyType, GameSettings gameSettings);    
 }
 
 public class CandyFactory : ICandyFactory
@@ -147,21 +131,6 @@ public class CandyFactory : ICandyFactory
     }
 }
 
-
-//public class MockCandyFactory : ICandyFactory
-//{
-//    public GameObject CreateCandy(CandyType candyType, GameSettings gameSettings)
-//    {
-//        // Create a mock GameObject for testing purposes
-//        GameObject mockCandy = new GameObject($"MockCandy_{candyType}");
-//        CandyViewer mockCandyScript = mockCandy.AddComponent<CandyViewer>();
-//        mockCandyScript.CandyType = candyType;
-//        mockCandyScript.InitializeForTest(candyType);
-        
-         
-//        return mockCandy;
-//    }
-//}
 
 public interface ICandyPool
 {

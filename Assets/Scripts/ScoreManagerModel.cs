@@ -13,7 +13,6 @@ public class ScoreManagerModel
     {
         _gameSettings = gameSettings;
         _scoreManagerViewer = scoreManagerViewer;
-
     }
     
     public (int, int) CandiesForCurrentLevel(int currentScore, int currentLevel)
@@ -45,7 +44,6 @@ public class ScoreManagerModel
                 currentLevel = 2;
                 return (currentLevel, _gameSettings.CandyTypesLevel2);
             }
-
         }
         return (currentLevel, _gameSettings.CandyTypesLevel1);
     }

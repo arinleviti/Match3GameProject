@@ -30,7 +30,6 @@ public class CandyAnimationsController : MonoBehaviour
 
     public IEnumerator MoveCandy(GameObject candy, Vector3 startPosition, Vector3 targetPosition, float duration)
     {
-        //Vector3 startPosition = candy.transform.position;
         float elapsedTime = 0;
 
         while (elapsedTime < duration)
@@ -85,10 +84,8 @@ public class CandyAnimationsController : MonoBehaviour
             CandyViewer parentCandyScript = candy.GetComponent<CandyViewer>();
             CandyType parentCandyType = parentCandyScript.CandyType;
             GameObject clonedCandy = candyPool.GetCandy(parentCandyType);
-            //Candy cloneCandyScript = cloneCandy.GetComponent<Candy>();
             clonedCandy.transform.position = new Vector3(candy.transform.position.x, candy.transform.position.y, candy.transform.position.z - 2); ;
-            clonedLists.Add(clonedCandy);
-            //Debug.Log($"Cloned candy {clonedCandy.name} created at {System.DateTime.Now}");
+            clonedLists.Add(clonedCandy);         
         }
 
         return clonedLists;

@@ -11,10 +11,5 @@ public class GridCell : MonoBehaviour
     public int PosInArrayI { get { return posInArrayI; } set { posInArrayI = value; } }
     public int PosInArrayJ { get { return posInArrayJ; } set { posInArrayJ = value; } }
     private GameObject[,] candyGrid;
-    
-    //public bool HasCandy(GameObject[,] candies)
-    //{
-    //    return candies[PosX, PosY] != null;
-    //}
-
+     
 }

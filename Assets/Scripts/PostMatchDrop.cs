@@ -7,19 +7,18 @@ using UnityEngine;
 
 public class PostMatchDrop : MonoBehaviour
 {
-    //public MatchHandlerViewer MatchHandlerViewer;
     private static PostMatchDrop instance;
     private CandyPool _candyPool;
     private GameSettings _gameSettings;
     private GridManagerViewer _gridManagerGO;
     private GameObject _movementViewerGO;
     private MovementViewer _movementViewer;
-    //private List<(int,int)> droppingCandiesCoordinates = new List<(int,int)> ();
     private bool keepChecking = true;
     private int _numberOfCandyTypes =4;
     private ScoreManagerViewer _scoreManager;
     public MatchHandlerViewer MatchHandlerViewer { get; set; }
     private AudioManager _audioManager;
+    
     public static PostMatchDrop Instance
     {
         get
@@ -29,11 +28,8 @@ public class PostMatchDrop : MonoBehaviour
             {
                 GameObject go = new GameObject("PostMatchDrop");
                 instance = go.AddComponent<PostMatchDrop>();
-                /*DontDestroyOnLoad(go);*/ // Ensure this new GameObject persists
                 Debug.Log("PostMatchDrop instance created.");
             }
-
-
             return instance;
         }
     }
@@ -42,7 +38,6 @@ public class PostMatchDrop : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else if (instance != this)
         {
@@ -76,6 +71,7 @@ public class PostMatchDrop : MonoBehaviour
     }
     public IEnumerator HandlePostMoveCheck()
     {
+        EventDispatcher.TriggerDisableInput();
         //This do-while loop stops when there are no more matches in the grid
         do
         {
@@ -89,10 +85,9 @@ public class PostMatchDrop : MonoBehaviour
             }
             //Spawns the candies
             CandySpawnerViewer.Instance.SpawnerModel.CheckEmptiesReplaceSpawn(_numberOfCandyTypes);
-            //yield return StartCoroutine(CandySpawnerViewer.Instance.SpawnObjects());
-            //Debug.Log("Performed one cicle of post move checks");
         } while (CheckForMatches());
         //CheckCandiesArrayForNulls();
+        EventDispatcher.TriggerEnableInput();
     }
     public void ChangeNumberOfCandyTypes(int numberOfCandyTypesTypes)
     {
@@ -123,16 +118,10 @@ public class PostMatchDrop : MonoBehaviour
         return false;
     }
 
-
-
-
-
-
     //After the matches have been found and destroyed, this stores the empty tiles' detail. 
     public IEnumerator ScanGridforEmptyTiles()
     {
         keepChecking = false;
-        //droppingCandiesCoordinates.Clear();
         // Check columns for nulls, from bottom to top.
         for (int j = 0; j < _gameSettings.tilesNumberJ; j++)
         {
@@ -180,10 +169,7 @@ public class PostMatchDrop : MonoBehaviour
         Vector3 newPosition = new Vector3(gridCellScript.PosX, gridCellScript.PosY, -1);
         yield return StartCoroutine(CandyAnimationsController.Instance.MoveCandy(candy, oldPosition, newPosition, _gameSettings.dropSpeed));
 
-
         _gridManagerGO.CandiesArray[oldPositionI, oldPositionJ] = null;
-
-
     }
     private void OnDestroy()
     {

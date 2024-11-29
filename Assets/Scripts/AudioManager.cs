@@ -11,7 +11,8 @@ public class AudioManager : MonoBehaviour
     private AudioListener _listener;
     private Coroutine _backgroundMusicCoroutine;
     [SerializeField] private GameSettings gameSettings;
-
+    private bool isMusicPlaying = true;
+    private List<AudioSource> _activeAudioSources = new List<AudioSource>();
 
     private void Awake()
     {
@@ -23,31 +24,6 @@ public class AudioManager : MonoBehaviour
         _listener = FindObjectOfType<AudioListener>();
     }
 
-    public void PlayEffect(string effectName)
-    {
-        if (_listener == null)
-        {
-            _listener = FindObjectOfType<AudioListener>();
-        }
-        PlayEffect(effectName, _listener.transform.position);
-    }
-
-    public IEnumerator PlayEffect(string effectName, Vector3 position)
-    {
-        if(_effectDictionary.ContainsKey(effectName) == false)
-        {
-            Debug.LogWarningFormat("Effect {0} is not registered.", effectName);
-            yield return null;
-        }
-        var clip = _effectDictionary[effectName].GetRandomClip();
-
-        if (clip == null)
-        {
-            Debug.LogWarningFormat("Effect {0} has no clips to play.", effectName);
-            yield return null;
-        }
-        AudioSource.PlayClipAtPoint(clip, position);
-    }
     public void PlayAllEffects(string effectName)
     {
         if (_listener == null)
@@ -124,12 +100,22 @@ public class AudioManager : MonoBehaviour
             {
                 if (clip == null) continue;
 
-                if (_listener == null)
-                {
-                    _listener = FindObjectOfType<AudioListener>();
-                }
-                AudioSource.PlayClipAtPoint(clip, _listener.transform.position, gameSettings.volume); // Play clips at 50% volume
-                yield return new WaitForSeconds(clip.length); // Wait for the clip to finish
+                // Create a new GameObject to hold the AudioSource
+                GameObject audioObject = new GameObject("BackgroundMusicSource");
+                AudioSource source = audioObject.AddComponent<AudioSource>();
+                source.clip = clip;
+                source.volume = gameSettings.volume;
+                source.loop = false; // Ensure the clip itself does not loop
+                source.Play();
+
+                // Track the AudioSource for cleanup later
+                _activeAudioSources.Add(source);
+
+                // Destroy the GameObject after the clip has finished playing
+                Destroy(audioObject, clip.length);
+
+                // Wait for the clip to finish before playing the next one
+                yield return new WaitForSeconds(clip.length);
             }
         }
     }
@@ -141,5 +127,30 @@ public class AudioManager : MonoBehaviour
             StopCoroutine(_backgroundMusicCoroutine);
             _backgroundMusicCoroutine = null;
         }
+
+        // Stop and clean up all active sources
+        foreach (var source in _activeAudioSources)
+        {
+            if (source != null)
+            {
+                source.Stop();
+                Destroy(source.gameObject); // Clean up the AudioSource object created by PlayClipAtPoint
+            }
+        }
+        _activeAudioSources.Clear();
+    }
+
+    public void ToggleMusic()
+    {
+        if (isMusicPlaying)
+        {
+            StopBackgroundMusic();
+        }
+        else
+        {
+            PlayBackgroundMusic("Background Music");
+        }
+
+        isMusicPlaying = !isMusicPlaying;
     }
 }

@@ -32,8 +32,6 @@ public class PreMovementChecksViewer : MonoBehaviour
             instance = this;
             // Initialize game settings here
             _gameSettings = Resources.Load<GameSettings>("ScriptableObjects/GridSettings");
-            // Ensure this instance persists across scenes if needed
-            DontDestroyOnLoad(gameObject);
         }
         else if (instance != this)
         {

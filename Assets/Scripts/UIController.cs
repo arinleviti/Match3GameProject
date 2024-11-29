@@ -5,12 +5,10 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
-
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI levelText;
     private ScoreManagerViewer scoreManager;
     
-
     private void Awake()
     {
         scoreManager = ScoreManagerViewer.Instance;

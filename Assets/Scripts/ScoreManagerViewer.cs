@@ -41,7 +41,6 @@ public class ScoreManagerViewer : MonoBehaviour, IScoreManagerViewer
     public void AddPoints(List<GameObject> listOfMatches)
     {
         CurrentScore += scoreManagerModel.CalculatePoints(listOfMatches);
-        //Debug.Log("Invoking OnScoreChanged, current subscribers: " + OnScoreChanged?.GetInvocationList().Length);
         OnScoreChanged?.Invoke();
         HasLevelChanged();
     }
