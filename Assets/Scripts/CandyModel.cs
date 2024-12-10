@@ -1,23 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 public interface ICandyModel
 {
     int PosInArrayI { get; set; }
     int PosInArrayJ { get; set; }
 }
+
 public class CandyModel : ICandyModel
 {
     private CandyType candyType;
     private int posInArrayI;
     private int posInArrayJ;
-    public CandyType CandyType { get =>  candyType; set => candyType = value; }
-    public int PosInArrayI { get => posInArrayI; set => posInArrayI = value; }
-    public int PosInArrayJ { get => posInArrayJ; set => posInArrayJ = value; }
+
+    public CandyType CandyType
+    {
+        get => candyType;
+        set => candyType = value;
+    }
+
+    public int PosInArrayI
+    {
+        get => posInArrayI;
+        set => posInArrayI = value;
+    }
+
+    public int PosInArrayJ
+    {
+        get => posInArrayJ;
+        set => posInArrayJ = value;
+    }
 
     public CandyModel(CandyType candyType)
     {
-        CandyType = candyType;      
+        CandyType = candyType;
     }
 
     public void ResetProperties()
@@ -31,5 +48,11 @@ public class CandyModel : ICandyModel
         PosInArrayI = i;
         PosInArrayJ = j;
         candiesArray[i, j] = candyGO;
+    }
+
+    public void PrintCandyModelProperties()
+    {
+        Debug.Log($"{posInArrayI} / {PosInArrayJ}");
+        Debug.Log($"{candyType}");
     }
 }
