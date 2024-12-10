@@ -52,7 +52,6 @@ public class CandyModel : ICandyModel
 
     public void PrintCandyModelProperties()
     {
-        Debug.Log($"{posInArrayI} / {PosInArrayJ}");
-        Debug.Log($"{candyType}");
+        Debug.Log($"Position: ({posInArrayI} , {PosInArrayJ}) | CandyType: {candyType}");
     }
 }
