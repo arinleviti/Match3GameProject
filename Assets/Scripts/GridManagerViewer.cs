@@ -56,7 +56,7 @@ public class GridManagerViewer : MonoBehaviour, IGridManagerViewer
         Vector2 position = new Vector2(firstTilePos.x + j * gameSettings.tileSize, firstTilePos.y - i * gameSettings.tileSize);
         gridCellGO = InstantiateGridCell();
         gridCellGO.transform.position = position;
-        gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 1);
+        gridCellGO.transform.localScale = new Vector3(gameSettings.tileSize, gameSettings.tileSize, 2);
         return gridCellGO;
     }
     public void InitializeGridCell(int i, int j)
